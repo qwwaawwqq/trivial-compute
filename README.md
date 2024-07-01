@@ -8,5 +8,5 @@
 [localhost:8080](localhost:8080)
 
 # Versions 
-node: v20.15.0 LTS
+node: v20.15.0 LTS <br>
 npm: 10.7.0

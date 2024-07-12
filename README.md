@@ -20,7 +20,7 @@ Once you have Docker, please first pull our Docker image from your command line:
 
 Then, run the container from within the command line:
 
-`docker run --name trivial-compute --platform linux/arm64/v8 -p 8080:8080 eltonwang1594/my-web-app:v1 npm start`
+`docker run --name trivial-compute --rm --platform linux/arm64/v8 -p 8080:8080 eltonwang1594/my-web-app:v1 npm start`
 
 Wait for the message "Server running on port 8080..." to appear.
 Then access the GUI at this link using your web browser:

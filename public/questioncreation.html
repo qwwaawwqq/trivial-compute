@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial Compute - Category/Question Creation</title>
+    <link rel="stylesheet" href="questioncreation.css">
+</head>
+<body>
+    <h1>Create Categories and Questions</h1>
+    
+    <div id="category-creation">
+        <h2>Create New Category</h2>
+        <input type="text" id="category-name" placeholder="Category Name">
+        <select id="category-color">
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+        </select>
+        <button id="add-category">Add Category</button>
+    </div>
+    
+    <div id="question-creation">
+        <h2>Create New Question</h2>
+        <select id="question-category"></select>
+        <textarea id="question-text" placeholder="Enter question"></textarea>
+        <textarea id="answer-text" placeholder="Enter answer"></textarea>
+        <select id="media-type">
+            <option value="none">No Media</option>
+            <option value="image">Image</option>
+            <option value="audio">Audio</option>
+            <option value="video">Video</option>
+        </select>
+        <input type="file" id="media-upload" accept="image/*,audio/*,video/*">
+        <button id="add-question">Add Question</button>
+    </div>
+    
+    <div id="question-list">
+        <h2>Existing Questions</h2>
+        <ul id="questions"></ul>
+    </div>
+
+    <script src="creator.js"></script>
+</body>
+</html>

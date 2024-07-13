@@ -6,8 +6,12 @@ import { initializeApp } from 'firebase/app';
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
 // import { writeNewQuestion, readUserQuestions, readAllQuestions, readQuestion, updateQuestion } from './firebase/fire-questions.js';
 
+// Create an Express application
 const app = express();
+// Define the port the server will listen on
 const port = 8080;
+
+
 const filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(filename);
 
@@ -22,21 +26,25 @@ const firebaseConfig = {
     measurementId: "G-Z0ZWEKEMTB"
 };
 
-// Initialize Firebase
+// Initialize Firebase with the given configuration
 const firebase = initializeApp(firebaseConfig);
 
+// Use body-parser middleware to parse JSON and URL-encoded request bodies
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+// Middleware to log details of each request
 app.use(function (req, res, next) {
     const { url, path: routePath } = req;
     console.log('Request: Timestamp:', new Date().toLocaleString(), ', URL (' + url + '), PATH (' + routePath + ').');
     next();
 });
 
-// Serve static files
+// Serve static files from the 'public' directory
 app.use(express.static('public'))
 
+// Start the server and listen on the specified port
 app.listen(port, () => {
     console.log(`Server running on port ${port}...`);
 });
@@ -44,17 +52,8 @@ app.listen(port, () => {
 /// ////////////////
 // Firebase Auth
 /// ///////////////
-// app.post('/authenticateRoute', (req, res) => {
-//     const sessionUID = req.headers.uid;
-//     sessionAuth(sessionUID, (result) => {
-//         if (result.isLogedIn) {
-//             res.status(200).send(result.userId);
-//         } else {
-//             res.status(203).send(result.error);
-//         }
-//     });
-// });
 
+// Route to create a new user account
 app.post('/createNewAccount', (req, res) => {
     const { email, password, name } = req.body;
     createNewUser(email, password, name, (result) => {
@@ -66,6 +65,8 @@ app.post('/createNewAccount', (req, res) => {
     });
 });
 
+
+// Route to sign in an existing user
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
     signInUser(email, password, (result) => {
@@ -78,6 +79,7 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Route to sign out the current user
 app.post('/signOut', (req, res) => {
     signOutUser((result) => {
         if (result.success) {
@@ -94,6 +96,20 @@ app.post('/signOut', (req, res) => {
 // /// ////////////////////
 // // Firebase Fire Store
 // /// ///////////////////
+
+
+
+
+// app.post('/authenticateRoute', (req, res) => {
+//     const sessionUID = req.headers.uid;
+//     sessionAuth(sessionUID, (result) => {
+//         if (result.isLogedIn) {
+//             res.status(200).send(result.userId);
+//         } else {
+//             res.status(203).send(result.error);
+//         }
+//     });
+// });
 // app.put('/writeNewQuestion', (req, res) => {
 //     const { Author, Category, Question, Answer } = req.body;
 //     writeNewQuestion(Author, Category, Question, Answer, (result) => {

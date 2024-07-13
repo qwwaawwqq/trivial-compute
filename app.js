@@ -2,32 +2,19 @@ import express from 'express';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
-// import admin from 'firebase-admin';
-// import { readFile } from 'fs/promises';
 import { initializeApp } from 'firebase/app';
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './firebase/fire-auth.js';
-import { writeNewQuestion, readUserQuestions, readAllQuestions, readQuestion, updateQuestion } from './firebase/fire-questions.js';
+// import { writeNewQuestion, readUserQuestions, readAllQuestions, readQuestion, updateQuestion } from './firebase/fire-questions.js';
 
 const app = express();
 const port = 8080;
 const filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(filename);
 
-// Load the service account key JSON file
-// const serviceAccount = JSON.parse(
-//     await readFile(new URL('key/serviceAccountKey.json', import.meta.url))
-// );
-
-// Initialize Firebase Admin SDK (for server-side operations)
-// admin.initializeApp({
-//     credential: admin.credential.cert(serviceAccount),
-//     databaseURL: "https://caffeinecoders-e8219-default-rtdb.firebaseio.com"
-// });
-
-// Client-side Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAK9l1ryus6gxNmgsNQU0XZxpwNrBI456Q",
     authDomain: "caffeinecoders-e8219.firebaseapp.com",
+    databaseURL: "https://caffeinecoders-e8219-default-rtdb.firebaseio.com",
     projectId: "caffeinecoders-e8219",
     storageBucket: "caffeinecoders-e8219.appspot.com",
     messagingSenderId: "406914685671",
@@ -35,7 +22,8 @@ const firebaseConfig = {
     measurementId: "G-Z0ZWEKEMTB"
 };
 
-const fireApp = initializeApp(firebaseConfig);
+// Initialize Firebase
+const firebase = initializeApp(firebaseConfig);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -81,13 +69,15 @@ app.post('/createNewAccount', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
-    signInUser(email, password, (result) => {
-        if (result.success) {
-            res.status(200).send(result.userId);
-        } else {
-            res.status(203).send(result.error);
-        }
-    });
+    res.status(200).send("test@gmail.com");
+    // signInUser(email, password, (result) => {
+    //     console.log(result)
+    //     if (result.success) {
+    //         res.status(200).send(result.userId);
+    //     } else {
+    //         res.status(203).send(result.error);
+    //     }
+    // });
 });
 
 app.post('/signOut', (req, res) => {
@@ -100,59 +90,69 @@ app.post('/signOut', (req, res) => {
     });
 });
 
-/// ////////////////////
-// Firebase Fire Store
-/// ///////////////////
-app.put('/writeNewQuestion', (req, res) => {
-    const { Author, Category, Question, Answer } = req.body;
-    writeNewQuestion(Author, Category, Question, Answer, (result) => {
-        if (result.success) {
-            res.status(200).send({ data: result.data });
-        } else {
-            res.status(203).send('Could Not Add Question');
-        }
-    });
-});
 
-app.put('/updateQuestion', (req, res) => {
-    const { Author, Category, Question, Answer, QuestionID } = req.body;
-    updateQuestion(Author, Category, Question, Answer, QuestionID, (result) => {
-        if (result.success) {
-            res.status(200).json({ data: result.data });
-        } else {
-            res.status(203).send('Could Not Update Question');
-        }
-    });
-});
 
-app.get('/readQuestion', async (req, res) => {
-    const questionId = req.query.id;
-    await readQuestion(questionId, (result) => {
-        if (result.success) {
-            res.status(200).json({ data: result.data });
-        } else {
-            res.status(203).send('Could Not Read Question');
-        }
-    });
-});
 
-app.get('/readUserQuestions', (req, res) => {
-    readUserQuestions((result) => {
-        if (result.success) {
-            res.status(200).send(result.data);
-        } else {
-            res.status(203).send(result.data);
-        }
-    });
-});
 
-app.get('/getAllQuestions', (req, res) => {
-    readAllQuestions((result) => {
-        if (result.success) {
-            res.status(200).send(result.data);
-        } else {
-            res.status(203).send([]);
-        }
-    });
-});
+
+
+
+
+
+
+// /// ////////////////////
+// // Firebase Fire Store
+// /// ///////////////////
+// app.put('/writeNewQuestion', (req, res) => {
+//     const { Author, Category, Question, Answer } = req.body;
+//     writeNewQuestion(Author, Category, Question, Answer, (result) => {
+//         if (result.success) {
+//             res.status(200).send({ data: result.data });
+//         } else {
+//             res.status(203).send('Could Not Add Question');
+//         }
+//     });
+// });
+
+// app.put('/updateQuestion', (req, res) => {
+//     const { Author, Category, Question, Answer, QuestionID } = req.body;
+//     updateQuestion(Author, Category, Question, Answer, QuestionID, (result) => {
+//         if (result.success) {
+//             res.status(200).json({ data: result.data });
+//         } else {
+//             res.status(203).send('Could Not Update Question');
+//         }
+//     });
+// });
+
+// app.get('/readQuestion', async (req, res) => {
+//     const questionId = req.query.id;
+//     await readQuestion(questionId, (result) => {
+//         if (result.success) {
+//             res.status(200).json({ data: result.data });
+//         } else {
+//             res.status(203).send('Could Not Read Question');
+//         }
+//     });
+// });
+
+// app.get('/readUserQuestions', (req, res) => {
+//     readUserQuestions((result) => {
+//         if (result.success) {
+//             res.status(200).send(result.data);
+//         } else {
+//             res.status(203).send(result.data);
+//         }
+//     });
+// });
+
+// app.get('/getAllQuestions', (req, res) => {
+//     readAllQuestions((result) => {
+//         if (result.success) {
+//             res.status(200).send(result.data);
+//         } else {
+//             res.status(203).send([]);
+//         }
+//     });
+// });
 

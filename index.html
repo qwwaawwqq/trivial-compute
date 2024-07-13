@@ -1,44 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Auth Demo</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .hidden { display: none; }
-        input, button { margin: 10px 0; padding: 5px; }
-    </style>
+<!-- Login Page -->
+<script src="./lib/jquery-3.7.1.js"></script>
+<link type="text/css" rel="stylesheet" href="./css/index.css">
+<link type="text/css" rel="stylesheet" href="./css/site.css">
+<script src="./js/index.js"></script>
+<title>Trivial Compute</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
+
 <body>
-    <h1>Firebase Auth Demo</h1>
-    
-    <div id="auth-section">
-        <h2>Register</h2>
-        <form id="register-form">
-            <input type="email" id="register-email" placeholder="Email" required>
-            <input type="password" id="register-password" placeholder="Password" required>
-            <input type="text" id="register-displayName" placeholder="Display Name" required>
-            <button type="submit">Register</button>
-        </form>
 
-        <h2>Login</h2>
-        <form id="login-form">
-            <input type="email" id="login-email" placeholder="Email" required>
-            <input type="password" id="login-password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
-
-    <div id="user-section" class="hidden">
-        <h2>Welcome, <span id="user-displayName"></span></h2>
-        <button id="logout-button">Logout</button>
-        <h3>User List</h3>
-        <ul id="user-list"></ul>
-    </div>
-
-    <script src="app.js"></script>
+    <body>
+        <div id="particles">
+            <div class="container-fluid h-100 position-absolute">
+                <div class="row justify-content-center align-content-center h-100">
+                    <div class="col-5">
+                        <h1 class="display-1" id="title">Trivial Compute</h1>
+                        <div class="card bg-dark">
+                            <div class="card-body">
+                                <h2 class="display-1" id="login-box-header"> Login</h2>
+                                <fdiv id='login-form'>
+                                    <div class='form-group display-1'>
+                                        <input class="form-control" id="email-input" placeholder="Email" type='text'
+                                            required>
+                                    </div>
+                                    <div class='form-group display-1'>
+                                        <input class="form-control" id="password-input" placeholder="Password"
+                                            type='password' required>
+                                    </div>
+                                    <input type='submit' id='submit-btn' class='btn btn-dark w-50 mt-2' value='Login'>
+                            </div>
+                            <!-- <a class='btn btn-outline-primary m-2 w-50' href="createNewAccount.html">Create New
+                                    Account</a> -->
+                        </div>
+                    </div>
+                    <div id="liveAlertPlaceholder"></div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </body>
 </body>
+
 </html>

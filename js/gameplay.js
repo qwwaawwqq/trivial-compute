@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game-board');
     const layout = [

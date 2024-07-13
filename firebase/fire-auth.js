@@ -1,4 +1,5 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore"
 
 
@@ -34,7 +35,6 @@ function signInUser(email, password, callback) {
         .catch((error) => {
             const errorCode = error.code;
             callback({ "success": false, "error": "Incorrect Login" })
-
         });
 }
 

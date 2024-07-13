@@ -3,7 +3,7 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
-import { createNewUser, signInUser, sessionAuth, signOutUser } from './firebase/fire-auth.js';
+import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
 // import { writeNewQuestion, readUserQuestions, readAllQuestions, readQuestion, updateQuestion } from './firebase/fire-questions.js';
 
 const app = express();

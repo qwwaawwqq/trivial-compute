@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute - Category/Question Creation</title>
-    <link rel="stylesheet" href="questioncreation.css">
+    <link rel="stylesheet" href="../css/questioncreation.css">
 </head>
+
 <body>
     <h1>Create Categories and Questions</h1>
-    
+    <a class="btn btn-primary" href="../index.html" role="button">Back to Home Screen</a>
+
     <div id="category-creation">
         <h2>Create New Category</h2>
         <input type="text" id="category-name" placeholder="Category Name">
@@ -20,7 +23,7 @@
         </select>
         <button id="add-category">Add Category</button>
     </div>
-    
+
     <div id="question-creation">
         <h2>Create New Question</h2>
         <select id="question-category"></select>
@@ -35,7 +38,7 @@
         <input type="file" id="media-upload" accept="image/*,audio/*,video/*">
         <button id="add-question">Add Question</button>
     </div>
-    
+
     <div id="question-list">
         <h2>Existing Questions</h2>
         <ul id="questions"></ul>
@@ -43,4 +46,5 @@
 
     <script src="creator.js"></script>
 </body>
+
 </html>

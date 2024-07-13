@@ -45,16 +45,16 @@ app.listen(port, () => {
 /// ////////////////
 // Firebase Auth
 /// ///////////////
-app.post('/authenticateRoute', (req, res) => {
-    const sessionUID = req.headers.uid;
-    sessionAuth(sessionUID, (result) => {
-        if (result.isLogedIn) {
-            res.status(200).send(result.userId);
-        } else {
-            res.status(203).send(result.error);
-        }
-    });
-});
+// app.post('/authenticateRoute', (req, res) => {
+//     const sessionUID = req.headers.uid;
+//     sessionAuth(sessionUID, (result) => {
+//         if (result.isLogedIn) {
+//             res.status(200).send(result.userId);
+//         } else {
+//             res.status(203).send(result.error);
+//         }
+//     });
+// });
 
 app.post('/createNewAccount', (req, res) => {
     const { email, password, name } = req.body;
@@ -88,13 +88,6 @@ app.post('/signOut', (req, res) => {
         }
     });
 });
-
-
-
-
-
-
-
 
 
 

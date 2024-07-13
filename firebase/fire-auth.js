@@ -1,20 +1,17 @@
-// import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, setDoc } from "firebase/firestore"
-
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 
 function createNewUser(email, password, name, callback) {
     const auth = getAuth();
-    const db = getFirestore();
+    // const db = getFirestore();
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const userId = userCredential.user.uid
-            setDoc(doc(db, "users", userId), {
-                email: email,
-                name: name,
-                beats: []
-            });
+            // setDoc(doc(db, "users", userId), {
+            //     email: email,
+            //     name: name,
+            //     beats: []
+            // });
             callback({ "success": true, "userId": userId })
 
         })

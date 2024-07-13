@@ -69,15 +69,14 @@ app.post('/createNewAccount', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
-    res.status(200).send("test@gmail.com");
-    // signInUser(email, password, (result) => {
-    //     console.log(result)
-    //     if (result.success) {
-    //         res.status(200).send(result.userId);
-    //     } else {
-    //         res.status(203).send(result.error);
-    //     }
-    // });
+    signInUser(email, password, (result) => {
+        console.log(result)
+        if (result.success) {
+            res.status(200).send(result.userId);
+        } else {
+            res.status(203).send(result.error);
+        }
+    });
 });
 
 app.post('/signOut', (req, res) => {

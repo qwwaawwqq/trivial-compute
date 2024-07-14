@@ -3,8 +3,14 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
+
+// From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
-// import { writeNewQuestion, readUserQuestions, readAllQuestions, readQuestion, updateQuestion } from './firebase/fire-questions.js';
+import { createNewCategory, addTextQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory } from './src/firebase/questions/create-questions.js'
+import { readAllQuestions, readQuestionsFromCategory, readQuestion, readAllCategories } from './src/firebase/questions/read-questions.js'
+import { updateQuestion } from './src/firebase/questions/update-questions.js'
+import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
+
 
 // Create an Express application
 const app = express();
@@ -97,69 +103,129 @@ app.post('/signOut', (req, res) => {
 // // Firebase Fire Store
 // /// ///////////////////
 
+// Read Enpoints
+app.get("/readAllQuestions", (req, res) => {
+    readAllQuestions((result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.get("/readAllCategories", (req, res) => {
+    readAllCategories((result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.post("/readQuestionsFromCategory", (req, res) => {
+    const { categoryName } = req.body;
+    readQuestionsFromCategory(categoryName, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.post("/readQuestion", (req, res) => {
+    const { categoryName, questionID } = req.body;
+    readQuestion(categoryName, questionID, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+
+});
+
+// Create enpoints
+app.put('/createNewCategory', (req, res) => {
+    const { categoryName, creatorName, } = req.body;
+    createNewCategory(categoryName, creatorName, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.put('/addTextQuestionToCategory', (req, res) => {
+    const { categoryName, questionDetails } = req.body;
+    addTextQuestionToCategory(categoryName, questionDetails, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.put('/addImageQuestionToCategory', (req, res) => {
+    const { categoryName, questionDetails, image } = req.body;
+    addImageQuestionToCategory(categoryName, questionDetails, image, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.put('/addVideoQuestionToCategory', (req, res) => {
+    const { categoryName, questionDetails, video } = req.body;
+    addVideoQuestionToCategoy(categoryName, questionDetails, video, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.put('/addAudioQuestionToCategory', (req, res) => {
+    const { categoryName, questionDetails, audio } = req.body;
+    addAudioQuestionToCategory(categoryName, questionDetails, audio, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+// Update enpoints
+app.put('/updateQuestion', (req, res) => {
+    const { categoryName, questionId, updateDetails } = req.body;
+    updateQuestion(categoryName, questionId, updateDetails, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
 
 
+// Delete Enpoints
+app.delete('/updateQuestion', (req, res) => {
+    const { categoryName, questionID } = req.body;
+    deleteQuestionn(categoryName, questionID, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
 
-// app.post('/authenticateRoute', (req, res) => {
-//     const sessionUID = req.headers.uid;
-//     sessionAuth(sessionUID, (result) => {
-//         if (result.isLogedIn) {
-//             res.status(200).send(result.userId);
-//         } else {
-//             res.status(203).send(result.error);
-//         }
-//     });
-// });
-// app.put('/writeNewQuestion', (req, res) => {
-//     const { Author, Category, Question, Answer } = req.body;
-//     writeNewQuestion(Author, Category, Question, Answer, (result) => {
-//         if (result.success) {
-//             res.status(200).send({ data: result.data });
-//         } else {
-//             res.status(203).send('Could Not Add Question');
-//         }
-//     });
-// });
-
-// app.put('/updateQuestion', (req, res) => {
-//     const { Author, Category, Question, Answer, QuestionID } = req.body;
-//     updateQuestion(Author, Category, Question, Answer, QuestionID, (result) => {
-//         if (result.success) {
-//             res.status(200).json({ data: result.data });
-//         } else {
-//             res.status(203).send('Could Not Update Question');
-//         }
-//     });
-// });
-
-// app.get('/readQuestion', async (req, res) => {
-//     const questionId = req.query.id;
-//     await readQuestion(questionId, (result) => {
-//         if (result.success) {
-//             res.status(200).json({ data: result.data });
-//         } else {
-//             res.status(203).send('Could Not Read Question');
-//         }
-//     });
-// });
-
-// app.get('/readUserQuestions', (req, res) => {
-//     readUserQuestions((result) => {
-//         if (result.success) {
-//             res.status(200).send(result.data);
-//         } else {
-//             res.status(203).send(result.data);
-//         }
-//     });
-// });
-
-// app.get('/getAllQuestions', (req, res) => {
-//     readAllQuestions((result) => {
-//         if (result.success) {
-//             res.status(200).send(result.data);
-//         } else {
-//             res.status(203).send([]);
-//         }
-//     });
-// });
 

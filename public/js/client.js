@@ -4,7 +4,6 @@ fetch('/firebase-config')
     .then(firebaseConfig => {
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
         const auth = firebase.auth();
 
         // DOM elements
@@ -15,29 +14,8 @@ fetch('/firebase-config')
         const logoutButton = document.getElementById('logout-button');
         const userDisplayName = document.getElementById('user-displayName');
         const userList = document.getElementById('user-list');
+        const homeBtn = document.getElementById('homeBtn');
 
-        // Register form submit
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-            const displayName = document.getElementById('register-displayName').value;
-
-            fetch('/api/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, displayName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert(data.error);
-                } else {
-                    alert('Registration successful. Please log in.');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
 
         // Login form submit
         loginForm.addEventListener('submit', (e) => {
@@ -45,28 +23,49 @@ fetch('/firebase-config')
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            fetch('/api/login', {
+            fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Received response from /login');
+                return response.json();
+            })
             .then(data => {
-                if (data.error) {
-                    alert(data.error);
+                console.log('Parsed JSON:', data);
+                if (data.success) {
+                    console.log('Login successful:', data);
+                    console.log('Redirecting to manageAccount.html');
+                    window.location.href = '/manageAccount.html';
                 } else {
-                    return auth.signInWithCustomToken(data.token);
+                    alert('Login failed: ' + (data.error || 'Unknown error'));
                 }
             })
-            .then(() => {
-                console.log('User signed in');
+            .catch(error => {
+                console.error('Error handling login response:', error);
+            });
+        });
+
+
+        // Logout button click
+        logoutButton.addEventListener('click', () => {
+            fetch('/signOut', { method: 'POST' })
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('Logout successful');
+                    auth.signOut(); // This will trigger the onAuthStateChanged listener
+                } else {
+                    throw new Error('Logout failed');
+                }
             })
             .catch(error => console.error('Error:', error));
         });
 
-        // Logout button click
-        logoutButton.addEventListener('click', () => {
-            auth.signOut();
+        // Home button click
+        homeBtn.addEventListener('click', () => {
+            console.log('Home button clicked'); // For debugging
+            window.location.href = '/index.html'; // Make sure this path is correct
         });
 
         // Auth state change listener

@@ -1,76 +1,78 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    const gameBoard = document.getElementById('game-board');
-    const layout = [
-        'corner', 'blue', 'yellow', 'green', 'red', 'hq', 'corner',
-        'yellow', 'player-home-0', 'blue', 'green', 'red', 'player-home-1', 'blue',
-        'green', 'player-home-0', 'trivial-compute', 'player-home-1', 'yellow', 'red',
-        'hq', 'green', 'red', 'hq', 'green', 'player-home-2', 'yellow',
-        'red', 'player-home-2', 'green', 'red', 'blue', 'hq', 'green',
-        'corner', 'yellow', 'green', 'blue', 'red', 'player-home-3', 'corner',
-    ];
-    const playerNames = ['Larry', 'Curly', 'Moe', 'Shemp'];
-    const playerColors = ['#ff0000', '#ffff00', '#00ff00', '#00ffff'];
+    const gameBoard = document.querySelector('.game-board');
+    const diceElement = document.getElementById('dice');
+    const rollButton = document.getElementById('roll-dice');
+    const currentPlayerElement = document.getElementById('current-player');
+    
+    const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
+    let currentPlayerIndex = 1; // Starting with Curly
 
-    layout.forEach((type, index) => {
-        const square = document.createElement('div');
-        square.classList.add('square');
-        if (type.includes('player-home')) {
-            const playerIndex = parseInt(type.split('-')[2]);
-            square.classList.add('player-home');
-            square.textContent = playerNames[playerIndex];
-            const centerDiv = createPlayerCenter(playerIndex);
-            square.appendChild(centerDiv);
-        } else if (type === 'corner') {
-            square.classList.add('corner');
-            square.textContent = 'Roll Again';
-        } else if (type === 'hq') {
-            square.classList.add('hq');
-            square.textContent = 'HQ';
-        } else if (type === 'trivial-compute') {
-            square.classList.add('trivial-compute');
-            square.textContent = 'Trivial Compute';
-        } else {
-            square.classList.add(type);
-        }
-        gameBoard.appendChild(square);
-    });
+    function createBoard() {
+        const boardLayout = [
+            'RA', 'Y', 'B', 'G', 'HQ', 'Y', 'B', 'G', 'RA',
+            'R', 'W', 'PL', 'W', 'Y', 'W', 'PC', 'W', 'R',
+            'G', 'W', 'W', 'W', 'B', 'W', 'W', 'W', 'Y',
+            'B', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
+            'HQ', 'B', 'G', 'R', 'TC', 'B', 'G', 'Y', 'HQ',
+            'Y', 'W', 'PM', 'W', 'R', 'W', 'PR', 'W', 'G',
+            'R', 'W', 'W', 'W', 'Y', 'W', 'W', 'W', 'R',
+            'G', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
+            'RA', 'R', 'B', 'G', 'HQ', 'Y', 'R', 'B', 'RA'
+        ];
 
-    // Add player tokens
-    const tokenPositions = [
-        { top: '5px', left: '5px' },
-        { top: '5px', right: '5px' },
-        { bottom: '5px', left: '5px' },
-        { bottom: '5px', right: '5px' }
-    ];
+        boardLayout.forEach((type, index) => {
+            const square = document.createElement('div');
+            square.classList.add('square', getColorClass(type));
+            if (type === 'HQ') square.textContent = 'HQ';
+            if (type === 'RA') square.textContent = 'Roll Again';
+            if (type === 'TC') square.textContent = 'Trivial Compute';
+            if (type.startsWith('P')) {
+                createPlayerSquare(square, type);
+            }
+            gameBoard.appendChild(square);
+        });
 
-    [8, 10, 38, 40].forEach((position, index) => {
-        const token = document.createElement('div');
-        token.classList.add('player-token');
-        token.style.backgroundColor = playerColors[index];
-        Object.assign(token.style, tokenPositions[index]);
-        gameBoard.children[position].appendChild(token);
-    });
-});
+        addPlayerPieces();
+    }
+    
 
-function createPlayerCenter(playerIndex) {
-    const centerDiv = document.createElement('div');
-    centerDiv.classList.add('player-center');
-    centerDiv.style.borderColor = ['#ff0000', '#ffff00', '#00ff00', '#00ffff'][playerIndex];
-
-    const colors = [
-        ['#ff0000', '#ffff00', '#ffffff', '#00ffff'],
-        ['#ffffff', '#ffff00', '#00ff00', '#00ffff'],
-        ['#ff0000', '#00ff00', '#00ffff', '#ffffff'],
-        ['#ffffff', '#ffff00', '#00ff00', '#00ffff']
-    ];
-
-    for (let j = 0; j < 4; j++) {
-        const centerSquare = document.createElement('div');
-        centerSquare.classList.add('center-square');
-        centerSquare.style.backgroundColor = colors[playerIndex][j];
-        centerDiv.appendChild(centerSquare);
+    function createPlayerSquare(square, type) {
+        const playerName = ['Larry', 'Curly', 'Moe', 'Shemp'][['PL', 'PC', 'PM', 'PR'].indexOf(type)];
+        square.textContent = playerName;
     }
 
-    return centerDiv;
-}
+    function getColorClass(type) {
+        const colorMap = { 'Y': 'yellow', 'B': 'blue', 'R': 'red', 'G': 'green', 'HQ': 'red', 'RA': 'white', 'TC': 'white', 'W': 'white' };
+        return colorMap[type] || 'white';
+    }
+
+    function addPlayerPieces() {
+        const playerColors = ['red', 'yellow', 'green', 'blue'];
+        const playerPositions = [0, 2, 6, 8]; // Corner positions
+        players.forEach((player, index) => {
+            const piece = document.createElement('div');
+            piece.classList.add('player-piece');
+            piece.style.backgroundColor = playerColors[index];
+            gameBoard.children[playerPositions[index]].appendChild(piece);
+        });
+    }
+
+    function rollDice() {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        diceElement.innerHTML = '';
+        for (let i = 0; i < roll; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            diceElement.appendChild(dot);
+        }
+        return roll;
+    }
+
+    rollButton.addEventListener('click', () => {
+        const roll = rollDice();
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        currentPlayerElement.textContent = `The current player is ${players[currentPlayerIndex]}!`;
+    });
+
+    createBoard();
+});

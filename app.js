@@ -32,6 +32,12 @@ const firebaseConfig = {
     measurementId: "G-Z0ZWEKEMTB"
 };
 
+
+// Endpoint to get Firebase config
+app.get('/firebase-config', (req, res) => {
+    res.json(firebaseConfig);
+});
+
 // Initialize Firebase with the given configuration
 const firebase = initializeApp(firebaseConfig);
 
@@ -76,14 +82,14 @@ app.post('/createNewAccount', (req, res) => {
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
     signInUser(email, password, (result) => {
-        console.log(result)
         if (result.success) {
-            res.status(200).send(result.userId);
+            res.status(200).json({ success: true, userId: result.userId });
         } else {
-            res.status(203).send(result.error);
+            res.status(203).json({ success: false, error: result.error });
         }
     });
 });
+
 
 // Route to sign out the current user
 app.post('/signOut', (req, res) => {
@@ -227,5 +233,3 @@ app.delete('/updateQuestion', (req, res) => {
         }
     });
 });
-
-

@@ -1,21 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute</title>
-    <link rel="stylesheet" href="../css/gameplay.css">
-    <script src="../lib/jquery-3.7.1.js"></script>
-    <script src="./js/gameplay.js"></script>
+    <link rel="stylesheet" href="css/gameplay.css">
 </head>
-
 <body>
-    <div id="game-board"></div>
-    </br>
-    <a class="btn btn-primary" href="./index.html" role="button">Quit Game</a>
-
+    <div class="game-container">
+        <h1>Trivial Compute</h1>
+        <div class="game-layout">
+            <div class="game-board"></div>
+            <div class="game-info">
+                <div id="current-player">The current player is Curly!</div>
+                <div class="dice-container">
+                    <div id="dice"></div>
+                </div>
+                <button id="roll-dice">Click to roll the die!</button>
+                <div class="category-legend">
+                    <h3>Category Legend:</h3>
+                    <table>
+                        <tr>
+                            <td class="yellow">Yellow: History</td>
+                            <td class="red">Red: Art & Literature</td>
+                        </tr>
+                        <tr>
+                            <td class="blue">Blue: Geography</td>
+                            <td class="green">Green: Science & Nature</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/gameplay.js"></script>
 </body>
-
 </html>

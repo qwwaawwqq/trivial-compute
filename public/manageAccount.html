@@ -1,26 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Login Page -->
-<script src="./lib/jquery-3.7.1.js"></script>
-<link type="text/css" rel="stylesheet" href="./css/site.css">
-<title>Trivial Compute</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial Compute - Account Manager</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/manageAccount.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./js/manageAccount.js"></script>
 </head>
-
 <body>
-
-    <body>
-        <div class="container-fluid h-100 position-absolute">
-            <div class="row justify-content-center align-content-center h-100">
-                <div class="col-5">
-                    <h1 class="display-1" id="title">Account Manager</h1>
-                    <a class="btn btn-primary" href="../index.html" role="button">Back to Home Screen</a>
+    <div class="container-fluid h-100 position-absolute">
+        <div class="row justify-content-center align-content-center h-100">
+            <div class="col-10">
+                <h1 class="display-4 text-center">Trivial Compute Account Manager</h1>
+                <div class="text-right">
+                    <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Username</th>
+                                    <th scope="col">Access Level</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>dr_doofenshmirtz</td>
+                                    <td>Teacher</td>
+                                </tr>
+                                <tr>
+                                    <td>jroppenheimer</td>
+                                    <td>Teacher</td>
+                                </tr>
+                                <tr>
+                                    <td>qwawaawqq</td>
+                                    <td>Student</td>
+                                </tr>
+                                <tr class="table-warning">
+                                    <td>cscalvin</td>
+                                    <td>Student</td>
+                                </tr>
+                                <tr>
+                                    <td>rockc15</td>
+                                    <td>Student</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn btn-danger mt-3">Delete Selected Account</button>
+                    </div>
+                    <div class="col-6">
+                        <div class="border p-3 mb-3">
+                            <h4>Add New Account With Credentials:</h4>
+                            <div class="form-group">
+                                <label for="new-username">Username:</label>
+                                <input type="text" class="form-control" id="new-username">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">Password:</label>
+                                <input type="password" class="form-control" id="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label>Access Level:</label><br>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="accessLevel" id="teacher" value="Teacher">
+                                    <label class="form-check-label" for="teacher">Teacher</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="accessLevel" id="student" value="Student" checked>
+                                    <label class="form-check-label" for="student">Student</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-success">Add Account</button>
+                        </div>
+                        <div class="form-group">
+                            <label for="change-password">Change Selected Account Password to:</label>
+                            <input type="password" class="form-control" id="change-password">
+                            <button class="btn btn-info mt-2">Change Password</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Change Selected Account Access Level to:</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="changeAccessLevel" id="changeTeacher" value="Teacher">
+                                <label class="form-check-label" for="changeTeacher">Teacher</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="changeAccessLevel" id="changeStudent" value="Student" checked>
+                                <label class="form-check-label" for="changeStudent">Student</label>
+                            </div>
+                            <button class="btn btn-info mt-2">Change Access Level</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
 </body>
-
 </html>

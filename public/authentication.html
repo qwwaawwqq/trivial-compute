@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial Compute - Manage Accounts</title>
+    <link rel="stylesheet" href="css/authentication.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Trivial Compute</h1>
+        <div class="manage-account-section">
+            <h2>Manage Accounts</h2>
+            <div id="auth-section">
+                <form id="login-form">
+                    <h3>Login</h3>
+                    <div class="form-group">
+                        <label for="login-email">Email:</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password:</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
+            </div>
+            <div id="user-section" class="hidden">
+                <h3>Welcome, <span id="user-displayName"></span></h3>
+                <button id="logout-button">Logout</button>
+                <h3>User List</h3>
+                <ul id="user-list"></ul>
+            </div>
+        </div>
+        <button id="homeBtn">Return to Home Screen</button>
+    </div>
+    <script src="js/client.js"></script>
+</body>
+</html>

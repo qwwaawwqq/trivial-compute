@@ -1,28 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Login Page -->
-<script src="./lib/jquery-3.7.1.js"></script>
-<link type="text/css" rel="stylesheet" href="./css/site.css">
-<title>Trivial Compute</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial Compute - Game Configuration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/gameConfig.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./js/gameConfig.js"></script>
 </head>
-
 <body>
-
-    <body>
-        <div class="container-fluid h-100 position-absolute">
-            <div class="row justify-content-center align-content-center h-100">
-                <div class="col-5">
-                    <h1 class="display-1" id="title">Trivial Compute Game Configuration</h1>
-                    <a class="btn btn-primary" href="../index.html" role="button">Back to Home Screen</a>
-                    </br>
-                    <a class="btn btn-primary" href="./gameplay.html" role="button">Play Game</a>
+    <div class="container-fluid h-100 position-absolute">
+        <div class="row justify-content-center align-content-center h-100">
+            <div class="col-12">
+                <h1 class="display-4 text-center">Trivial Compute Game Configuration</h1>
+                <div class="text-right">
+                    <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-2">
+                        <button id="add-player-btn" class="btn btn-secondary mb-3">Add Player</button>
+                        <button id="remove-player-btn" class="btn btn-secondary">Remove Player</button>
+                    </div>
+                    <div class="col-10 d-flex justify-content-around">
+                        <div class="player-config text-center" id="player-1-config">
+                            <label for="player-1-name" class="btn btn-danger mb-2">Enter Player 1 Name: (Red Token)</label>
+                            <input type="text" class="form-control mb-2" id="player-1-name" value="Larry">
+                            <label class="btn btn-warning">Select Yellow Category:</label>
+                            <select class="form-control mb-2 category-select" id="yellow-category-select">
+                                <option>Geography</option>
+                                <option>Art & Literature</option>
+                                <option>Science & Nature</option>
+                                <option>History</option>
+                                <option>Sports & Leisure</option>
+                            </select>
+                        </div>
+                        <div class="player-config text-center" id="player-2-config">
+                            <label for="player-2-name" class="btn btn-warning mb-2">Enter Player 2 Name: (Yellow Token)</label>
+                            <input type="text" class="form-control mb-2" id="player-2-name" value="Curly">
+                            <label class="btn btn-primary">Select Blue Category:</label>
+                            <select class="form-control mb-2 category-select" id="blue-category-select">
+                                <option>Geography</option>
+                                <option>Art & Literature</option>
+                                <option>Science & Nature</option>
+                                <option>History</option>
+                                <option>Sports & Leisure</option>
+                            </select>
+                        </div>
+                        <div class="player-config text-center" id="player-3-config">
+                            <label for="player-3-name" class="btn btn-success mb-2">Enter Player 3 Name: (Green Token)</label>
+                            <input type="text" class="form-control mb-2" id="player-3-name" value="Moe">
+                            <label class="btn btn-danger">Select Red Category:</label>
+                            <select class="form-control mb-2 category-select" id="red-category-select">
+                                <option>Geography</option>
+                                <option>Art & Literature</option>
+                                <option>Science & Nature</option>
+                                <option>History</option>
+                                <option>Sports & Leisure</option>
+                            </select>
+                        </div>
+                        <div class="player-config text-center" id="player-4-config">
+                            <label for="player-4-name" class="btn btn-primary mb-2">Enter Player 4 Name: (Blue Token)</label>
+                            <input type="text" class="form-control mb-2" id="player-4-name" value="Shemp">
+                            <label class="btn btn-success">Select Green Category:</label>
+                            <select class="form-control mb-2 category-select" id="green-category-select">
+                                <option>Geography</option>
+                                <option>Art & Literature</option>
+                                <option>Science & Nature</option>
+                                <option>History</option>
+                                <option>Sports & Leisure</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button id="start-game-btn" class="btn btn-lg btn-dark">Start the Game</button>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
 </body>
-
 </html>

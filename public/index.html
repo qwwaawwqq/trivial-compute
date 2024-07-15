@@ -1,38 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Login Page -->
-<script src="./lib/jquery-3.7.1.js"></script>
-<link type="text/css" rel="stylesheet" href="./css/index.css">
-<link type="text/css" rel="stylesheet" href="../css/site.css">
-
-<title>Trivial Compute</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivial Compute</title>
+    <link rel="stylesheet" href="css/index.css">
+    <script src="lib/jquery-3.7.1.js"></script>
 </head>
-
 <body>
-
-    <body>
-        <div id="particles">
-            <div class="container-fluid h-100 position-absolute">
-                <div class="row justify-content-center align-content-center h-100">
-                    <div class="col-5">
-                        <h1 class="display-1" id="title">Trivial Compute</h1>
-                        <a class="btn btn-primary" href="./gameConfig.html" role="button">Play Game</a>
-                        </br>
-                        <a class="btn btn-primary" href="./manageAccount.html" role="button">Manage Accounts</a>
-                        <a class="btn btn-primary" href="./questionCreation.html" role="button">Manage
-                            Questions</a>
-                        <a class="btn btn-primary" href="./questionCreation.html" role="button">Manage
-                            Categories</a>
-                    </div>
-                    <div id="liveAlertPlaceholder"></div>
-                </div>
+    <div class="container">
+        <h1>Trivial Compute</h1>
+        <button class="play-button">Play the Game</button>
+        <div class="teacher-section">
+            <h2>For Teachers:</h2>
+            <div class="teacher-buttons">
+                <button id="manage-accounts">Manage Accounts</button>
+                <button id="manage-questions">Manage Questions</button>
+                <button id="manage-categories">Manage Categories</button>
             </div>
         </div>
-        </div>
-    </body>
+    </div>
+    <script src="js/index.js"></script>
 </body>
-
 </html>

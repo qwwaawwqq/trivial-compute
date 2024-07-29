@@ -21,7 +21,7 @@ h1 {
     margin-bottom: 2rem;
 }
 
-.play-button {
+/* .play-button {
     font-size: 1.2rem;
     padding: 1rem 2rem;
     margin-bottom: 2rem;
@@ -30,7 +30,7 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-}
+} */
 
 .teacher-section {
     border-top: 1px solid #ccc;
@@ -42,7 +42,7 @@ h2 {
     margin-bottom: 1rem;
 }
 
-.teacher-buttons {
+/* .teacher-buttons {
     display: flex;
     justify-content: space-between;
 }
@@ -53,4 +53,24 @@ h2 {
     border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
+} */
+
+
+body {
+	background: linear-gradient(-45deg, #f83b01, #d4dd2c, #2370d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
 }

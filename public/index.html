@@ -5,21 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute</title>
     <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <script src="lib/jquery-3.7.1.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Trivial Compute</h1>
-        <button class="play-button">Play the Game</button>
+    <div class="container border border-dark border-2">
+        <h1 class="mb-3">Trivial Compute</h1>
+        <button type="button" class="play-button btn btn-primary mb-3">Play Game</button>
+        
         <div class="teacher-section">
-            <h2>For Teachers:</h2>
+            <h2 class = "my-3">Settings</h2>
             <div class="teacher-buttons">
-                <button id="manage-accounts">Manage Accounts</button>
-                <button id="manage-questions">Manage Questions</button>
-                <button id="manage-categories">Manage Categories</button>
+                <button type="button" class="btn btn-primary mb-2" id="manage-accounts">Manage Accounts</button>
+                <button type="button" class="btn btn-primary mb-2" id="manage-questions">Manage Questions</button>
+                <button type="button" class="btn btn-primary mb-2" id="manage-categories">Manage Categories</button>
             </div>
         </div>
     </div>
+
+
+
     <script src="js/index.js"></script>
 </body>
 </html>

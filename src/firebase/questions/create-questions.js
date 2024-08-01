@@ -1,17 +1,53 @@
+import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { v4 } from "uuid"
+
 ///////////////////
 // Create Functions 
 ///////////////////
 
-function createNewCategory(categoryName, creatorName, callback) {
-
-
-    callback({ "success": true, "message": "Created New Category" })
+async function createNewCategory(categoryName, creatorName, callback) {
+    const db = getFirestore();
+    const categoryRef = doc(collection(db, 'categories'), categoryName)
+    setDoc(categoryRef, {
+        creatorName: creatorName
+    })
+    callback({ success: true, message: "Added New Category" })
 }
 
-function addTextQuestionToCategory(categoryName, questionDetails, callback) {
+function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, callback) {
+    const db = getFirestore();
+    const questionId = v4()
+    setDoc(doc(db, 'categories', categoryName, "questions", questionId), {
+        dataCreate: Date.now(),
+        difficultyLevel: difficultyLevel,
+        timeAsked: 0,
+        correctlyAnswerCount: 0,
+        creator: creator,
+        answer: answer,
+        questionType: "text",
+        typeType: 'openEnded',
+        question: question
+    })
+    callback({ success: true, message: "Create New Text Open Ended Questions" })
+}
 
-
-    callback({ "success": true, "message": "Created Text Quesiton" })
+function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, callback) {
+    const db = getFirestore();
+    const questionId = v4()
+    setDoc(doc(db, 'categories', categoryName, "questions", questionId), {
+        dataCreate: Date.now(),
+        difficultyLevel: difficultyLevel,
+        timeAsked: 0,
+        correctlyAnswerCount: 0,
+        creator: creator,
+        answer: answer,
+        questionType: "text",
+        typeType: 'multipleChoice',
+        question: question,
+        choice: choices
+    })
+    callback({ success: true, message: "Create New Text Multiple Choice Questions" })
 }
 
 function addVideoQuestionToCategoy(categoryName, questionDetails, video, callback) {
@@ -32,4 +68,4 @@ function addAudioQuestionToCategory(categoryName, questionDetails, audio, callba
 }
 
 
-export { createNewCategory, addTextQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory }
+export { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory }

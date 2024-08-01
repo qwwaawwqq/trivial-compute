@@ -6,10 +6,12 @@ import { initializeApp } from 'firebase/app';
 
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
-import { createNewCategory, addTextQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory } from './src/firebase/questions/create-questions.js'
+import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory } from './src/firebase/questions/create-questions.js'
 import { readAllQuestions, readQuestionsFromCategory, readQuestion, readAllCategories } from './src/firebase/questions/read-questions.js'
 import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
+
+
 
 
 // Create an Express application
@@ -150,7 +152,6 @@ app.post("/readQuestion", (req, res) => {
             res.status(500).send(result.error);
         }
     });
-
 });
 
 // Create enpoints
@@ -165,9 +166,20 @@ app.put('/createNewCategory', (req, res) => {
     });
 });
 
-app.put('/addTextQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails } = req.body;
-    addTextQuestionToCategory(categoryName, questionDetails, (result) => {
+app.put('/addTextOpenEndedQuestionToCategory', (req, res) => {
+    const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+    addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
+        if (result.success) {
+            res.status(200).send(result.message);
+        } else {
+            res.status(500).send(result.error);
+        }
+    });
+});
+
+app.put('/addTextMultipleChoiceQuestionToCategory', (req, res) => {
+    const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+    addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
         if (result.success) {
             res.status(200).send(result.message);
         } else {

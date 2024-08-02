@@ -1,8 +1,10 @@
 import express from 'express';
+import multer from "multer"
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
+
 
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
@@ -13,6 +15,8 @@ import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
 
 
 
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 // Create an Express application
 const app = express();
@@ -54,6 +58,7 @@ app.use(function (req, res, next) {
     console.log('Request: Timestamp:', new Date().toLocaleString(), ', URL (' + url + '), PATH (' + routePath + ').');
     next();
 });
+
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'))
@@ -112,7 +117,7 @@ app.post('/signOut', (req, res) => {
 // /// ///////////////////
 
 // Read Enpoints
-app.get("/readAllQuestions", (req, res) => {
+app.get("/api/readAllQuestions", (req, res) => {
     readAllQuestions((result) => {
         if (result.success) {
             res.status(200).send(result.message);
@@ -122,7 +127,7 @@ app.get("/readAllQuestions", (req, res) => {
     });
 });
 
-app.get("/readAllCategories", (req, res) => {
+app.get("/api//readAllCategories", (req, res) => {
     readAllCategories((result) => {
         if (result.success) {
             res.status(200).send(result.message);
@@ -132,7 +137,7 @@ app.get("/readAllCategories", (req, res) => {
     });
 });
 
-app.post("/readQuestionsFromCategory", (req, res) => {
+app.post("/api/readQuestionsFromCategory", (req, res) => {
     const { categoryName } = req.body;
     readQuestionsFromCategory(categoryName, (result) => {
         if (result.success) {
@@ -143,7 +148,7 @@ app.post("/readQuestionsFromCategory", (req, res) => {
     });
 });
 
-app.post("/readQuestion", (req, res) => {
+app.post("/api//readQuestion", (req, res) => {
     const { categoryName, questionID } = req.body;
     readQuestion(categoryName, questionID, (result) => {
         if (result.success) {
@@ -155,7 +160,7 @@ app.post("/readQuestion", (req, res) => {
 });
 
 // Create enpoints
-app.put('/createNewCategory', (req, res) => {
+app.put('/api/createNewCategory', (req, res) => {
     const { categoryName, creatorName, } = req.body;
     createNewCategory(categoryName, creatorName, (result) => {
         if (result.success) {
@@ -166,7 +171,7 @@ app.put('/createNewCategory', (req, res) => {
     });
 });
 
-app.put('/addTextOpenEndedQuestionToCategory', (req, res) => {
+app.put('/api/addTextOpenEndedQuestionToCategory', (req, res) => {
     const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
     addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
         if (result.success) {
@@ -177,7 +182,7 @@ app.put('/addTextOpenEndedQuestionToCategory', (req, res) => {
     });
 });
 
-app.put('/addTextMultipleChoiceQuestionToCategory', (req, res) => {
+app.put('/api/addTextMultipleChoiceQuestionToCategory', (req, res) => {
     const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
     addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
         if (result.success) {
@@ -188,9 +193,10 @@ app.put('/addTextMultipleChoiceQuestionToCategory', (req, res) => {
     });
 });
 
-app.put('/addImageQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, image } = req.body;
-    addImageQuestionToCategory(categoryName, questionDetails, image, (result) => {
+app.post('/api/addImageQuestionToCategory', upload.single("file"), (req, res) => {
+    const { categoryName, difficultyLevel, creator, answer, question } = req.body;
+    let fileName = req.file.filename
+    addImageQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, (result) => {
         if (result.success) {
             res.status(200).send(result.message);
         } else {

@@ -1,10 +1,11 @@
-import { Board } from './board.js'
-import { Die } from './die.js'
-import { Player } from './player.js'
-import { Question } from './question.js'
-import { Category } from './category.js'
+// import { Board } from './board.js'
+// import { Die } from './die.js'
+// import { Player } from './player.js'
+// import { Question } from './question.js'
+// import { Category } from './category.js'
+import { v4 } from "uuid"
 
-import { Direction } from './direction.js'
+// import { Direction } from './direction.js'
 
 class InvalidPlayerCountError extends Error {
     constructor(message) {
@@ -53,6 +54,7 @@ class GameSession {
         }
 
         this.currentQuestion = null;
+        this.GameSessionID = v4()
     }
 
     /**

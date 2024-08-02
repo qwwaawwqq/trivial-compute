@@ -14,6 +14,8 @@ import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
 import { getFirestore } from "firebase/firestore"
+import GameSession from './src/gamelogic/gameSession.js'
+import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
 
 
@@ -73,18 +75,47 @@ app.listen(port, () => {
 });
 
 
-/// ////////////////
-// Game
-/// ///////////////
+///////////////////
+// Game Logic
+//////////////////
 
+let activeGameSesson = {}
 
+app.post('/api/startGame', (req, res) => {
+    try {
+        const { categoryNames, playerNames } = req.body;
+        let newGame = new GameSession(categoryNames, playerNames)
+        createNewGameSession(newGame, (result) => {
+            if (result.success) {
+                res.status(200).send(newGame.GameSessionID);
+            } else {
+                res.status(203).send(result.error);
+            }
+        });
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
+});
+
+app.get('/api/activeGameSessions', (req, res) => {
+    try {
+        res.status(200).send(activeGameSesson);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
+})
 
 /// ////////////////
 // Firebase Auth
 /// ///////////////
 
 // Route to create a new user account
-app.post('/createNewAccount', (req, res) => {
+app.post('/api/createNewAccount', (req, res) => {
     try {
         const { email, password, name } = req.body;
         createNewUser(email, password, name, (result) => {
@@ -103,7 +134,7 @@ app.post('/createNewAccount', (req, res) => {
 
 
 // Route to sign in an existing user
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
     try {
         const { email, password } = req.body;
         signInUser(email, password, (result) => {
@@ -122,7 +153,7 @@ app.post('/login', (req, res) => {
 
 
 // Route to sign out the current user
-app.post('/signOut', (req, res) => {
+app.post('/api//signOut', (req, res) => {
     try {
         signOutUser((result) => {
             if (result.success) {

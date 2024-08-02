@@ -41,4 +41,9 @@ $(document).ready(function() {
     for (let i = playerCount + 1; i <= 4; i++) {
         $(`#player-${i}-config`).hide();
     }
+
+
+    $('#return').on('click', function() {
+        window.location.href = './index.html';
+    });
 });

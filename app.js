@@ -85,39 +85,57 @@ app.listen(port, () => {
 
 // Route to create a new user account
 app.post('/createNewAccount', (req, res) => {
-    const { email, password, name } = req.body;
-    createNewUser(email, password, name, (result) => {
-        if (result.success) {
-            res.status(200).send(result.userId);
-        } else {
-            res.status(203).send(result.error);
-        }
-    });
+    try {
+        const { email, password, name } = req.body;
+        createNewUser(email, password, name, (result) => {
+            if (result.success) {
+                res.status(200).send(result.userId);
+            } else {
+                res.status(203).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Route to sign in an existing user
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    signInUser(email, password, (result) => {
-        if (result.success) {
-            res.status(200).json({ success: true, userId: result.userId });
-        } else {
-            res.status(203).json({ success: false, error: result.error });
-        }
-    });
+    try {
+        const { email, password } = req.body;
+        signInUser(email, password, (result) => {
+            if (result.success) {
+                res.status(200).json({ success: true, userId: result.userId });
+            } else {
+                res.status(203).json({ success: false, error: result.error });
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Route to sign out the current user
 app.post('/signOut', (req, res) => {
-    signOutUser((result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        signOutUser((result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
@@ -129,96 +147,139 @@ app.post('/signOut', (req, res) => {
 
 // Read Enpoints
 app.get("/api/readAllCategories", (req, res) => {
-    readAllCategories((result) => {
-        if (result.success) {
-            res.status(200).send(result.data);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        readAllCategories((result) => {
+            if (result.success) {
+                res.status(200).send(result.data);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
 app.post("/api/readQuestionsFromCategory", (req, res) => {
-    const { categoryName } = req.body;
-    readQuestionsFromCategory(categoryName, (result) => {
-        if (result.success) {
-            res.status(200).send(result.data);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName } = req.body;
+        readQuestionsFromCategory(categoryName, (result) => {
+            if (result.success) {
+                res.status(200).send(result.data);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Create enpoints
 app.put('/api/createNewCategory', (req, res) => {
-    const { categoryName, creatorName, } = req.body;
-    createNewCategory(categoryName, creatorName, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, creatorName } = req.body;
+        createNewCategory(categoryName, creatorName, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
 app.put('/api/addTextOpenEndedQuestionToCategory', (req, res) => {
-    const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-    addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+        addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
 app.put('/api/addTextMultipleChoiceQuestionToCategory', (req, res) => {
-    const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-    addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+        addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 app.post('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
-    const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
-    addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
+        addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
 
 // Update enpoints
 app.put('/updateQuestion', (req, res) => {
-    const { categoryName, questionId, updateDetails } = req.body;
-    updateQuestion(categoryName, questionId, updateDetails, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, questionId, updateDetails } = req.body;
+        updateQuestion(categoryName, questionId, updateDetails, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Delete Enpoints
 app.delete('/updateQuestion', (req, res) => {
-    const { categoryName, questionID } = req.body;
-    deleteQuestionn(categoryName, questionID, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, questionID } = req.body;
+        deleteQuestionn(categoryName, questionID, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
 

@@ -28,7 +28,7 @@ function readAllCategories(callback) {
     onSnapshot(collection(firebase_db, 'categories'), (querySnapshot) => {
         let categories = []
         querySnapshot.forEach((doc) => {
-            categories.push(doc.data())
+            categories.push(doc.id)
         })
         callback({ success: true, data: categories })
     })

@@ -15,9 +15,9 @@ import { firebase_db, firebase_storage } from '../../../app.js'
 
 function createNewGameSession(gameSession, callback) {
     const categoryRef = doc(collection(firebase_db, 'game-sessions'), gameSession.GameSessionID)
-    setDoc(categoryRef, {
-        players: gameSession.players
-    })
+    // setDoc(categoryRef, {
+    //     players: gameSession.players
+    // })
     callback({ success: true, message: "Started New" })
 }
 

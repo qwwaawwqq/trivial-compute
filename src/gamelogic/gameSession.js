@@ -36,22 +36,22 @@ class GameSession {
         // Ensure inputs are valid. Throw specific exception if not.
         this.validateInputs(categoryNames, playerNames);
 
-        this.gameboard = new Board();
-        this.die = new Die();
+        // this.gameboard = new Board();
+        // this.die = new Die();
 
-        this.players = [];
-        for (let i = 0; i < playerNames.length; i++) {
-            const player = new Player(playerNames[i]);
-            this.players.push(player);
-        }
-        this.currentPlayerIndex = 0;
-        this.currentPlayer = this.players[this.currentPlayerIndex];
+        // this.players = [];
+        // for (let i = 0; i < playerNames.length; i++) {
+        //     const player = new Player(playerNames[i]);
+        //     this.players.push(player);
+        // }
+        // this.currentPlayerIndex = 0;
+        // this.currentPlayer = this.players[this.currentPlayerIndex];
 
-        this.categories = {};
-        for (const colorName in categoryNames) {
-            const category = new Category(categoryNames[colorName]);
-            this.categories[colorName] = category;
-        }
+        // this.categories = {};
+        // for (const colorName in categoryNames) {
+        //     const category = new Category(categoryNames[colorName]);
+        //     this.categories[colorName] = category;
+        // }
 
         this.currentQuestion = null;
         this.GameSessionID = v4()

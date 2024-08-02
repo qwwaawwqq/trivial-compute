@@ -79,19 +79,22 @@ app.listen(port, () => {
 // Game Logic
 //////////////////
 
-let activeGameSesson = {}
+// Store the Dictionary of active session objects THIS IS VERY IMPORTANT
+app.locals.activeGameSesson = {}
 
+// TODO 
 app.post('/api/startGame', (req, res) => {
     try {
         const { categoryNames, playerNames } = req.body;
         let newGame = new GameSession(categoryNames, playerNames)
-        createNewGameSession(newGame, (result) => {
-            if (result.success) {
-                res.status(200).send(newGame.GameSessionID);
-            } else {
-                res.status(203).send(result.error);
-            }
-        });
+        app.locals.activeGameSesson[newGame.GameSessionID] = newGame
+        // createNewGameSession(newGame, (result) => {
+        //     if (result.success) {
+        res.status(200).send(newGame.GameSessionID);
+        //     } else {
+        //         res.status(203).send(result.error);
+        //     }
+        // });
 
     } catch (error) {
         console.log(error)
@@ -100,9 +103,12 @@ app.post('/api/startGame', (req, res) => {
 
 });
 
+// TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()
 app.get('/api/activeGameSessions', (req, res) => {
     try {
-        res.status(200).send(activeGameSesson);
+        const { GameSessionID } = req.body;
+        console.log(app.locals.activeGameSesson[GameSessionID].startTurn())
+        res.status(200).send(app.locals.activeGameSesson);
     } catch (error) {
         console.log(error)
         res.status(400).send(error.message)

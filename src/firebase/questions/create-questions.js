@@ -1,10 +1,12 @@
-import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
+import { ref, uploadBytes } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { v4 } from "uuid"
 import { readFile } from "fs"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+
+import { firebase_db, firebase_storage } from '../../../app.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -12,7 +14,7 @@ const __dirname = dirname(__filename);
 // Create Functions 
 ///////////////////
 
-/*
+/**
  * Function to create a new category in the Firestore database.
  * 
  * @param {string} categoryName - The name of the category to create.
@@ -20,15 +22,14 @@ const __dirname = dirname(__filename);
  * @param {function} callback - The callback function to execute after creating the category.
  */
 function createNewCategory(categoryName, creatorName, callback) {
-    const db = getFirestore();
-    const categoryRef = doc(collection(db, 'categories'), categoryName)
+    const categoryRef = doc(collection(firebase_db, 'categories'), categoryName)
     setDoc(categoryRef, {
         creatorName: creatorName
     })
     callback({ success: true, message: "Added New Category" })
 }
 
-/*
+/** 
  * Function to add a text open-ended question to a category.
  * 
  * @param {string} categoryName - The name of the category to add the question to.
@@ -40,9 +41,8 @@ function createNewCategory(categoryName, creatorName, callback) {
  */
 function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, callback) {
     try {
-        const db = getFirestore();
         const questionId = v4()
-        setDoc(doc(db, 'categories', categoryName, "questions", questionId), {
+        setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
             dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
@@ -59,7 +59,7 @@ function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creat
     }
 }
 
-/*
+/** 
  * Function to add a text multiple choice question to a category.
  * 
  * @param {string} categoryName - The name of the category to add the question to.
@@ -72,9 +72,8 @@ function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creat
  */
 function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, callback) {
     try {
-        const db = getFirestore();
         const questionId = v4()
-        setDoc(doc(db, 'categories', categoryName, "questions", questionId), {
+        setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
             dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
@@ -93,7 +92,7 @@ function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, 
 
 }
 
-/*
+/** 
  * Adds an image question to a specified category in Firestore.
  *
  * @param {string} categoryName - The name of the category to add the question to.
@@ -107,28 +106,28 @@ function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, 
  * @param {string} question - The question text.
  * @param {function} callback - The callback function to execute after attempting to add the question.
  */
-function addImageQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, callback) {
+function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
     try {
-        const storage = getStorage();
-        const storageRef = ref(storage, `images/${file.originalname + "_" + v4()}`);
+        const storageRef = ref(firebasee_storage, `${type}/${file.originalname + "_" + v4()}`);
         const storagePath = storageRef._location.path_
+        const db = getFirestore();
+        const questionId = v4()
         const metadata = {
             contentType: file.mimetype
         }
+
         uploadBytes(storageRef, file.buffer, metadata).then((snapshot) => {
             console.log('Uploaded a blob or file!');
         });
 
-        const db = getFirestore();
-        const questionId = v4()
-        setDoc(doc(db, 'categories', categoryName, "questions", questionId), {
+        setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
             dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
             correctlyAnswerCount: 0,
             creator: creator,
             answer: answer,
-            questionType: "image",
+            questionType: type,
             question: question,
             fileLocation: storagePath
         })
@@ -139,17 +138,4 @@ function addImageQuestionToCategory(categoryName, difficultyLevel, creator, answ
 }
 
 
-function addVideoQuestionToCategoy(categoryName, questionDetails, video, callback) {
-
-    callback({ "success": true, "message": "Created Video Quesiton" })
-}
-
-
-
-function addAudioQuestionToCategory(categoryName, questionDetails, audio, callback) {
-
-    callback({ "success": true, "message": "Created Quesiton" })
-}
-
-
-export { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory }
+export { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory }

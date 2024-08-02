@@ -8,10 +8,12 @@ import { initializeApp } from 'firebase/app';
 
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
-import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory } from './src/firebase/questions/create-questions.js'
-import { readAllQuestions, readQuestionsFromCategory, readQuestion, readAllCategories } from './src/firebase/questions/read-questions.js'
+import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
+import { readQuestionsFromCategory, readAllCategories } from './src/firebase/questions/read-questions.js'
 import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
+import { getStorage } from "firebase/storage"
+import { getFirestore } from "firebase/firestore"
 
 
 
@@ -46,6 +48,8 @@ app.get('/firebase-config', (req, res) => {
 
 // Initialize Firebase with the given configuration
 const firebase = initializeApp(firebaseConfig);
+export const firebase_db = getFirestore()
+export const firebase_storage = getStorage()
 
 // Use body-parser middleware to parse JSON and URL-encoded request bodies
 app.use(bodyParser.json());
@@ -67,6 +71,13 @@ app.use(express.static('public'))
 app.listen(port, () => {
     console.log(`Server running on port ${port}...`);
 });
+
+
+/// ////////////////
+// Game
+/// ///////////////
+
+
 
 /// ////////////////
 // Firebase Auth
@@ -117,20 +128,10 @@ app.post('/signOut', (req, res) => {
 // /// ///////////////////
 
 // Read Enpoints
-app.get("/api/readAllQuestions", (req, res) => {
-    readAllQuestions((result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
-
-app.get("/api//readAllCategories", (req, res) => {
+app.get("/api/readAllCategories", (req, res) => {
     readAllCategories((result) => {
         if (result.success) {
-            res.status(200).send(result.message);
+            res.status(200).send(result.data);
         } else {
             res.status(500).send(result.error);
         }
@@ -141,23 +142,13 @@ app.post("/api/readQuestionsFromCategory", (req, res) => {
     const { categoryName } = req.body;
     readQuestionsFromCategory(categoryName, (result) => {
         if (result.success) {
-            res.status(200).send(result.message);
+            res.status(200).send(result.data);
         } else {
             res.status(500).send(result.error);
         }
     });
 });
 
-app.post("/api//readQuestion", (req, res) => {
-    const { categoryName, questionID } = req.body;
-    readQuestion(categoryName, questionID, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
 
 // Create enpoints
 app.put('/api/createNewCategory', (req, res) => {
@@ -193,10 +184,9 @@ app.put('/api/addTextMultipleChoiceQuestionToCategory', (req, res) => {
     });
 });
 
-app.post('/api/addImageQuestionToCategory', upload.single("file"), (req, res) => {
-    const { categoryName, difficultyLevel, creator, answer, question } = req.body;
-    let fileName = req.file.filename
-    addImageQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, (result) => {
+app.post('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
+    const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
+    addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
         if (result.success) {
             res.status(200).send(result.message);
         } else {
@@ -205,27 +195,6 @@ app.post('/api/addImageQuestionToCategory', upload.single("file"), (req, res) =>
     });
 });
 
-app.put('/addVideoQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, video } = req.body;
-    addVideoQuestionToCategoy(categoryName, questionDetails, video, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
-
-app.put('/addAudioQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, audio } = req.body;
-    addAudioQuestionToCategory(categoryName, questionDetails, audio, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
 
 // Update enpoints
 app.put('/updateQuestion', (req, res) => {
@@ -251,3 +220,5 @@ app.delete('/updateQuestion', (req, res) => {
         }
     });
 });
+
+

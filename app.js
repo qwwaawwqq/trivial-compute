@@ -1,16 +1,26 @@
 import express from 'express';
+import multer from "multer"
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
 
+
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
-import { createNewCategory, addTextQuestionToCategory, addImageQuestionToCategory, addVideoQuestionToCategoy, addAudioQuestionToCategory } from './src/firebase/questions/create-questions.js'
-import { readAllQuestions, readQuestionsFromCategory, readQuestion, readAllCategories } from './src/firebase/questions/read-questions.js'
+import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
+import { readQuestionsFromCategory, readAllCategories } from './src/firebase/questions/read-questions.js'
 import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
+import { getStorage } from "firebase/storage"
+import { getFirestore } from "firebase/firestore"
+import GameSession from './src/gamelogic/gameSession.js'
+import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
+
+
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
 
 // Create an Express application
 const app = express();
@@ -40,6 +50,8 @@ app.get('/firebase-config', (req, res) => {
 
 // Initialize Firebase with the given configuration
 const firebase = initializeApp(firebaseConfig);
+export const firebase_db = getFirestore()
+export const firebase_storage = getStorage()
 
 // Use body-parser middleware to parse JSON and URL-encoded request bodies
 app.use(bodyParser.json());
@@ -53,6 +65,7 @@ app.use(function (req, res, next) {
     next();
 });
 
+
 // Serve static files from the 'public' directory
 app.use(express.static('public'))
 
@@ -61,45 +74,105 @@ app.listen(port, () => {
     console.log(`Server running on port ${port}...`);
 });
 
+
+///////////////////
+// Game Logic
+//////////////////
+
+// Store the Dictionary of active session objects THIS IS VERY IMPORTANT
+app.locals.activeGameSesson = {}
+
+// TODO 
+app.post('/api/startGame', (req, res) => {
+    try {
+        const { categoryNames, playerNames } = req.body;
+        let newGame = new GameSession(categoryNames, playerNames)
+        app.locals.activeGameSesson[newGame.GameSessionID] = newGame
+        // createNewGameSession(newGame, (result) => {
+        //     if (result.success) {
+        res.status(200).send(newGame.GameSessionID);
+        //     } else {
+        //         res.status(203).send(result.error);
+        //     }
+        // });
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
+});
+
+// TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()
+app.get('/api/activeGameSessions', (req, res) => {
+    try {
+        const { GameSessionID } = req.body;
+        console.log(app.locals.activeGameSesson[GameSessionID].startTurn())
+        res.status(200).send(app.locals.activeGameSesson);
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
+})
+
 /// ////////////////
 // Firebase Auth
 /// ///////////////
 
 // Route to create a new user account
-app.post('/createNewAccount', (req, res) => {
-    const { email, password, name } = req.body;
-    createNewUser(email, password, name, (result) => {
-        if (result.success) {
-            res.status(200).send(result.userId);
-        } else {
-            res.status(203).send(result.error);
-        }
-    });
+app.post('/api/createNewAccount', (req, res) => {
+    try {
+        const { email, password, name } = req.body;
+        createNewUser(email, password, name, (result) => {
+            if (result.success) {
+                res.status(200).send(result.userId);
+            } else {
+                res.status(203).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Route to sign in an existing user
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    signInUser(email, password, (result) => {
-        if (result.success) {
-            res.status(200).json({ success: true, userId: result.userId });
-        } else {
-            res.status(203).json({ success: false, error: result.error });
-        }
-    });
+app.post('/api/login', (req, res) => {
+    try {
+        const { email, password } = req.body;
+        signInUser(email, password, (result) => {
+            if (result.success) {
+                res.status(200).json({ success: true, userId: result.userId });
+            } else {
+                res.status(203).json({ success: false, error: result.error });
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Route to sign out the current user
-app.post('/signOut', (req, res) => {
-    signOutUser((result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.post('/api//signOut', (req, res) => {
+    try {
+        signOutUser((result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
@@ -110,126 +183,140 @@ app.post('/signOut', (req, res) => {
 // /// ///////////////////
 
 // Read Enpoints
-app.get("/readAllQuestions", (req, res) => {
-    readAllQuestions((result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.get("/api/readAllCategories", (req, res) => {
+    try {
+        readAllCategories((result) => {
+            if (result.success) {
+                res.status(200).send(result.data);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
-app.get("/readAllCategories", (req, res) => {
-    readAllCategories((result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
-
-app.post("/readQuestionsFromCategory", (req, res) => {
-    const { categoryName } = req.body;
-    readQuestionsFromCategory(categoryName, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
-
-app.post("/readQuestion", (req, res) => {
-    const { categoryName, questionID } = req.body;
-    readQuestion(categoryName, questionID, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.post("/api/readQuestionsFromCategory", (req, res) => {
+    try {
+        const { categoryName } = req.body;
+        readQuestionsFromCategory(categoryName, (result) => {
+            if (result.success) {
+                res.status(200).send(result.data);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 
 });
+
 
 // Create enpoints
-app.put('/createNewCategory', (req, res) => {
-    const { categoryName, creatorName, } = req.body;
-    createNewCategory(categoryName, creatorName, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.put('/api/createNewCategory', (req, res) => {
+    try {
+        const { categoryName, creatorName } = req.body;
+        createNewCategory(categoryName, creatorName, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
-app.put('/addTextQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails } = req.body;
-    addTextQuestionToCategory(categoryName, questionDetails, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.put('/api/addTextOpenEndedQuestionToCategory', (req, res) => {
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+        addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
-app.put('/addImageQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, image } = req.body;
-    addImageQuestionToCategory(categoryName, questionDetails, image, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.put('/api/addTextMultipleChoiceQuestionToCategory', (req, res) => {
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
+        addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
-app.put('/addVideoQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, video } = req.body;
-    addVideoQuestionToCategoy(categoryName, questionDetails, video, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+app.post('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
+    try {
+        const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
+        addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
 
-app.put('/addAudioQuestionToCategory', (req, res) => {
-    const { categoryName, questionDetails, audio } = req.body;
-    addAudioQuestionToCategory(categoryName, questionDetails, audio, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
-});
 
 // Update enpoints
 app.put('/updateQuestion', (req, res) => {
-    const { categoryName, questionId, updateDetails } = req.body;
-    updateQuestion(categoryName, questionId, updateDetails, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, questionId, updateDetails } = req.body;
+        updateQuestion(categoryName, questionId, updateDetails, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+
 });
 
 
 // Delete Enpoints
 app.delete('/updateQuestion', (req, res) => {
-    const { categoryName, questionID } = req.body;
-    deleteQuestionn(categoryName, questionID, (result) => {
-        if (result.success) {
-            res.status(200).send(result.message);
-        } else {
-            res.status(500).send(result.error);
-        }
-    });
+    try {
+        const { categoryName, questionID } = req.body;
+        deleteQuestionn(categoryName, questionID, (result) => {
+            if (result.success) {
+                res.status(200).send(result.message);
+            } else {
+                res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
 });
+
+

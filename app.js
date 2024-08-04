@@ -14,7 +14,7 @@ import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
 import { getFirestore } from "firebase/firestore"
-import GameSession from './src/gamelogic/gameSession.js'
+import { GameSession } from './src/gamelogic/gameSession.js'
 import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
 
@@ -84,18 +84,33 @@ app.locals.activeGameSesson = {}
 
 // TODO 
 app.post('/api/startGame', (req, res) => {
+
+    // try {
+    //     const { email, password, name } = req.body;
+    //     createNewUser(email, password, name, (result) => {
+    //         if (result.success) {
+    //             res.status(200).send(result.userId);
+    //         } else {
+    //             res.status(203).send(result.error);
+    //         }
+    //     });
+    // } catch (error) {
+    //     console.log(error)
+    //     res.status(400).send(error.message)
+    // }
+
     try {
         const { categoryNames, playerNames } = req.body;
-        let newGame = new GameSession(categoryNames, playerNames)
-        app.locals.activeGameSesson[newGame.GameSessionID] = newGame
-        // createNewGameSession(newGame, (result) => {
-        //     if (result.success) {
-        res.status(200).send(newGame.GameSessionID);
-        //     } else {
-        //         res.status(203).send(result.error);
-        //     }
-        // });
-
+        GameSession.create(categoryNames, playerNames).then(newGame => {
+            app.locals.activeGameSesson[newGame.GameSessionID] = newGame;
+            createNewGameSession(newGame, (result) => {
+                if (result.success) {
+                    res.status(200).send(newGame.GameSessionID);
+                } else {
+                    res.status(203).send(result.error);
+                }
+            });
+        })
     } catch (error) {
         console.log(error)
         res.status(400).send(error.message)

@@ -14,6 +14,7 @@ const __dirname = dirname(__filename);
 // Create Functions 
 ///////////////////
 
+
 /**
  * Function to create a new category in the Firestore database.
  * 

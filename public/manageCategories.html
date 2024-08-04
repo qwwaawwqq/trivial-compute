@@ -10,37 +10,33 @@
     <script src="./js/manageCategories.js"></script>
 </head>
 <body>
-    <div class="container-fluid h-100 position-absolute">
-        <div class="row justify-content-center align-content-center h-100">
-            <div class="col-10">
-                <h1 class="display-4 text-center">Trivial Compute Category Manager</h1>
-                <div class="text-right">
-                    <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
+    <div class="container">
+        <h1 class="display-4 text-center">Trivial Compute Category Manager</h1>
+        <div class="text-right">
+            <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <label for="new-category">Add New Category:</label>
+                    <input type="text" class="form-control d-inline-block" id="new-category" style="width: auto;">
+                    <button id="add-category-btn" class="btn btn-secondary">Add</button>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="new-category">Add New Category:</label>
-                            <input type="text" class="form-control d-inline-block" id="new-category" style="width: auto;">
-                            <button id="add-category-btn" class="btn btn-secondary">Add</button>
-                        </div>
-                        <table class="table table-bordered">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">Category</th>
-                                </tr>
-                            </thead>
-                            <tbody id="category-table-body">
-                                <!-- Categories will be dynamically inserted here -->
-                            </tbody>
-                        </table>
-                        <button class="btn btn-danger">Delete Selected Category</button>
-                        <div class="form-group mt-3">
-                            <label for="rename-category">Rename Selected Category To:</label>
-                            <input type="text" class="form-control d-inline-block" id="rename-category" style="width: auto;">
-                            <button id="rename-category-btn" class="btn btn-info">Rename</button>
-                        </div>
-                    </div>
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Category</th>
+                        </tr>
+                    </thead>
+                    <tbody id="category-table-body">
+                        <!-- Categories will be dynamically inserted here -->
+                    </tbody>
+                </table>
+                <button class="btn btn-danger">Delete Selected Category</button>
+                <div class="form-group mt-3">
+                    <label for="rename-category">Rename Selected Category To:</label>
+                    <input type="text" class="form-control d-inline-block" id="rename-category" style="width: auto;">
+                    <button id="rename-category-btn" class="btn btn-info">Rename</button>
                 </div>
             </div>
         </div>

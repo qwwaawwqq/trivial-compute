@@ -144,7 +144,7 @@ function animateRoll(timestamp, roll) {
     else {
         frameIndex = 0;
         context.clearRect(0, 0, 60, 60);
-        context.drawImage(diceImage, xFrame[roll], yFrame[roll], 425, 416, 0, 0, 60, 60 );
+        context.drawImage(diceImage, xFrame[roll-1], yFrame[roll-1], 425, 416, 0, 0, 60, 60 );
        
     }
 }

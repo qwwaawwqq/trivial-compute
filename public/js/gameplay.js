@@ -62,12 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function rollDice() {
         const roll = Math.floor(Math.random() * 6) + 1;
-        diceElement.innerHTML = '';
-        for (let i = 0; i < roll; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            diceElement.appendChild(dot);
-        }
+        requestAnimationFrame((timestamp)=>animateRoll(timestamp, roll));
         return roll;
     }
 
@@ -102,4 +97,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     createBoard();
+
+
+
 });
+
+const animationDelay = 150;
+let elapsedDrawTime = 0;
+let lastDrawTime = 0;
+let frameIndex = 0;
+
+
+// Dice animation 
+let diceImage = new Image();
+let diceRolling = new Image();
+diceImage.src = "./assets/dice.png"; //Dice image relative to html.
+diceRolling.src = "./assets/diceAnimation.png";
+board = document.getElementById('dice');
+board.height = 60;
+board.width = 60;
+let context = board.getContext("2d");
+context.fillStyle ='black';
+context.clearRect(0, 0, 60, 60);
+// context.fillRect(0, 0, 60, 60);
+
+let xFrames = [37, 37, 451, 451, 37, 37, 451, 451];
+let yFrames = [15, 221, 15, 221, 15, 221, 15, 221];
+let xFrame = [32, 509, 996, 32, 509, 996];
+let yFrame = [29, 29, 29, 579, 579, 579];
+
+function animateRoll(timestamp, roll) {
+    if (!lastDrawTime) {
+        lastDrawTime = timestamp;
+    }
+    elapsedDrawTime = timestamp - lastDrawTime;
+    if (elapsedDrawTime > animationDelay) {
+        lastDrawTime = timestamp;
+        context.clearRect(0, 0, 60, 60);
+        context.drawImage(diceRolling, xFrames[frameIndex], yFrames[frameIndex], 180, 180, 2, 2, 60, 60 );
+        frameIndex += 1;
+    }
+
+    if (frameIndex < 8) {
+        requestAnimationFrame((timestamp)=>animateRoll(timestamp, roll));
+    }
+    else {
+        frameIndex = 0;
+        context.clearRect(0, 0, 60, 60);
+        context.drawImage(diceImage, xFrame[roll], yFrame[roll], 425, 416, 0, 0, 60, 60 );
+       
+    }
+}

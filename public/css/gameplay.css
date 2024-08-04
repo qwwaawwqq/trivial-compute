@@ -102,6 +102,9 @@ body {
 .game-info {
     text-align: left;
     width: 250px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 #current-player {
@@ -118,12 +121,7 @@ body {
     width: 60px;
     height: 60px;
     border: 2px solid black;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
+    
 }
 
 button {

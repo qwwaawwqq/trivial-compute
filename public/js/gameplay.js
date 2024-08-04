@@ -3,19 +3,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const diceElement = document.getElementById('dice');
     const rollButton = document.getElementById('roll-dice');
     const currentPlayerElement = document.getElementById('current-player');
-    
+    const returnButton = document.getElementById('return-button');
+    const chooseDirectionButton = document.getElementById('choose-direction-button');
+    const displayQuestionButton = document.getElementById('display-question-button');
+    const chooseCategoryButton = document.getElementById('choose-category-button');
+
     const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
     let currentPlayerIndex = 1; // Starting with Curly
 
     function createBoard() {
         const boardLayout = [
             'RA', 'Y', 'B', 'G', 'HQ', 'Y', 'B', 'G', 'RA',
-            'R', 'W', 'PL', 'W', 'Y', 'W', 'PC', 'W', 'R',
-            'G', 'W', 'W', 'W', 'B', 'W', 'W', 'W', 'Y',
+            'R', 'W', 'W', 'W', 'Y', 'W', 'W', 'W', 'R',
+            'G', 'W', 'PL', 'W', 'B', 'W', 'PC', 'W', 'Y',
             'B', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
             'HQ', 'B', 'G', 'R', 'TC', 'B', 'G', 'Y', 'HQ',
-            'Y', 'W', 'PM', 'W', 'R', 'W', 'PR', 'W', 'G',
-            'R', 'W', 'W', 'W', 'Y', 'W', 'W', 'W', 'R',
+            'Y', 'W', 'W', 'W', 'R', 'W', 'W', 'W', 'G',
+            'R', 'W', 'PM', 'W', 'Y', 'W', 'PR', 'W', 'R',
             'G', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
             'RA', 'R', 'B', 'G', 'HQ', 'Y', 'R', 'B', 'RA'
         ];
@@ -24,8 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const square = document.createElement('div');
             square.classList.add('square', getColorClass(type));
             if (type === 'HQ') square.textContent = 'HQ';
-            if (type === 'RA') square.textContent = 'Roll Again';
-            if (type === 'TC') square.textContent = 'Trivial Compute';
+            if (type === 'RA') square.textContent = 'RA';
+            if (type === 'TC') square.textContent = 'TC';
             if (type.startsWith('P')) {
                 createPlayerSquare(square, type);
             }
@@ -34,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addPlayerPieces();
     }
-    
 
     function createPlayerSquare(square, type) {
         const playerName = ['Larry', 'Curly', 'Moe', 'Shemp'][['PL', 'PC', 'PM', 'PR'].indexOf(type)];
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getColorClass(type) {
-        const colorMap = { 'Y': 'yellow', 'B': 'blue', 'R': 'red', 'G': 'green', 'HQ': 'red', 'RA': 'white', 'TC': 'white', 'W': 'white' };
+        const colorMap = { 'Y': 'yellow', 'B': 'blue', 'R': 'red', 'G': 'green', 'HQ': 'red', 'RA': 'grey', 'TC': 'grey', 'W': 'white' };
         return colorMap[type] || 'white';
     }
 
@@ -72,6 +75,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const roll = rollDice();
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
         currentPlayerElement.textContent = `The current player is ${players[currentPlayerIndex]}!`;
+    });
+
+    returnButton.addEventListener('click', () => {
+        alert("Returning to the previous page.");
+        // Add functionality to return to the previous page
+    });
+
+
+    chooseDirectionButton.addEventListener('click', () => {
+        const direction = prompt("Choose direction (e.g., North, South, East, West):");
+        alert(`You chose: ${direction}`);
+        // Add functionality to handle direction choice
+    });
+
+    displayQuestionButton.addEventListener('click', () => {
+        const question = "Sample question?";
+        alert(question);
+        window.location.href = 'questionPop.html'
+        // Add functionality to display a question
+    });
+
+    chooseCategoryButton.addEventListener('click', () => {
+        window.location.href = 'centerSquare.html'
+        // Add functionality to handle category choice
     });
 
     createBoard();

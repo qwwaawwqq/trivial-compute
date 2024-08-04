@@ -14,7 +14,7 @@ import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
 import { getFirestore } from "firebase/firestore"
-import { GameSession } from './src/gamelogic/gameSession.js'
+import GameSession from './src/gamelogic/gameSession.js'
 import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
 
@@ -84,33 +84,18 @@ app.locals.activeGameSesson = {}
 
 // TODO 
 app.post('/api/startGame', (req, res) => {
-
-    // try {
-    //     const { email, password, name } = req.body;
-    //     createNewUser(email, password, name, (result) => {
-    //         if (result.success) {
-    //             res.status(200).send(result.userId);
-    //         } else {
-    //             res.status(203).send(result.error);
-    //         }
-    //     });
-    // } catch (error) {
-    //     console.log(error)
-    //     res.status(400).send(error.message)
-    // }
-
     try {
         const { categoryNames, playerNames } = req.body;
-        GameSession.create(categoryNames, playerNames).then(newGame => {
-            app.locals.activeGameSesson[newGame.GameSessionID] = newGame;
-            createNewGameSession(newGame, (result) => {
-                if (result.success) {
-                    res.status(200).send(newGame.GameSessionID);
-                } else {
-                    res.status(203).send(result.error);
-                }
-            });
-        })
+        let newGame = new GameSession(categoryNames, playerNames)
+        app.locals.activeGameSesson[newGame.GameSessionID] = newGame
+        // createNewGameSession(newGame, (result) => {
+        //     if (result.success) {
+        res.status(200).send(newGame.GameSessionID);
+        //     } else {
+        //         res.status(203).send(result.error);
+        //     }
+        // });
+
     } catch (error) {
         console.log(error)
         res.status(400).send(error.message)
@@ -197,7 +182,7 @@ app.post('/api//signOut', (req, res) => {
 // // Firebase Fire Store
 // /// ///////////////////
 
-// Read Enpoints
+// Read Endpoints
 app.get("/api/readAllCategories", (req, res) => {
     try {
         readAllCategories((result) => {
@@ -208,10 +193,12 @@ app.get("/api/readAllCategories", (req, res) => {
             }
         });
     } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
+        console.log(error);
+        res.status(400).send(error.message);
     }
 });
+
+
 
 app.post("/api/readQuestionsFromCategory", (req, res) => {
     try {
@@ -231,22 +218,21 @@ app.post("/api/readQuestionsFromCategory", (req, res) => {
 });
 
 
-// Create enpoints
+
+// Create endpoints
 app.put('/api/createNewCategory', (req, res) => {
-    try {
-        const { categoryName, creatorName } = req.body;
-        createNewCategory(categoryName, creatorName, (result) => {
+    const { categoryName, creatorName } = req.body;
+    createNewCategory(categoryName, creatorName, (result) => {
+        if (!res.headersSent) {
             if (result.success) {
-                res.status(200).send(result.message);
+                res.status(200).send({ success: true, message: result.message });
             } else {
-                res.status(500).send(result.error);
+                res.status(500).send({ success: false, error: result.error });
             }
-        });
-    } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
-    }
+        }
+    });
 });
+
 
 app.put('/api/addTextOpenEndedQuestionToCategory', (req, res) => {
     try {
@@ -326,6 +312,38 @@ app.delete('/updateQuestion', (req, res) => {
                 res.status(200).send(result.message);
             } else {
                 res.status(500).send(result.error);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+});
+
+app.delete('/api/deleteCategory', (req, res) => {
+    try {
+        const { categoryName } = req.body;
+        deleteCategory(categoryName, (result) => {
+            if (result.success) {
+                res.status(200).json(result);
+            } else {
+                res.status(500).json(result);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+});
+
+app.delete('/api/deleteQuestion', (req, res) => {
+    try {
+        const { categoryName, questionID } = req.body;
+        deleteQuestion(categoryName, questionID, (result) => {
+            if (result.success) {
+                res.status(200).json(result);
+            } else {
+                res.status(500).json(result);
             }
         });
     } catch (error) {

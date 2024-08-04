@@ -1,96 +1,78 @@
-$(document).ready(function() {
-    // Load categories from server
-    function loadCategories() {
-        fetch('/readAllCategories')
-            .then(response => response.json())
-            .then(categories => {
-                $('#category-table-body').empty();
-                categories.forEach(category => {
-                    $('#category-table-body').append(`<tr id="${category.id}"><td>${category.name}</td></tr>`);
-                });
-            })
-            .catch(error => console.error('Error loading categories:', error));
-    }
+$(document).ready(function () {
+    loadQuestions();
+    bindControlButtons();
+});
 
-    loadCategories();
+function bindControlButtons() {
+    $('#deleteQuestionButton').on('click', deleteQuestion);
+    $('#previewQuestionButton').on('click', previewQuestion);
+    $('#addQuestionButton').on('click', addQuestion);
+}
 
-    // Add new category
-    $('#add-category-btn').click(function() {
-        let newCategory = $('#new-category').val();
-        if(newCategory) {
-            fetch('/createNewCategory', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ categoryName: newCategory, creatorName: 'Admin' }) // Replace 'Admin' with actual creator name if needed
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    $('#category-table-body').append(`<tr id="${data.id}"><td>${newCategory}</td></tr>`);
-                    $('#new-category').val('');
-                } else {
-                    console.error('Error adding category:', data.error);
-                }
-            })
-            .catch(error => console.error('Error adding category:', error));
-        } else {
-            alert("Please enter a category name.");
+function loadQuestions() {
+    $.ajax({
+        url: '/api/readQuestionsFromCategory',
+        method: 'GET',
+        dataType: 'json',
+        success: function (response) {
+            let questions = response.data;
+            $('#question-table-body').empty();
+            questions.forEach(function (question) {
+                $('#question-table-body').append(`<tr><td>${question.category}</td><td>${question.format}</td><td>${question.question}</td></tr>`);
+            });
+            bindRowClickEvent();
+        },
+        error: function (xhr, status, error) {
+            alert("Error loading questions: " + error);
         }
     });
+}
 
-    // Rename selected category
-    $('#rename-category-btn').click(function() {
-        let selectedRow = $('tr.table-warning');
-        let newCategoryName = $('#rename-category').val();
-        if(selectedRow.length && newCategoryName) {
-            let categoryId = selectedRow.attr('id');
-            fetch('/updateCategory', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ categoryId: categoryId, newName: newCategoryName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    selectedRow.find('td').text(newCategoryName);
-                    $('#rename-category').val('');
-                } else {
-                    console.error('Error renaming category:', data.error);
-                }
-            })
-            .catch(error => console.error('Error renaming category:', error));
-        } else {
-            alert("Please select a category and enter a new name.");
-        }
-    });
-
-    // Delete selected category
-    $('.btn-danger').click(function() {
-        let selectedRow = $('tr.table-warning');
-        if(selectedRow.length) {
-            let categoryId = selectedRow.attr('id');
-            fetch('/deleteCategory', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ categoryId: categoryId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    selectedRow.remove();
-                } else {
-                    console.error('Error deleting category:', data.error);
-                }
-            })
-            .catch(error => console.error('Error deleting category:', error));
-        } else {
-            alert("Please select a category to delete.");
-        }
-    });
-
-    // Highlight selected row
-    $('table tbody').on('click', 'tr', function() {
-        $('tr').removeClass('table-warning');
+function bindRowClickEvent() {
+    $(document).off('click', 'table tbody tr').on('click', 'table tbody tr', function () {
+        $('table tbody tr').removeClass('table-warning');
         $(this).addClass('table-warning');
     });
-});
+}
+
+function deleteQuestion() {
+    let selectedRow = $('tr.table-warning');
+    if (selectedRow.length) {
+        let questionText = selectedRow.find('td:last').text();
+        $.ajax({
+            url: '/api/deleteQuestion',
+            method: 'DELETE',
+            data: JSON.stringify({ question: questionText }),
+            contentType: 'application/json',
+            success: function (result) {
+                if (result.success) {
+                    loadQuestions();
+                } else {
+                    alert("Error deleting question: " + result.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error deleting question: " + error);
+            }
+        });
+    } else {
+        alert("Please select a question to delete.");
+    }
+}
+
+function previewQuestion() {
+    let selectedRow = $('tr.table-warning');
+    if (selectedRow.length) {
+        let questionText = selectedRow.find('td:last').text();
+        alert("Previewing or Modifying Question: " + questionText);
+        // Implement preview or modify functionality here
+    } else {
+        alert("Please select a question to preview or modify.");
+    }
+}
+
+function addQuestion() {
+    window.location.href = 'questioncreation.html'; // Adjust the path if necessary
+
+    // Implement add new question functionality here
+}

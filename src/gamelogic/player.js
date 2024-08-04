@@ -1,38 +1,64 @@
-import { Board } from './board.js'
-import { Color } from './color.js'
-import { Direction } from './direction.js'
+import { Board } from './board.js';
+import { Color } from './color.js';
+import { Direction } from './direction.js';
 
+/**
+ * Custom error for invalid directions.
+ */
 class InvalidDirectionError extends Error {
+    /**
+     * Create an InvalidDirectionError.
+     * @param {string} message - The error message.
+     */
     constructor(message) {
         super(message);
         this.name = 'InvalidDirectionError';
     }
 }
 
+/**
+ * Class representing a player in the game.
+ */
 export class Player {
-    static DEFAULT_SCORE = {[Color.RED]: false, [Color.BLUE]: false, [Color.GREEN]: false, [Color.YELLOW]: false}
+    /**
+     * The default score object for a player.
+     * @type {Object<string, boolean>}
+     */
+    static DEFAULT_SCORE = { [Color.RED]: false, [Color.BLUE]: false, [Color.GREEN]: false, [Color.YELLOW]: false };
 
-    constructor(name, tokenColor, grade = null, email = null, position = Board.CENTER_POSITION, score = this.DEFAULT_SCORE) {
+    /**
+     * Create a player.
+     * @param {string} name - The name of the player.
+     * @param {string} tokenColor - The color of the player's token.
+     * @param {string|null} [grade=null] - The grade of the player.
+     * @param {string|null} [email=null] - The email of the player.
+     * @param {int} [position=Board.CENTER_POSITION] - The starting position of the player.
+     * @param {Object<string, boolean>} [score=Player.DEFAULT_SCORE] - The score of the player.
+     */
+    constructor(name, tokenColor, grade = null, email = null, position = Board.CENTER_POSITION, score = Player.DEFAULT_SCORE) {
         this.name = name;
         this.tokenColor = tokenColor;
         this.grade = grade;
         this.email = email;
         this.position = position;
         this.score = score;
-        // Compared to my current position, which direction was this player's previous square in?
+        /**
+         * Compared to my current position, which direction was this player's previous square in?
+         * @type {string|null}
+         */
         this.previousSquareDirection = null;
+        /**
+         * Moves left for the player.
+         * @type {int}
+         */
         this.movesLeft = 0;
     }
 
     /**
-     * Move the player to the provided position.
-     * @param {int} position 
-     *      This position is assumed to be valid - this check should be done at a higher level.
+     * Move the player in the specified direction by one unit.
+     * @param {Direction} direction - The direction to move the player in.
+     * @throws {InvalidDirectionError} Thrown when an invalid direction is requested.
      */
-    setPosition(position) {
-        this.position = position;
-    }
-
     moveOnce(direction) {
         this.movesLeft -= 1;
         switch (direction) {
@@ -57,13 +83,22 @@ export class Player {
         }
     }
 
+    /**
+     * Award a point to the player for the specified color.
+     * @param {Color} color - The color for which to award a point.
+     */
     awardPoint(color) {
         this.score[color] = true;
     }
 
+    /**
+     * Check if the player has won.
+     * @param {int} [points_to_win=4] - The number of points required to win.
+     * @return {boolean} True if the player has won, otherwise false.
+     */
     isWinner(points_to_win = 4) {
         let points = 0;
-        for (const color in this.DEFAULT_SCORE) {
+        for (const color in Player.DEFAULT_SCORE) {
             if (this.score[color]) {
                 points++;
             }

@@ -39,14 +39,6 @@ function readQuestionsFromCategoryOnce(categoryName) {
         throw new MissingBoardDataError(`Could not find category data in Firestore Database: ${error}`);
     });
 }
-//     onSnapshot(collection(firebase_db, 'categories', categoryName, "questions"), (querySnapshot) => {
-//         let questions = []
-//         querySnapshot.forEach((doc) => {
-//             questions.push(doc.data())
-//         })
-//         callback({ success: true, data: questions })
-//     })
-// }
 
 /**
  * Reads all categories from a Firestore database.

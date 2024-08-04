@@ -1,40 +1,51 @@
-import { QuestionType } from './questionType.js'
-import { QuestionStats } from './questionStats.js'
+import { QuestionType } from './questionType.js';
+import { QuestionStats } from './questionStats.js';
 
-import { OpenEndedTextQuestion } from './openEndedTextQuestion.js'
-import { MultipleChoiceTextQuestion } from './multipleChoiceTextQuestion.js'
-import { ImageQuestion } from './imageQuestion.js'
-import { AudioQuestion } from './audioQuestion.js'
-import { VideoQuestion } from './videoQuestion.js'
+import { OpenEndedTextQuestion } from './openEndedTextQuestion.js';
+import { MultipleChoiceTextQuestion } from './multipleChoiceTextQuestion.js';
+import { ImageQuestion } from './imageQuestion.js';
+import { AudioQuestion } from './audioQuestion.js';
+import { VideoQuestion } from './videoQuestion.js';
 
-import { readQuestionsFromCategoryOnce } from '../firebase/questions/read-questions.js'
+import { readQuestionsFromCategoryOnce } from '../firebase/questions/read-questions.js';
 
+/**
+ * Custom error for invalid question types.
+ */
 class InvalidQuestionTypeReadError extends Error {
+    /**
+     * Create an InvalidQuestionTypeReadError.
+     * @param {string} message - The error message.
+     */
     constructor(message) {
         super(message);
         this.name = 'InvalidQuestionTypeReadError';
     }
 }
 
+/**
+ * Class representing a category of questions.
+ */
 export class Category {
+    /**
+     * Factory method to create a new Category instance.
+     * @param {string} name - The name of the category.
+     * @return {Promise<Category>} A promise that resolves to a Category instance.
+     */
     static create(name) {
         return readQuestionsFromCategoryOnce(name)
             .then(questionsData => {
+                let category = new Category(name);
                 
                 const questions = []
                 for (const questionData of questionsData) {
                     const question = this.instantiateQuestionSubclass(questionData);
-                    questions.push(question)
+                    questions.push(question);
                 }
 
-                console.log("HERE")
+                console.log("HERE");
                 
-                let category = new Category(name);
                 category.questions = questions;
-                
-                // TODO - get the questions out of the category data
-                // Translate stored JSON in database to local objects.
-
 
                 return category;
             })
@@ -44,18 +55,24 @@ export class Category {
             });
     }
 
+    /**
+     * Instantiate the appropriate question subclass based on the question type.
+     * @param {Object} questionObject - The question object.
+     * @return {OpenEndedTextQuestion|MultipleChoiceTextQuestion|ImageQuestion|AudioQuestion|VideoQuestion} The instantiated question subclass.
+     * @throws {InvalidQuestionTypeReadError} Thrown when an invalid question type is read.
+     */
     static instantiateQuestionSubclass(questionObject) {
         // TODO align JSON and attribute naming, and questionType enum
         const questionTitle = questionObject["question"];
         const questionStats = new QuestionStats(
             questionObject["timesAsked"],
             questionObject["correctlyAnswerCount"]
-        )
-        const dateCreated = questionObject["dataCreate"]
-        const difficultyLevel = questionObject["difficultyLevel"]
-        const creator = questionObject["creator"]
-        const answer = questionObject["answer"]
-        const questionType = questionObject["typeType"]
+        );
+        const dateCreated = questionObject["dataCreate"];
+        const difficultyLevel = questionObject["difficultyLevel"];
+        const creator = questionObject["creator"];
+        const answer = questionObject["answer"];
+        const questionType = questionObject["typeType"];
         
         switch (questionType) {
             case "openEnded":
@@ -121,28 +138,21 @@ export class Category {
         }
     }
 
+    /**
+     * DO NOT DIRECTLY INVOKE EXTERNALLY - please use Category.create() instead.
+     * @param {string} name - The name of the category.
+     */
     constructor(name) {
         this.name = name;
-        this.questions = [];
+        this.questions = null; // Populated in create()
     }
 
-    // constructor(name) {
-    //     this.name = name;
-        
-    //     // TODO replace with db call
-    //     const qs1 = new QuestionStats(5, 3); 
-    //     const qs2 = new QuestionStats(6, 2); 
-    //     const oetq = new OpenEndedTextQuestion("q1", qs1, "someDate", "easy", "your mom", "a1");
-    //     const mctq = new MultipleChoiceTextQuestion("q2", qs2, "anotherDate", "medium", "your father in heaven", "a2");
-    //     this.questions = [
-    //         oetq, mctq
-    //     ];
-    // }
-
+    /**
+     * Pick a random question from the category.
+     * @return {OpenEndedTextQuestion|MultipleChoiceTextQuestion|ImageQuestion|AudioQuestion|VideoQuestion} A random question from the category.
+     */
     pickRandomQuestion() {
         const randomIndex = Math.floor(Math.random() * this.questions.length);
         return this.questions[randomIndex];
     }
-
-
 }

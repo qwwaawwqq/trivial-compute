@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayQuestionButton = document.getElementById('display-question-button');
     const chooseCategoryButton = document.getElementById('choose-category-button');
 
+
     const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
     let currentPlayerIndex = 1; // Starting with Curly
 
@@ -68,8 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rollButton.addEventListener('click', () => {
         const roll = rollDice();
+        $('#end-turn').toggle();
+        $('#roll-dice').toggle();
+        
+    });
+
+    $('#end-turn').click(function() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
         currentPlayerElement.textContent = `The current player is ${players[currentPlayerIndex]}!`;
+        $('#end-turn').toggle();
+        $('#roll-dice').toggle();
+        clearDie();
     });
 
     returnButton.addEventListener('click', () => {
@@ -99,8 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
     createBoard();
 
 
-
 });
+
+
 
 const animationDelay = 150;
 let elapsedDrawTime = 0;
@@ -125,6 +136,11 @@ let xFrames = [37, 37, 451, 451, 37, 37, 451, 451];
 let yFrames = [15, 221, 15, 221, 15, 221, 15, 221];
 let xFrame = [32, 509, 996, 32, 509, 996];
 let yFrame = [29, 29, 29, 579, 579, 579];
+
+function clearDie(){
+    context.clearRect(0, 0, 60, 60);
+}
+
 
 function animateRoll(timestamp, roll) {
     if (!lastDrawTime) {

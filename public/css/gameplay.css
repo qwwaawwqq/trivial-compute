@@ -23,6 +23,11 @@ body {
     }
 }
 
+.hidden {
+    display: none;
+}
+
+
 .game-container {
     text-align: center;
     background-color: white;
@@ -35,7 +40,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;
+    gap: 50px;
 }
 
 .game-board {
@@ -113,9 +118,9 @@ body {
 }
 
 #dice {
-    width: 60px;
+    width: 62px;
     height: 60px;
-    border: 2px solid black;
+
     
 }
 

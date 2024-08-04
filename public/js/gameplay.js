@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const rollButton = document.getElementById('roll-dice');
     const currentPlayerElement = document.getElementById('current-player');
     const returnButton = document.getElementById('return-button');
-    const chooseDirectionButton = document.getElementById('choose-direction-button');
+    // const chooseDirectionButton = document.getElementById('choose-direction-button');
     const displayQuestionButton = document.getElementById('display-question-button');
     const chooseCategoryButton = document.getElementById('choose-category-button');
 
@@ -88,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    chooseDirectionButton.addEventListener('click', () => {
-        const direction = prompt("Choose direction (e.g., North, South, East, West):");
-        alert(`You chose: ${direction}`);
-        // Add functionality to handle direction choice
-    });
+    // chooseDirectionButton.addEventListener('click', () => {
+    //     const direction = prompt("Choose direction (e.g., North, South, East, West):");
+    //     alert(`You chose: ${direction}`);
+    //     // Add functionality to handle direction choice
+    // });
 
     displayQuestionButton.addEventListener('click', () => {
         const question = "Sample question?";
@@ -130,7 +130,7 @@ board.width = 60;
 let context = board.getContext("2d");
 context.fillStyle ='black';
 context.clearRect(0, 0, 60, 60);
-// context.fillRect(0, 0, 60, 60);
+
 
 let xFrames = [37, 37, 451, 451, 37, 37, 451, 451];
 let yFrames = [15, 221, 15, 221, 15, 221, 15, 221];
@@ -139,8 +139,11 @@ let yFrame = [29, 29, 29, 579, 579, 579];
 
 function clearDie(){
     context.clearRect(0, 0, 60, 60);
+    context.drawImage(diceRolling, xFrames[frameIndex], yFrames[frameIndex], 180, 180, 2, 2, 60, 60 );
 }
-
+diceRolling.onload = function() {
+    context.drawImage(diceRolling, xFrames[frameIndex], yFrames[frameIndex], 180, 180, 2, 2, 60, 60 );
+};
 
 function animateRoll(timestamp, roll) {
     if (!lastDrawTime) {
@@ -160,7 +163,7 @@ function animateRoll(timestamp, roll) {
     else {
         frameIndex = 0;
         context.clearRect(0, 0, 60, 60);
-        context.drawImage(diceImage, xFrame[roll-1], yFrame[roll-1], 425, 416, 0, 0, 60, 60 );
+        context.drawImage(diceImage, xFrame[roll-1], yFrame[roll-1], 430, 422, 0, 0, 60, 60 );
        
     }
 }

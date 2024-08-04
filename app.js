@@ -80,17 +80,32 @@ app.listen(port, () => {
 //////////////////
 
 // Store the Dictionary of active session objects THIS IS VERY IMPORTANT
-app.locals.activeGameSesson = {}
+/**
+ * An object where each key is a string representing a unique identifier,
+ * and each value is an instance of the GameSession class.
+ * 
+ * @type {Object<string, GameSession>}
+ */
+app.locals.activeGameSession = {};
 
-// TODO 
+// TODO add error handling for game routes
 app.post('/api/startGame', (req, res) => {
     try {
         const { categoryNames, playerNames } = req.body;
-        let newGame = new GameSession(categoryNames, playerNames)
-        app.locals.activeGameSesson[newGame.GameSessionID] = newGame
+        GameSession.create(categoryNames, playerNames).then(newGame => {
+            app.locals.activeGameSession[newGame.GameSessionID] = newGame;
+            const gameStartData = {
+                id: newGame.GameSessionID,
+                board: newGame.gameboard.toJSON()
+            }
+            res.status(200).send(gameStartData);
+        });
+        
+
+        // TODO add back the updates of gamesession to the database. for now rely on the app.locals copy.
         // createNewGameSession(newGame, (result) => {
         //     if (result.success) {
-        res.status(200).send(newGame.GameSessionID);
+        // res.status(200).send(newGame.GameSessionID);
         //     } else {
         //         res.status(203).send(result.error);
         //     }
@@ -101,6 +116,43 @@ app.post('/api/startGame', (req, res) => {
         res.status(400).send(error.message)
     }
 
+});
+
+// TODO select the correct CRUD names for each game route
+
+app.post('/api/game/rollDie', (req, res) => {
+    const { gameSessionID } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const rollResultAndDirectionOptionsData = gameSession.rollDie();
+    res.status(200).send(rollResultAndDirectionOptionsData);
+});
+
+app.post('/api/game/pickDirection', (req, res) => {
+    const { gameSessionID, direction } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const movementEndData = gameSession.pickDirection(direction);
+    res.status(200).send(movementEndData);
+});
+
+app.post('/api/game/evaluateAnswer', (req, res) => {
+    const { gameSessionID, answer } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const correctAnswerData = gameSession.evaluateAnswer(answer);
+    res.status(200).send(correctAnswerData);
+});
+
+app.post('/api/game/acknowledgeAnswer', (req, res) => {
+    const { gameSessionID } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const gameEndData = gameSession.acknowledgeAnswer();
+    res.status(200).send(gameEndData);
+});
+
+app.post('/api/game/selectCategory', (req, res) => {
+    const { gameSessionID, color } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const questionData = gameSession.selectCategory(color);
+    res.status(200).send(questionData);
 });
 
 // TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()
@@ -115,6 +167,9 @@ app.get('/api/activeGameSessions', (req, res) => {
     }
 
 })
+
+
+
 
 /// ////////////////
 // Firebase Auth

@@ -42,11 +42,9 @@ export class Board {
                     const squareData = boardData[position];
                     const neighbors = squareData["neighbors"];
                     const color = squareData["color"];
-                    const isRollAgain = squareData?.["isRollAgain"] === true;
-                    const isHQ = squareData?.["isHQ"] === true;
-                    const isCenter = squareData?.["isCenter"] === true;
+                    const squareType = squareData["type"];
 
-                    const square = new Square(position, neighbors, color, isHQ, isCenter, isRollAgain);
+                    const square = new Square(position, neighbors, color, squareType);
                     board.squares[position] = square;
                 }
 
@@ -83,7 +81,7 @@ export class Board {
      * @return {Object<string, number>} The neighbors of the square at the specified position.
      */
     getNeighbors(position) {
-        return this.getSquare(position)._neighbors;
+        return this.getSquare(position).neighbors;
     }
 
     // TODO What are these for? They seem redundant with information in Square objects.
@@ -111,4 +109,13 @@ export class Board {
     //         [Color.GREEN]: this.getSquare(48)
     //     };
     // }
+
+    toJSON() {
+        const json = {};
+        for (position in this.squares) {
+            json[position] = this.squares[position].toJSON();
+        }
+        return json;
+    }
+
 }

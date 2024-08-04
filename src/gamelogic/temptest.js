@@ -6,23 +6,27 @@ import { Category } from './category.js'
 import { Color } from './color.js'
 import { GameSession } from './gameSession.js'
 
+import { boardFactory } from './factory.js'
+
+
+
 
 // Category.create("sports").then((category) => console.log(category));
 // Board.create().then((board) => console.log(board.squares));
-GameSession.create(
-    {
-        [Color.RED]: "art-literature",
-        [Color.BLUE]: "econ",
-        [Color.GREEN]: "music",
-        [Color.YELLOW]: "sports"
-    },
-    [
-        "player1",
-        "player2",
-        "player3",
-        "player4"
-    ]
-).then((gs) => console.log(gs))
+// GameSession.create(
+//     {
+//         [Color.RED]: "art-literature",
+//         [Color.BLUE]: "econ",
+//         [Color.GREEN]: "music",
+//         [Color.YELLOW]: "sports"
+//     },
+//     [
+//         "player1",
+//         "player2",
+//         "player3",
+//         "player4"
+//     ]
+// ).then((gs) => console.log(gs))
 
 /**
  * GET
@@ -68,7 +72,7 @@ GameSession.create(
 
 // const docRef = doc(firebase_db, 'board', 'board');
 
-// setDoc(docRef, Board.factory()).then(() => {
+// setDoc(docRef, boardFactory()).then(() => {
 //   console.log('Document successfully written!');
 // }).catch((error) => {
 //   console.error('Error writing document:', error);

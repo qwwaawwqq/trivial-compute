@@ -28,9 +28,12 @@ class InvalidCategoryCountError extends Error {
 export class GameSession {
 
     /**
-     * Used in use case 1.
-     * @param {*} categoryNames 
-     * @param {*} playerNames 
+     * Factory method to generate a new GameSession instance.
+     * This is the correct way to 
+     * This is the start of use case 1.
+     * This should be called by the API route handling the press of the button that starts the game from the config screen.
+     * @param {Array<string>} categoryNames 
+     * @param {Array<string>} playerNames 
      * @returns 
      */
     static create(categoryNames, playerNames) {
@@ -151,7 +154,8 @@ export class GameSession {
 
     /**
      * Simulates rolling the die.
-     * Used in use case 2.
+     * This is the start of use case 2.
+     * This should be called by the API route handling the die rolling button.
      * @return {int} The result of the die roll.
      */
     rollDie() {
@@ -190,7 +194,8 @@ export class GameSession {
     }
 
     /**
-     * Used in use case 2.
+     * This is part of use case 2.
+     * This should be called by the API route handling the button indicating player's choice of direction at an intersection.
      * Allows the current player to pick a direction to move to the next square position.
      * Updates their position.
      * @param {Direction} direction - The direction to move the player in.
@@ -230,6 +235,8 @@ export class GameSession {
     }
 
     /**
+     * This is part of use case 4.
+     * This should be called by the API route handling the buttons indicating player's choice of category at the center square.
      * Allows a player to select a category based on a color.
      * @param {Color} color - The color representing the category.
      * @return {Category} The selected category.
@@ -247,6 +254,8 @@ export class GameSession {
     }
 
     /**
+     * This is part of use cases 3 and 4.
+     * This should be called by the API route handling the buttons indicating player's choice of answer when presented with a question.
      * Evaluates if the given answer is correct.
      * @param {string} answer - The player's answer.
      * @return {boolean} True if the answer is correct, otherwise false.
@@ -262,7 +271,8 @@ export class GameSession {
     }
 
     /**
-     * Used at the ends of use cases 3 & 4.
+     * This is part of use cases 3 and 4, towards the end.
+     * This should be called by the API route handling the button that should display when the game is displaying the correct answer feedback.
      * Triggers actions that should happen after the player has viewed the correct answer.
      * @return {} An Object if the game was won. `null` otherwise.
      */

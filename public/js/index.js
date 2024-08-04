@@ -1,6 +1,8 @@
 $(document).ready(function() {
     $('.play-button').on('click', function() {
-        window.location.href = './gameConfig.html';
+        $(this).fadeOut(150).fadeIn(150, function() {
+            window.location.href = './gameConfig.html';
+        });
     });
 
     $('#manage-accounts').on('click', function() {
@@ -14,4 +16,5 @@ $(document).ready(function() {
     $('#manage-categories').on('click', function() {
         window.location.href = './authenticationCategories.html';
     });
+
 });

@@ -3,8 +3,15 @@ $(document).ready(function() {
     let playerCount = 4;
     $('#add-player-btn').click(function() {
         if (playerCount < 4) {
+            $('#add-player-btn').removeClass("btn-secondary").addClass("btn-primary");
+            $('#remove-player-btn').removeClass("btn-secondary").addClass("btn-primary");
             playerCount++;
             $(`#player-${playerCount}-config`).show();
+
+            if (playerCount === 4) {
+                $('#add-player-btn').removeClass("btn-primary").addClass("btn-secondary");
+            }
+
         } else {
             alert("Maximum 4 players allowed.");
         }
@@ -14,7 +21,11 @@ $(document).ready(function() {
     $('#remove-player-btn').click(function() {
         if (playerCount > 1) {
             $(`#player-${playerCount}-config`).hide();
+            $('#add-player-btn').removeClass("btn-secondary").addClass("btn-primary");
             playerCount--;
+            if (playerCount === 1) {
+                $('#remove-player-btn').removeClass("btn-primary").addClass("btn-secondary");
+            }
         } else {
             alert("At least 1 player is required.");
         }

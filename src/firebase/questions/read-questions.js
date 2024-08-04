@@ -1,5 +1,5 @@
 import { firebase_db, firebase_storage } from '../../../app.js'
-import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
+import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore'
 
 
 /////////////////
@@ -21,6 +21,26 @@ function readQuestionsFromCategory(categoryName, callback) {
 }
 
 /**
+ * Reads questions from a specified category in a Firestore database without subscribing.
+ * @param {string} categoryName - The name of the category to retrieve questions from.
+ */
+function readQuestionsFromCategoryOnce(categoryName) {
+    const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
+    return getDocs(collectionRef)
+    .then(querySnap => {
+        let questions = [];
+        querySnap.forEach((doc) => {
+            questions.push(doc.data())
+        })
+        return questions;
+    })
+    .catch(error => {
+        console.error('Error getting document:', error);
+        throw new MissingBoardDataError(`Could not find category data in Firestore Database: ${error}`);
+    });
+}
+
+/**
  * Reads all categories from a Firestore database.
  * @param {function} callback - A callback function to handle the retrieved data.
  */
@@ -37,4 +57,4 @@ function readAllCategories(callback) {
 
 
 
-export { readQuestionsFromCategory, readAllCategories }
+export { readQuestionsFromCategory, readQuestionsFromCategoryOnce, readAllCategories }

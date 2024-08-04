@@ -1,16 +1,14 @@
 $(document).ready(function () {
-    // Load all categories on page load
     loadCategories();
     bindToControlButtons();
 });
 
 function bindToControlButtons() {
     $('#add-category-btn').on('click', addNewCategory);
-    $('#rename-category-btn').on('click', renameCategory); // Added this line
-    $('.btn-danger').on('click', deleteCategory); // Added this line
+    $('#rename-category-btn').on('click', renameCategory);
+    $('.btn-danger').on('click', deleteCategory);
 }
 
-// Add new category
 function addNewCategory() {
     let newCategory = $('#new-category').val();
     if (newCategory) {
@@ -20,31 +18,39 @@ function addNewCategory() {
             data: JSON.stringify({ categoryName: newCategory, creatorName: 'CurrentUser' }),
             contentType: 'application/json',
             success: function (result) {
+                console.log("Server response:", result);
                 $('#new-category').val('');
-                $('table tbody').append(`<tr><td>${newCategory}</td></tr>`);
+                loadCategories(); // Reload all categories after adding
+                alert("Category added successfully");
             },
             error: function (xhr, status, error) {
-                alert("Error adding category: " + error);
+                console.error("Error details:", xhr.responseText);
+                alert("Error adding category: " + xhr.responseText);
             }
-        })
+        });
     } else {
         alert("Please enter a category name.");
     }
 }
 
-// Rename selected category
 function renameCategory() {
     let selectedRow = $('tr.table-warning');
     let newCategoryName = $('#rename-category').val();
     let oldCategoryName = selectedRow.find('td').text();
     if (selectedRow.length && newCategoryName) {
         $.ajax({
-            url: '/api/updateCategory', // You'll need to add this endpoint to your app.js
+            url: '/api/updateCategory',
             method: 'PUT',
             data: JSON.stringify({ oldName: oldCategoryName, newName: newCategoryName }),
             contentType: 'application/json',
+            dataType: 'json',
             success: function (result) {
-                $('#rename-category').val('');
+                if (result.success) {
+                    $('#rename-category').val('');
+                    loadCategories();
+                } else {
+                    alert("Error renaming category: " + result.error);
+                }
             },
             error: function (xhr, status, error) {
                 alert("Error renaming category: " + error);
@@ -55,17 +61,22 @@ function renameCategory() {
     }
 }
 
-// Delete selected category
 function deleteCategory() {
     let selectedRow = $('tr.table-warning');
     let categoryName = selectedRow.find('td').text();
     if (selectedRow.length) {
         $.ajax({
-            url: '/api/deleteCategory', // Fixed the double slash issue
+            url: '/api/deleteCategory',
             method: 'DELETE',
             data: JSON.stringify({ categoryName: categoryName }),
             contentType: 'application/json',
+            dataType: 'json',
             success: function (result) {
+                if (result.success) {
+                    loadCategories();
+                } else {
+                    alert("Error deleting category: " + result.error);
+                }
             },
             error: function (xhr, status, error) {
                 alert("Error deleting category: " + error);
@@ -76,25 +87,49 @@ function deleteCategory() {
     }
 }
 
-// Highlight selected row
-$('table tbody').on('click', 'tr', function () {
-    $('tr').removeClass('table-warning');
-    $(this).addClass('table-warning');
-});
+function bindRowClickEvent() {
+    $(document).off('click', 'table tbody tr').on('click', 'table tbody tr', function () {
+        $('table tbody tr').removeClass('table-warning');
+        $(this).addClass('table-warning');
+        let selectedCategory = $(this).find('td:first').text();
+        console.log('Selected category:', selectedCategory);
+    });
+}
 
-// Function to load all categories
 function loadCategories() {
     $.ajax({
         url: '/api/readAllCategories',
         method: 'GET',
-        success: function (categories) {
-            $('table tbody').empty();
-            categories.forEach(function (category) {
-                $('table tbody').append(`<tr><td>${category}</td></tr>`);
-            });
+        dataType: 'json',
+        success: function (response) {
+            console.log("Server response:", response);  // Log the entire response
+            let categories = response;
+            
+            // Check if the response is wrapped in a data property
+            if (response.data && Array.isArray(response.data)) {
+                categories = response.data;
+            }
+            
+            if (Array.isArray(categories)) {
+                $('table tbody').empty();
+                categories.forEach(function (category) {
+                    $('table tbody').append(`<tr><td>${category}</td></tr>`);
+                });
+                bindRowClickEvent();
+            } else {
+                console.error("Invalid data format received:", categories);
+                alert("Error: Invalid data format received from server.");
+            }
         },
         error: function (xhr, status, error) {
-            alert("Error loading categories: " + error);
-        }
+            console.error("AJAX error:", status, error);
+            console.error("Response Text:", xhr.responseText);
+            if (xhr.status === 0) {
+                alert("Unable to connect to the server. Please ensure the server is running and try again.");
+            } else {
+                alert("Error loading categories. Please check the console for more details.");
+            }
+        },
+        timeout: 5000  // Set a timeout of 5 seconds
     });
 }

@@ -181,10 +181,11 @@ export class GameSession {
      * This should be called by the API route handling the buttons indicating player's choice of category at the center square.
      * Allows a player to select a category based on a color.
      * @param {Color} color - The color representing the category.
-     * @return {Category} The selected category.
+     * @return {Question} A question from the selected category.
      */
     selectCategory(color) {
-        return this.categories[color];
+        const category = this.categories[color];
+        return category.pickRandomQuestion();
     }
 
     // Private methods
@@ -208,7 +209,7 @@ export class GameSession {
         this.currentQuestion = null;
         /**
          * Unique identifier for this game session.
-         * @type {string|null}
+         * @type {string}
          */
         this.GameSessionID = v4();
     }

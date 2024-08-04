@@ -1,11 +1,12 @@
-// import { Board } from './board.js'
-// import { Die } from './die.js'
-// import { Player } from './player.js'
-// import { Question } from './question.js'
-// import { Category } from './category.js'
-import { v4 } from "uuid"
+import { Board } from './board.js'
+import { Category } from './category.js'
+import { Die } from './die.js'
+import { Direction } from './direction.js'
+import { Player } from './player.js'
+import { Question } from './question.js'
+import { Color } from './color.js'
 
-// import { Direction } from './direction.js'
+import { v4 } from "uuid"
 
 class InvalidPlayerCountError extends Error {
     constructor(message) {
@@ -24,7 +25,45 @@ class InvalidCategoryCountError extends Error {
 /**
  * Class representing a game session.
  */
-class GameSession {
+export class GameSession {
+
+    /**
+     * Used in use case 1.
+     * @param {*} categoryNames 
+     * @param {*} playerNames 
+     * @returns 
+     */
+    static create(categoryNames, playerNames) {
+
+        // Ensure input lengths are valid. Throw specific exception if not.
+        this.validateInputs(categoryNames, playerNames);
+
+        const TOKEN_ORDER = [Color.RED, Color.YELLOW, Color.GREEN, Color.BLUE];
+        const players = [];
+        for (let i = 0; i < playerNames.length; i++) {
+            const player = new Player(playerNames[i], TOKEN_ORDER[i]);
+            players.push(player);
+        }
+
+        // Create promises for each of the 4 Category instances, 
+        // where each Category is generated from a provided categoryName.
+        const categoryPromises = Object.entries(categoryNames).map(([color, categoryName]) =>
+            Category.create(categoryName).then(category => [color, category])
+        );
+
+        return Promise.all([
+            Board.create(),
+            Promise.all(categoryPromises).then(entries => Object.fromEntries(entries))
+        ])
+        .then(([board, categories]) => {
+            return new GameSession(board, categories, players);
+        })
+        .catch(error => {
+            console.error('Error creating game session:', error);
+            throw new Error('Error creating game session.');
+        });
+    }
+
     /**
      * Create a new game session.
      * @param {Object<string, string>} categoryNames - The game categories associated with different color keys.
@@ -32,20 +71,19 @@ class GameSession {
      * @throws {InvalidPlayerCountError} - Thrown when the number of players is invalid
      * @throws {InvalidCategoryCountError} - Thrown when the number of categories is invalid
      */
-    constructor(categoryNames, playerNames) {
-        // Ensure inputs are valid. Throw specific exception if not.
-        this.validateInputs(categoryNames, playerNames);
+    constructor(board, categories, players) {
 
-        // this.gameboard = new Board();
-        // this.die = new Die();
+        this.die = new Die();
 
-        // this.players = [];
-        // for (let i = 0; i < playerNames.length; i++) {
-        //     const player = new Player(playerNames[i]);
-        //     this.players.push(player);
-        // }
-        // this.currentPlayerIndex = 0;
-        // this.currentPlayer = this.players[this.currentPlayerIndex];
+        this.gameboard = board;
+        this.categories = categories;
+        this.players = players;
+
+        this.currentPlayerIndex = 0;
+        this.currentPlayer = this.players[this.currentPlayerIndex];
+
+        // Temporary storage of state before and after player acknowledges the correct answer.
+        this.recentlyAnsweredCorrectly = false;
 
         // this.categories = {};
         // for (const colorName in categoryNames) {
@@ -54,7 +92,7 @@ class GameSession {
         // }
 
         this.currentQuestion = null;
-        this.GameSessionID = v4()
+        this.GameSessionID = v4();
     }
 
     /**
@@ -64,14 +102,14 @@ class GameSession {
      * @throws {InvalidPlayerCountError} - Thrown when the number of players is invalid
      * @throws {InvalidCategoryCountError} - Thrown when the number of categories is invalid
      */
-    validateInputs(categoryNames, playerNames) {
+    static validateInputs(categoryNames, playerNames) {
 
         if ((playerNames.length < 1) || (playerNames.length > 4)) {
-            throw new InvalidPlayerCountError("There must be between 1-4 players, inclusive.")
+            throw new InvalidPlayerCountError("There must be between 1-4 players, inclusive.");
         }
 
         if (Object.keys(categoryNames).length != 4) {
-            throw new InvalidCategoryCountError("There must be exactly 4 categories.")
+            throw new InvalidCategoryCountError("There must be exactly 4 categories.");
         }
 
     }
@@ -113,10 +151,32 @@ class GameSession {
 
     /**
      * Simulates rolling the die.
+     * Used in use case 2.
      * @return {int} The result of the die roll.
      */
     rollDie() {
-        return this.die.roll();
+        this.currentPlayerMovesLeft = this.die.roll();
+        return this.useMovesUntilBranch();
+    }
+
+    getCurrentSquare() {
+        return this.gameboard.getSquare(this.currentPlayer.position);
+    }
+
+    useMovesUntilBranch() {
+        while (!(this.getCurrentSquare().isMultiDirector())) {
+            // There should only be 2 options in this scenario. may want to enforce.
+            // Find the key that is not equal to the given key. This is the direction you did not come from.
+            const nextDirection = this.getAvailableDirections()[0];
+            // Automatically move to that space, since there's no choice available.
+            this.currentPlayer.moveOnce(nextDirection);
+            // If we are out of moves, there's no decision left to make. Call the square's functionality.
+            if (this.currentPlayer.movesLeft <= 0) {
+                return this.activateSquare();
+            }
+        }
+        // Now we are at a branch point. Return the options so the player can make a choice.
+        return this.getAvailableDirections();
     }
 
     /**
@@ -124,16 +184,38 @@ class GameSession {
      * @return {Array<Direction>} The list of available directions.
      */
     getAvailableDirections() {
-        return this.gameboard.getAvailableDirections(this.currentPlayer.position);
+        const currentPlayerNeighbors = this.gameboard.getNeighbors(this.currentPlayer.position);
+        // Filter out the direction that the player just came from.
+        return Object.keys(currentPlayerNeighbors).filter(k => k !== this.currentPlayer.previousSquareDirection);
     }
 
     /**
+     * Used in use case 2.
      * Allows the current player to pick a direction to move to the next square position.
      * Updates their position.
      * @param {Direction} direction - The direction to move the player in.
      */
     pickDirection(direction) {
-        this.currentPlayer.move(direction);
+        this.currentPlayer.moveOnce(direction);
+        if (this.currentPlayer.movesLeft <= 0) {
+            this.activateSquare();
+        } else {
+            this.useMovesUntilBranch();
+        }
+    }
+
+    /**
+     * Used when landing on a square. The return value should prompt the user with a corresponding UI.
+     * @returns 
+     */
+    activateSquare() {
+        if (this.getCurrentSquare().isRollAgain) {
+            return "ROLL AGAIN"; // This should prompt the player to roll the die again.
+        } else if (this.getCurrentSquare().isCenter) {
+            return this.categories; // This should prompt the player to choose a category.
+        } else {
+            return this.getQuestion();
+        }
     }
 
     /**
@@ -141,9 +223,10 @@ class GameSession {
      * @return {Question} The question for the current player.
      */
     getQuestion() {
-        const color = this.gameboard.getSquare(this.currentPlayer.position).getColor();
+        const color = this.getCurrentSquare().getColor();
         const category = this.selectCategory(color)
-        return category.getQuestion();
+        this.currentQuestion = category.pickRandomQuestion();
+        return this.currentQuestion;
     }
 
     /**
@@ -170,14 +253,40 @@ class GameSession {
      */
     evaluateAnswer(answer) {
         const correctAnswer = this.currentQuestion.getAnswer()
-        return correctAnswer === answer;
+        const isCorrect = correctAnswer === answer;
+        this.recentlyAnsweredCorrectly = isCorrect;
+        return {
+            "correctAnswer": correctAnswer,
+            "isCorrect": isCorrect
+        };
+    }
+
+    /**
+     * Used at the ends of use cases 3 & 4.
+     * Triggers actions that should happen after the player has viewed the correct answer.
+     * @return {} An Object if the game was won. `null` otherwise.
+     */
+    acknowledgeAnswer() {
+        isCorrect = this.recentlyAnsweredCorrectly;
+        if (isCorrect) {
+            if (this.getSquare().isHQ) {
+                this.awardPoints();
+            }
+            if (this.getSquare().isCenter && this.checkForWinner()) {
+                return this.endGame() // End use case 4 if player has won
+            }
+            // This player's turn continues.
+        } else {
+            this.endTurn();
+        }
+        return null; // End use cases 3 or 4
     }
 
     /**
      * Awards points to the current player based on the question they answered.
      */
     awardPoints() {
-        const color = this.gameboard.getSquare(this.currentPlayer.position).getColor();
+        const color = this.getSquare().getColor();
         this.currentPlayer.awardPoints(color);
     }
 
@@ -190,7 +299,7 @@ class GameSession {
     }
 
     /**
-     * Ends the game and returns the final game state.
+     * Returns the final game state. Should be used at the end of the game.
      * @return {Object} The final game state.
      */
     endGame() {
@@ -200,5 +309,3 @@ class GameSession {
         };
     }
 }
-
-export default GameSession

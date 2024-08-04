@@ -14,7 +14,7 @@ import { updateQuestion } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
 import { getFirestore } from "firebase/firestore"
-import GameSession from './src/gamelogic/gameSession.js'
+import { GameSession } from './src/gamelogic/gameSession.js'
 import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
 

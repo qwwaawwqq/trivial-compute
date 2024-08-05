@@ -53,47 +53,65 @@ body {
     height: 600px;
 }
 
-.square {
-    width: 100%;
-    height: 100%;
-    border: 1px solid white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 15px;
-    position: relative;
-}
 
-.yellow {
+
+
+.YELLOW {
     background-color: #ffff00;
     border: 3px solid black;
 }
 
-.blue {
+.BLUE {
     background-color: #00ffff;
     border: 3px solid black;
 }
 
-.red {
+.RED {
     background-color: #ff3333; /* Even brighter red */
     border: 3px solid black;
 }
 
-.green {
+.GREEN {
     background-color: #33ff33; /* Even brighter green */
     border: 3px solid black;
 }
 
-.grey {
+
+.WHITE {
+    background-color: transparent; /* 100% transparent */
+    border: 1px solid transparent; /* Lighter border for white squares */
+}
+
+.ROLL_AGAIN {
+    background-color: #d3d3d3; /* Grey color */
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+
+}
+
+.direction {
+    background-color: #44a028;
+    border-radius: 5px;
+    color: white;
+}
+
+
+.HQ {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+
+.CENTER {
     background-color: #d3d3d3; /* Grey color */
     border: 3px solid black;
 }
 
-.white {
-    background-color: transparent; /* 100% transparent */
-    border: 1px solid transparent; /* Lighter border for white squares */
-}
 
 .player-piece {
     width: 15px;

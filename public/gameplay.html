@@ -10,7 +10,7 @@
 </head>
 <body>
     <div class="game-container">
-        <h1>Trivial Compute</h1>
+        <h1 class="mb-3">Trivial Compute</h1>
         <div class="game-layout">
             <div class="game-board"></div>
             <div class="game-info">
@@ -18,35 +18,35 @@
                 <canvas id="dice"></canvas>
                 <button id="roll-dice" class="btn btn-primary">Roll the Die!</button>
                 <button id="end-turn", class="hidden btn btn-danger">End Turn</button>
-                <div class="mt-2">Move Direction</div>
+                <div class="mb-2 py-2 container text-center direction">Move Direction
                 <div class="row mb-1">
                     <div class="col">
-                    <button class="btn btn-success">&#x2190;</button>
+                    <button class="btn btn-primary">&#x2190;</button>
                     </div>
                     <div class="col">
-                    <button class="btn btn-success">&#x2191;</button>
+                    <button class="btn btn-primary">&#x2191;</button>
                     </div>
                     <div class="col">
-                    <button class="btn btn-success">&#x2193</button>
+                    <button class="btn btn-primary">&#x2193</button>
                     </div>
                     <div class="col">
-                    <button class="btn btn-success">&#x2192;</button>
+                    <button class="btn btn-primary">&#x2192;</button>
                     </div>
                 </div>
-
+                </div>
                 <button id="display-question-button" class="btn btn-primary">Display Question</button>
                 <button id="choose-category-button" class="btn btn-primary">Choose Category</button>
  
-                <div class="category-legend">
-                    <h3>Category Legend:</h3>
+                <div class="category-legend text-center">
+                    <h3>Category Legend</h3>
                     <table>
                         <tr>
-                            <td class="yellow">Yellow: History</td>
-                            <td class="red">Red: Art & Literature</td>
+                            <td class="YELLOW">Yellow: History</td>
+                            <td class="RED">Red: Art & Literature</td>
                         </tr>
                         <tr>
-                            <td class="blue">Blue: Geography</td>
-                            <td class="green">Green: Science & Nature</td>
+                            <td class="BLUE">Blue: Geography</td>
+                            <td class="GREEN">Green: Science & Nature</td>
                         </tr>
                     </table>
                 </div>

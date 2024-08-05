@@ -85,7 +85,7 @@ export function boardFactory() {
         81: { "color": Color.YELLOW, "neighbors": {[Direction.LEFT]: 80, [Direction.RIGHT]: 82} },
         82: { "color": Color.RED, "neighbors": {[Direction.LEFT]: 81, [Direction.RIGHT]: 83} },
         83: { "color": Color.GREEN, "neighbors": {[Direction.LEFT]: 82, [Direction.RIGHT]: 84} },
-        84: { "color": Color.BLUE, "type": SquareType.HQ, "neighbors": {[Direction.LEFT]: 83, [Direction.RIGHT]: 85} },
+        84: { "color": Color.BLUE, "type": SquareType.HQ, "neighbors": {[Direction.LEFT]: 83, [Direction.RIGHT]: 85, [Direction.UP]: 74} },
         85: { "color": Color.YELLOW, "neighbors": {[Direction.LEFT]: 84, [Direction.RIGHT]: 86} },
         86: { "color": Color.RED, "neighbors": {[Direction.LEFT]: 85, [Direction.RIGHT]: 87} },
         87: { "color": Color.GREEN, "neighbors": {[Direction.LEFT]: 86, [Direction.RIGHT]: 88} },

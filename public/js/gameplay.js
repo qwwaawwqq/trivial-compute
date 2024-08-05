@@ -8,9 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayQuestionButton = document.getElementById('display-question-button');
     const chooseCategoryButton = document.getElementById('choose-category-button');
 
-
     const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
     let currentPlayerIndex = 1; // Starting with Curly
+
 
     function createBoard() {
         const boardLayout = [
@@ -68,29 +68,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // }
 
     rollButton.addEventListener('click', () => {
-        
-        // const roll = 
-        rollDice();
         $('#end-turn').toggle();
         $('#roll-dice').toggle();
+        let gameID = localStorage.getItem('gameSessionID');
+        console.log(gameID);
+        $.ajax({
+            url: '/api/game/rollDie',
+            method: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ gameSessionID : gameID}),
+            success: function (response) {
+                requestAnimationFrame((timestamp)=>animateRoll(timestamp, response.roll));
+            },
+            error: function (xhr, status, error) {
+                alert("Error Roll Die: " + error);
+            }
+        });
         
     });
-
-    function rollDice() {
-    $.ajax({
-        url: '/api/game/rollDie',
-        method: 'POST',
-        dataType: 'json',
-        success: function (response) {
-            console.log("hello")
-            console.log(response.data);
-            
-        },
-        error: function (xhr, status, error) {
-            alert("Error loading questions: " + error);
-        }
-    });
-}
+ 
 
     $('#end-turn').click(function() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;

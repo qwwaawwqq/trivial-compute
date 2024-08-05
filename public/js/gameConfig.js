@@ -1,3 +1,4 @@
+localStorage.removeItem('gameSessionID');
 $(document).ready(function() {
     // Handle adding players (limited to 4 for simplicity)
     let playerCount = 4;
@@ -38,15 +39,11 @@ $(document).ready(function() {
         for (let i = 1; i <= playerCount; i++) {
             let name = $(`#player-${i}-name`).val();
             players.push(name);
-            console.log(name);
             let category = $(`#player-${i}-config select`).val();
-            console.log(category);
             let testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
-            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;
-            
+            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;      
         }
-        console.log(categoryNames);
-        console.log(players);
+
         console.log('Starting game with players:', players);
 
         // Store player data in local storage
@@ -54,12 +51,10 @@ $(document).ready(function() {
 
         startGame(categoryNames, players);
 
-        // Redirect to gameplay.html
-        window.location.href = 'gameplay.html';
     });
 
     function startGame(categoryNames, players) {
-        console.log("hello")
+
         $.ajax({
             url: '/api/startGame',
             method: 'POST',
@@ -67,8 +62,10 @@ $(document).ready(function() {
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
-                console.log("hello")
-                console.log(response);
+                console.log("start test" + response.gameSessionID);
+                localStorage.setItem('gameSessionID', response.gameSessionID);
+                localStorage.setItem('gameBoard', JSON.stringify(response.board));
+                window.location.href = 'gameplay.html';
             },
             error: function (xhr, status, error) {
                 alert("Error Starting Game: " + error);

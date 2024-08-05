@@ -30,7 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log(key);
                     $(cName).text(gameCategories[key]);
                     $(cName).addClass(key);
+            
+                    //make player tokens at the same time.
+                    const token = document.createElement('div');
+                    token.id = `player${i}_token`;
+                    token.classList.add('player-piece');
+                    token.textContent =`${i}`;
+                    $('#44').append(token);
                     i +=1;
+
                 })
 
                 $('#current-player').text(`It's currently ${players[0]}'s turn!`);
@@ -89,21 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // addPlayerPieces();
     }
 
-    function createPlayerSquare(square, type) {
-        const playerName = ['Larry', 'Curly', 'Moe', 'Shemp'][['PL', 'PC', 'PM', 'PR'].indexOf(type)];
-        square.textContent = playerName;
-    }
-
-    function addPlayerPieces() {
-        const playerColors = ['red', 'yellow', 'green', 'blue'];
-        const playerPositions = [0, 2, 6, 8]; // Corner positions
-        players.forEach((player, index) => {
-            const piece = document.createElement('div');
-            piece.classList.add('player-piece');
-            piece.style.backgroundColor = playerColors[index];
-            gameBoard.children[playerPositions[index]].appendChild(piece);
-        });
-    }
 
     rollButton.addEventListener('click', () => {
         $('#end-turn').toggle();

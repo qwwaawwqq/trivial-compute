@@ -56,30 +56,36 @@ body {
 
 
 
+
 .YELLOW {
     background-color: #ffff00;
     border: 3px solid black;
+    position: relative;
 }
 
 .BLUE {
     background-color: #00ffff;
     border: 3px solid black;
+    position: relative;
 }
 
 .RED {
     background-color: #ff3333; /* Even brighter red */
     border: 3px solid black;
+    position: relative;
 }
 
 .GREEN {
     background-color: #33ff33; /* Even brighter green */
     border: 3px solid black;
+    position: relative;
 }
 
 
 .WHITE {
     background-color: transparent; /* 100% transparent */
     border: 1px solid transparent;
+    position: relative;
 }
 
 .ROLL_AGAIN {
@@ -104,23 +110,53 @@ body {
     justify-content: center;
     text-align: center;
     align-items: center;
+    
 }
 
 
 .CENTER {
     background-color: #d3d3d3; /* Grey color */
     border: 3px solid black;
+    position: relative;
 }
 
 
 .player-piece {
-    width: 15px;
-    height: 15px;
+    z-index: 10;
     border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+#player1_token {
     position: absolute;
     top: 5px;
     left: 5px;
+    background-color: red;
 }
+#player2_token {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: yellow;
+}
+#player3_token {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background-color: green;
+}
+#player4_token {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: blue;
+}
+
+
+
+
+
 
 .game-info {
     text-align: left;

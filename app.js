@@ -238,6 +238,22 @@ app.put('/api/game/selectCategory', (req, res) => {
     res.status(200).send(questionData);
 });
 
+/**
+ * Simulates rolling the die and determines the available directions for the current player.
+ * Respond to the press of the button that rolls the die.
+ * This is the start of use case 2.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @returns {Object} An object containing:
+ *      @param {Object<Color, string>} categoryNames - The names of the categories. Each key should be a Color (see color.js for valid values). Each value will be the name of a category corresponding to that color. This object will have exactly 4 entries.
+ *      @param {Array<string>} playerNames - The names of the players. Each entry is a player's name. This array's length will be between 1-4.
+ */
+app.get('/api/game/names', (req, res) => {
+    const { gameSessionID } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    const namesData = gameSession.names;
+    res.status(200).send(namesData);
+});
+
 // TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()
 app.get('/api/activeGameSessions', (req, res) => {
     try {

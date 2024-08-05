@@ -248,7 +248,7 @@ app.put('/api/game/selectCategory', (req, res) => {
  *      @param {Array<string>} playerNames - The names of the players. Each entry is a player's name. This array's length will be between 1-4.
  */
 app.get('/api/game/names', (req, res) => {
-    const { gameSessionID } = req.body;
+    const { gameSessionID } = req.query;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const namesData = gameSession.names;
     res.status(200).send(namesData);

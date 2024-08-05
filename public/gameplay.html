@@ -14,7 +14,7 @@
         <div class="game-layout">
             <div class="game-board"></div>
             <div class="game-info">
-                <div id="current-player">The current player is Curly!</div>
+                <div id="current-player"></div>
                 <canvas id="dice"></canvas>
                 <button id="roll-dice" class="btn btn-primary">Roll the Die!</button>
                 <button id="end-turn", class="hidden btn btn-danger">End Turn</button>
@@ -37,20 +37,15 @@
                 <button id="display-question-button" class="btn btn-primary">Display Question</button>
                 <button id="choose-category-button" class="btn btn-primary">Choose Category</button>
  
-                <div class="category-legend text-center">
-                    <h3>Category Legend</h3>
-                    <table>
-                        <tr>
-                            <td class="YELLOW">Yellow: History</td>
-                            <td class="RED">Red: Art & Literature</td>
-                        </tr>
-                        <tr>
-                            <td class="BLUE">Blue: Geography</td>
-                            <td class="GREEN">Green: Science & Nature</td>
-                        </tr>
-                    </table>
+
+                <div class="categoryBox">
+                    <div class="cat1"></div>
+                    <div class="cat2"></div>
+                    <div class="cat3"></div>
+                    <div class="cat4"></div>
                 </div>
-                <button id="return-button" class="btn btn-dark my-3">Return Home</button>
+
+                <button id="return-button" class="btn btn-dark my-5">Return Home</button>
             </div>
         </div>
     </div>

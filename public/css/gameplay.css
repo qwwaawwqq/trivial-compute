@@ -79,7 +79,7 @@ body {
 
 .WHITE {
     background-color: transparent; /* 100% transparent */
-    border: 1px solid transparent; /* Lighter border for white squares */
+    border: 1px solid transparent;
 }
 
 .ROLL_AGAIN {
@@ -149,17 +149,119 @@ button {
     width: 100%;
 }
 
-.category-legend {
-    margin-top: 20px;
-}
 
-.category-legend table {
+.categoryBox {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1px;
+    border: 2px solid white;
+    width: 70px;
     width: 100%;
-    border-collapse: collapse;
+    height: 70px;
+
 }
 
-.category-legend td {
-    padding: 5px;
-    border: 1px solid black;
+.categoryBox > div {
+    border: 2px solid black; /* Border for individual cells */
+    display: flex; /* Use flexbox to center content */
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    text-align: center; /* Center text inside each cell */
+    box-sizing: border-box; /* Include padding and border in the element’s total width and height */
+    overflow-wrap: break-word; /* Allow long words to wrap */
+    word-wrap: break-word; /* Older syntax for text wrapping */
+    font-size: 12px;
+    height: 50px;
+}
+
+
+
+.player1_score {
+    background-color: white; /* Grey color */
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
     text-align: center;
+    align-items: center;
+    position: relative; /* Establishes a positioning context for the pseudo-element */
+}
+
+.player1_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 4px solid red; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
+}
+.player2_score {
+    background-color: white; /* Grey color */
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: relative; /* Establishes a positioning context for the pseudo-element */
+}
+
+.player2_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 4px solid yellow; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
+}
+.player3_score {
+    background-color: white; /* Grey color */
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: relative; /* Establishes a positioning context for the pseudo-element */
+}
+
+.player3_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 4px solid green; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
+}
+.player4_score {
+    background-color: white; /* Grey color */
+    border: 3px solid black;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: relative; /* Establishes a positioning context for the pseudo-element */
+}
+
+.player4_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 4px solid blue; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
 }

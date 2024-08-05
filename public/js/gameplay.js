@@ -7,10 +7,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayQuestionButton = document.getElementById('display-question-button');
     const chooseCategoryButton = document.getElementById('choose-category-button');
 
-    const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
-    let currentPlayerIndex = 1; // Starting with Curly
+    let players = [];
+    let currentPlayerIndex = 1; //starting with player 1.
 
 
+    function getNamesGui() {
+        let gameID = localStorage.getItem('gameSessionID');
+        $.ajax({
+            url: '/api/game/names',
+            method: 'GET',
+            dataType: 'json',
+            data: { gameSessionID : gameID},
+            success: function (response) {
+                let gameCategories = {};
+                players = response.playerNames;
+                gameCategories = response.categoryNames;
+                console.log(gameCategories);
+                let i = 1;
+                Object.keys(gameCategories).forEach((key)=> {
+                    let cName = `.cat${i}`;
+                    console.log(gameCategories[key]);
+                    console.log(key);
+                    $(cName).text(gameCategories[key]);
+                    $(cName).addClass(key);
+                    i +=1;
+                })
+
+                $('#current-player').text(`It's currently ${players[0]}'s turn!`);
+                let playerBlocks = [12, 16, 52, 56];
+                for (let j=0; j<4; j++){
+                    $(`#${playerBlocks[j]}`).text(players[j]);
+                }              
+            },
+            error: function (xhr, status, error) {
+                alert("Error Get Name: " + error);
+            }
+        });
+    }
+
+    
 
     function createBoardGui() {
 
@@ -22,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Object.keys(currentBoard).forEach(key => {
             let currentSquare = currentBoard[key];
             const square = document.createElement('div');
+            square.id = String(key);
             square.classList.add(currentSquare['color'], currentSquare['squareType']);
             if (square.classList.contains('HQ')){
                 square.textContent = ('HQ');
@@ -32,6 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
             else if(square.classList.contains('CENTER')){
                 square.textContent = ('Trivial Compute');
             }
+            
+            if (key == 22) {
+                square.classList.add("player1_score");
+            }
+            else if (key == 26) {
+                square.classList.add("player2_score");
+            }
+            else if (key == 62) {
+                square.classList.add("player3_score");
+            }
+            else if (key == 66) {
+                square.classList.add("player4_score");
+            }
+            console.log(square.outerHTML);
 
             gameBoard.append(square);
         })
@@ -54,12 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.children[playerPositions[index]].appendChild(piece);
         });
     }
-
-    // function rollDice() {
-    //     const roll = Math.floor(Math.random() * 6) + 1;
-    //     requestAnimationFrame((timestamp)=>animateRoll(timestamp, roll));
-    //     return roll;
-    // }
 
     rollButton.addEventListener('click', () => {
         $('#end-turn').toggle();
@@ -84,15 +128,19 @@ document.addEventListener('DOMContentLoaded', () => {
  
 
     $('#end-turn').click(function() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        currentPlayerElement.textContent = `The current player is ${players[currentPlayerIndex]}!`;
         $('#end-turn').toggle();
         $('#roll-dice').toggle();
         clearDie();
     });
 
     returnButton.addEventListener('click', () => {
-        alert("Returning to the previous page.");
+        let consent = confirm("Return to Home?");
+        if (consent) {
+            window.location.href = 'gameConfig.html'
+        }
+        else {
+            console.log("Somebody tried to quit");
+        }
         // Add functionality to return to the previous page
     });
 
@@ -116,6 +164,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     createBoardGui();
+    getNamesGui();
+
 
 
 });

@@ -95,7 +95,7 @@ app.locals.activeGameSession = {};
  * Start the game.
  * Respond to the press of the button that starts the game from the config screen.
  * This is the start of use case 1.
- * @param {Object<string, string>} categoryNames - The names of the categories. Each key should be a Color (see color.js for valid values). Each value should be the name of a category corresponding to that color. This object must have exactly 4 entries.
+ * @param {Object<Color, string>} categoryNames - The names of the categories. Each key should be a Color (see color.js for valid values). Each value should be the name of a category corresponding to that color. This object must have exactly 4 entries.
  * @param {Array<string>} playerNames - The names of the players. Each entry is a player's name. This array's length must be between 1-4.
  * @returns {Object} A map of the following:
  *      @property {string} gameSessionID - A unique ID corresponding to the newly created GameSession. All API calls related to this game must provide this ID.
@@ -104,6 +104,7 @@ app.locals.activeGameSession = {};
  *              @property {Color} color - A Color (see color.js for valid values) representing this space's color.
  *              @property {SquareType} type - A SquareType (see squareType.js for valid values) representing this space's type, determining what happens when a player lands on it.
  *      @property {string} currentPlayerName - The name of the current player. Can be used to determine the initial state of the turn indicator.
+ *      @property {Array<Object<Color, string>>} initialScores - The initial scores of each player. 
  */
 app.post('/api/startGame', (req, res) => {
     try {
@@ -113,7 +114,13 @@ app.post('/api/startGame', (req, res) => {
             const gameStartData = {
                 gameSessionID: newGame.GameSessionID,
                 board: newGame.gameboard.toJSON(),
-                currentPlayer: newGame.currentPlayer.name
+                currentPlayer: newGame.currentPlayer.name,
+                initialScores: [
+                    newGame.players[0].score,
+                    newGame.players[1].score,
+                    newGame.players[2].score,
+                    newGame.players[3].score,
+                ]
             }
             res.status(200).send(gameStartData);
         });
@@ -200,16 +207,21 @@ app.put('/api/game/evaluateAnswer', (req, res) => {
  * This is part of use cases 3 and 4, towards the end.
  * Responds to the acknowledgement button that should display when the game is displaying the correct answer feedback.
  * This output format depends on whether or not the player has now won the game:
- *      If they won, then an Object containing information about the game is returned, and the game should display an endgame screen displaying this information.
- *      Otherwise, the response will be a string representing a player name, indicating that the game should continue - the game should prompt this player to roll the die.
+ *      If endGameData is not null, then the current player won, so display the endgame screen with the provided information in endGameData.
+ *      Otherwise, if score is not null, then the current player scored a point, so update the scoreboard identified by scoreboardToUpdate with the score, and then prompt the player named nextPlayerName to roll a die.
+ *      Otherwise, the current player did not score a point, so just prompt the player named nextPlayerName to roll a die.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
- * @return {Object | string} An object containing information about the game if the game was won, otherwise a string for the player name whose turn is up next.
+ * @return {Object} An object containing the following:
+ *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
+ *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
+ *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
+ *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
  */
 app.put('/api/game/acknowledgeAnswer', (req, res) => {
     const { gameSessionID } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
-    const gameEndData = gameSession.acknowledgeAnswer();
-    res.status(200).send(gameEndData);
+    const scoreOrEndData = gameSession.acknowledgeAnswer();
+    res.status(200).send(scoreOrEndData);
 });
 
 /**

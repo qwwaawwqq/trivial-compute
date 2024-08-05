@@ -22,7 +22,7 @@ class InvalidDirectionError extends Error {
 export class Player {
     /**
      * The default score object for a player.
-     * @type {Object<string, boolean>}
+     * @type {Object<Color, boolean>}
      */
     static DEFAULT_SCORE = { [Color.RED]: false, [Color.BLUE]: false, [Color.GREEN]: false, [Color.YELLOW]: false };
 
@@ -33,7 +33,7 @@ export class Player {
      * @param {string|null} [grade=null] - The grade of the player.
      * @param {string|null} [email=null] - The email of the player.
      * @param {int} [position=Board.CENTER_POSITION] - The starting position of the player.
-     * @param {Object<string, boolean>} [score=Player.DEFAULT_SCORE] - The score of the player.
+     * @param {Object<Color, boolean>} [score=Player.DEFAULT_SCORE] - The score of the player.
      */
     constructor(name, tokenColor, grade = null, email = null, position = Board.CENTER_POSITION, score = Player.DEFAULT_SCORE) {
         this.name = name;
@@ -41,7 +41,7 @@ export class Player {
         this.grade = grade;
         this.email = email;
         this.position = position;
-        this.score = score;
+        this._score = score;
         /**
          * Compared to my current position, which direction was this player's previous square in?
          * @type {string|null}
@@ -52,6 +52,16 @@ export class Player {
          * @type {int}
          */
         this.movesLeft = 0;
+    }
+
+    get score() { return this._score; }
+
+    /**
+     * Award a point to the player for the specified color.
+     * @param {Color} color - The color for which to award a point.
+     */
+    awardPoint(color) {
+        this._score[color] = true;
     }
 
     /**
@@ -81,14 +91,6 @@ export class Player {
             default:
                 throw new InvalidDirectionError("Requested invalid direction");
         }
-    }
-
-    /**
-     * Award a point to the player for the specified color.
-     * @param {Color} color - The color for which to award a point.
-     */
-    awardPoint(color) {
-        this.score[color] = true;
     }
 
     /**

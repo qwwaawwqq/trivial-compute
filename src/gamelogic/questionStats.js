@@ -27,10 +27,18 @@ export class QuestionStats {
      * Calculates and returns the percentage of correct answers.
      * @returns {number} - The percentage of correct answers.
      */
-    calculatePercentage() {
+    get percentCorrect() {
         if (this.timesAsked === 0) {
             return 0;
         } 
         return (this.timesCorrectlyAnswered / this.timesAsked) * 100;
+    }
+
+    toJSON() {
+        return {
+            timesAsked: this.timesAsked,
+            timesCorrectlyAnswered: this.timesCorrectlyAnswered,
+            percentCorrect: this.percentCorrect
+        }
     }
 }

@@ -155,4 +155,8 @@ export class Category {
         const randomIndex = Math.floor(Math.random() * this.questions.length);
         return this.questions[randomIndex];
     }
+
+    toJSON() {
+        return this.name;
+    }
 }

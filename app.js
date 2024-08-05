@@ -89,13 +89,28 @@ app.listen(port, () => {
 app.locals.activeGameSession = {};
 
 // TODO add error handling for game routes
+
+
+/**
+ * Start the game.
+ * Respond to the press of the button that starts the game from the config screen.
+ * This is the start of use case 1.
+ * @param {Object<string, string>} categoryNames - The names of the categories. Each key should be a Color (see color.js for valid values). Each value should be the name of a category corresponding to that color. This object must have exactly 4 entries.
+ * @param {Array<string>} playerNames - The names of the players. Each entry is a player's name. This array's length must be between 1-4.
+ * @returns {Object} A map of the following:
+ *      @property {string} gameSessionID - A unique ID corresponding to the newly created GameSession. All API calls related to this game must provide this ID.
+ *      @property {Object<int, Object>} board - A representation of the board. Each key is a position in a grid, where the one's digit is the column index and the ten's digit is the row index.
+ *          @property {Object}
+ *              @property {Color} color - A Color (see color.js for valid values) representing this space's color.
+ *              @property {SquareType} type - A SquareType (see squareType.js for valid values) representing this space's type, determining what happens when a player lands on it.
+ */
 app.post('/api/startGame', (req, res) => {
     try {
         const { categoryNames, playerNames } = req.body;
         GameSession.create(categoryNames, playerNames).then(newGame => {
             app.locals.activeGameSession[newGame.GameSessionID] = newGame;
             const gameStartData = {
-                id: newGame.GameSessionID,
+                gameSessionID: newGame.GameSessionID,
                 board: newGame.gameboard.toJSON()
             }
             res.status(200).send(gameStartData);
@@ -118,37 +133,89 @@ app.post('/api/startGame', (req, res) => {
 
 });
 
-// TODO select the correct CRUD names for each game route
-
-app.post('/api/game/rollDie', (req, res) => {
+/**
+ * Simulates rolling the die and determines the available directions for the current player.
+ * Respond to the press of the button that rolls the die.
+ * This is the start of use case 2.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @returns {Object} An object containing:
+ *   @property {int} roll - The result of the die roll, representing the number of moves left for the current player.
+ *   @property {Array<Direction>} availableDirections - The list of Directions (see direction.js for valid values) available for the player from their current position.
+ */
+app.put('/api/game/rollDie', (req, res) => {
     const { gameSessionID } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const rollResultAndDirectionOptionsData = gameSession.rollDie();
     res.status(200).send(rollResultAndDirectionOptionsData);
 });
 
-app.post('/api/game/pickDirection', (req, res) => {
+/**
+ * Execute the player's movement after picking a direction.
+ * Responds to the press of the button indicating player's choice of direction.
+ * This is part of use case 2.
+ * The output format depends heavily on where the player ends up:
+ *      If squareType is null, then the player has hit an intersection so check availableDirections for where the player can go, and then prompt them to pick one of those directions.
+ *      Otherwise, if squareType is SquareType.NORMAL, then check question for the question to present to the player, and then prompt them to answer that question.
+ *      Otherwise, if squareType is SquareType.ROLL_AGAIN, then prompt the player to roll the die again.
+ *      Otherwise, if squareType is SquareType.CENTER,  then check categoryOptions for what categories can be chosen by the player, and then prompt them to pick a category.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @param {Direction} direction - The Direction (see direction.js for valid values) in which the player wants to move.
+ * @returns {Object} An object containing the path and relevant decision information:
+*      @property {Array<int>} path - An array of positions the player has moved through. This includes both their starting and final positions.
+*      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
+*      @property {Object<Color, string>|null} categoryOptions - An object mapping Colors to categories if the square type is CENTER, otherwise null.
+*      @property {Object|null} question - An object representing a question if the square type is NORMAL, otherwise null. See the Question subclass definitions for the fields.
+*      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
+*/
+app.put('/api/game/pickDirection', (req, res) => {
     const { gameSessionID, direction } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const movementEndData = gameSession.pickDirection(direction);
     res.status(200).send(movementEndData);
 });
 
-app.post('/api/game/evaluateAnswer', (req, res) => {
+/**
+ * Check if the player's choice is correct, and send back what the correct answer is.
+ * Responds to the buttons indicating player's choice of answer when presented with a question.
+ * This is part of use cases 3 and 4.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @param {string} answer - The player's answer.
+ * @return {Object} An object with the correct answer and whether the player's answer is correct.
+ *      @property {string} correctAnswer - The correct answer to the question.
+ *      @property {boolean} isCorrect - Whether or not the player answered correctly.
+ */
+app.put('/api/game/evaluateAnswer', (req, res) => {
     const { gameSessionID, answer } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const correctAnswerData = gameSession.evaluateAnswer(answer);
     res.status(200).send(correctAnswerData);
 });
 
-app.post('/api/game/acknowledgeAnswer', (req, res) => {
+/**
+ * Triggers actions that should happen after the player has viewed the correct answer.
+ * This is part of use cases 3 and 4, towards the end.
+ * Responds to the acknowledgement button that should display when the game is displaying the correct answer feedback.
+ * This output format depends on whether or not the player has now won the game:
+ *      If they won, then an Object containing information about the game is returned, and the game should display an endgame screen displaying this information.
+ *      Otherwise, the response will be a string representing a player name, indicating that the game should continue - the game should prompt this player to roll the die.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @return {Object | string} An object containing information about the game if the game was won, otherwise a string for the player name whose turn is up next.
+ */
+app.put('/api/game/acknowledgeAnswer', (req, res) => {
     const { gameSessionID } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const gameEndData = gameSession.acknowledgeAnswer();
     res.status(200).send(gameEndData);
 });
 
-app.post('/api/game/selectCategory', (req, res) => {
+/**
+ * Respond to the buttons indicating player's choice of category at the center square.
+ * This is part of use case 4.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ * @param {Color} color - The color representing the category.
+ * @return {Object} An object representing a question from the selected category. See Question subclass definitions for what is in it.
+ */
+app.put('/api/game/selectCategory', (req, res) => {
     const { gameSessionID, color } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const questionData = gameSession.selectCategory(color);

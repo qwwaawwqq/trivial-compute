@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const gameBoard = document.querySelector('.game-board');
     const diceElement = document.getElementById('dice');
     const rollButton = document.getElementById('roll-dice');
     const currentPlayerElement = document.getElementById('current-player');
@@ -12,42 +11,37 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPlayerIndex = 1; // Starting with Curly
 
 
-    function createBoard() {
-        const boardLayout = [
-            'RA', 'Y', 'B', 'G', 'HQ', 'Y', 'B', 'G', 'RA',
-            'R', 'W', 'W', 'W', 'Y', 'W', 'W', 'W', 'R',
-            'G', 'W', 'PL', 'W', 'B', 'W', 'PC', 'W', 'Y',
-            'B', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
-            'HQ', 'B', 'G', 'R', 'TC', 'B', 'G', 'Y', 'HQ',
-            'Y', 'W', 'W', 'W', 'R', 'W', 'W', 'W', 'G',
-            'R', 'W', 'PM', 'W', 'Y', 'W', 'PR', 'W', 'R',
-            'G', 'W', 'W', 'W', 'G', 'W', 'W', 'W', 'B',
-            'RA', 'R', 'B', 'G', 'HQ', 'Y', 'R', 'B', 'RA'
-        ];
 
-        boardLayout.forEach((type, index) => {
+    function createBoardGui() {
+
+        const currentBoard = JSON.parse(localStorage.getItem('gameBoard'));
+        console.log(currentBoard);
+
+        const gameBoard = $('.game-board'); //Grabs HTML element to append the squares.
+
+        Object.keys(currentBoard).forEach(key => {
+            let currentSquare = currentBoard[key];
             const square = document.createElement('div');
-            square.classList.add('square', getColorClass(type));
-            if (type === 'HQ') square.textContent = 'HQ';
-            if (type === 'RA') square.textContent = 'RA';
-            if (type === 'TC') square.textContent = 'TC';
-            if (type.startsWith('P')) {
-                createPlayerSquare(square, type);
+            square.classList.add(currentSquare['color'], currentSquare['squareType']);
+            if (square.classList.contains('HQ')){
+                square.textContent = ('HQ');
             }
-            gameBoard.appendChild(square);
-        });
+            else if(square.classList.contains('ROLL_AGAIN')){
+                square.textContent = ('Roll Again');
+            }
+            else if(square.classList.contains('CENTER')){
+                square.textContent = ('Trivial Compute');
+            }
 
-        addPlayerPieces();
+            gameBoard.append(square);
+        })
+
+        // addPlayerPieces();
     }
 
     function createPlayerSquare(square, type) {
         const playerName = ['Larry', 'Curly', 'Moe', 'Shemp'][['PL', 'PC', 'PM', 'PR'].indexOf(type)];
         square.textContent = playerName;
-    }
-
-    function getColorClass(type) {
-        const colorMap = { 'Y': 'yellow', 'B': 'blue', 'R': 'red', 'G': 'green', 'HQ': 'red', 'RA': 'grey', 'TC': 'grey', 'W': 'white' };
-        return colorMap[type] || 'white';
     }
 
     function addPlayerPieces() {
@@ -121,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add functionality to handle category choice
     });
 
-    createBoard();
+    createBoardGui();
 
 
 });

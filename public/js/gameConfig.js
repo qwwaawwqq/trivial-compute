@@ -1,7 +1,8 @@
-localStorage.removeItem('gameSessionID');
+
 $(document).ready(function() {
     // Handle adding players (limited to 4 for simplicity)
     let playerCount = 4;
+    localStorage.removeItem('gameSessionID');
     $('#add-player-btn').click(function() {
         if (playerCount < 4) {
             $('#add-player-btn').removeClass("btn-secondary").addClass("btn-primary");

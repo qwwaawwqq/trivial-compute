@@ -151,22 +151,22 @@ document.addEventListener('DOMContentLoaded', () => {
             contentType: 'application/json',
             data: JSON.stringify({ gameSessionID : gameID, direction: directionClick}),
             success: function (response) {
-                // if (response.squareType == "ROLL_AGAIN"){
-                //     console.log("Rolling again.");
-                //     $('#current-player').text(`Let's Go Gambling! Roll Again`);
-                //     $('#end-turn').toggle();
-                //     $('#roll-dice').toggle();
-                //     clearDie();
-                // }
+                if (response.squareType == "ROLL_AGAIN"){
+                    console.log("Rolling again.");
+                    $('#current-player').text(`Let's Go Gambling! Roll Again`);
+                    $('#end-turn').toggle();
+                    $('#roll-dice').toggle();
+                    clearDie();
+                }
 
-                // else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
-                //     console.log(response.question.questionTitle);
-                //     $('.questionDisplay').text(response.question.questionTitle);
-                //     $('.pop-up').toggle();
+                else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
+                    console.log(response.question.questionTitle);
+                    $('.questionDisplay').text(response.question.questionTitle);
+                    $('.pop-up').toggle();
 
-                // }
-                // updateDirectionButtonsGui(response.availableDirections);
-                // movePlayerToken(response.currentPlayerIndex, response.path.at(-1));
+                }
+                updateDirectionButtonsGui(response.availableDirections);
+                movePlayerToken(response.currentPlayerIndex, response.path.at(-1));
 
             },
             error: function (xhr, status, error) {

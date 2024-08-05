@@ -128,8 +128,7 @@ export class GameSession {
             const { squareType, categoryOptions, question } = this.activateSquare();
             return {
                 path: path,
-                currentPlayerName: this.currentPlayer.name,
-                currentPlayerTokenColor: this.currentPlayer.tokenColor,
+                currentPlayerIndex: this.currentPlayerIndex,
                 squareType: squareType,
                 categoryOptions: categoryOptions,
                 question: question,
@@ -141,8 +140,7 @@ export class GameSession {
             // Since we are in the middle of a turn, do not allow the player to turn back.
             return {
                 path: path,
-                currentPlayerName: this.currentPlayer.name,
-                currentPlayerTokenColor: this.currentPlayer.tokenColor,
+                currentPlayerIndex: this.currentPlayerIndex,
                 squareType: null,
                 categoryOptions: null,
                 question: null,

@@ -164,15 +164,14 @@ app.put('/api/game/rollDie', (req, res) => {
  * This is part of use case 2.
  * The output format depends heavily on where the player ends up:
  *      If squareType is null, then the player has hit an intersection so check availableDirections for where the player can go, and then prompt them to pick one of those directions.
- *      Otherwise, if squareType is SquareType.NORMAL, then check question for the question to present to the player, and then prompt them to answer that question.
+ *      Otherwise, if squareType is SquareType.NORMAL or SquareType.HQ, then check question for the question to present to the player, and then prompt them to answer that question.
  *      Otherwise, if squareType is SquareType.ROLL_AGAIN, then prompt the player to roll the die again.
  *      Otherwise, if squareType is SquareType.CENTER,  then check categoryOptions for what categories can be chosen by the player, and then prompt them to pick a category.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
  * @param {Direction} direction - The Direction (see direction.js for valid values) in which the player wants to move.
  * @returns {Object} An object containing the path and relevant decision information:
  *      @property {Array<int>} path - An array of positions the player has moved through. This includes both their starting and final positions.
- *      @property {string} currentPlayerName - The name of the current player. Can be used to determine which player's token to move.
- *      @property {string} currentPlayerTokenColor - The color of the current player's token. Can be used to determine which player's token to move.
+ *      @property {int} currentPlayerIndex - The index of the current player. Can be used to determine which player's token to move.
  *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
  *      @property {Object<Color, string>|null} categoryOptions - An object mapping Colors to categories if the square type is CENTER, otherwise null.
  *      @property {Object|null} question - An object representing a question if the square type is NORMAL, otherwise null. See the Question subclass definitions for the fields.
@@ -239,9 +238,7 @@ app.put('/api/game/selectCategory', (req, res) => {
 });
 
 /**
- * Simulates rolling the die and determines the available directions for the current player.
- * Respond to the press of the button that rolls the die.
- * This is the start of use case 2.
+ * Get the category and player names that were used to initialize the game session.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
  * @returns {Object} An object containing:
  *      @param {Object<Color, string>} categoryNames - The names of the categories. Each key should be a Color (see color.js for valid values). Each value will be the name of a category corresponding to that color. This object will have exactly 4 entries.

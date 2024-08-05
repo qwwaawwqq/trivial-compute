@@ -161,10 +161,10 @@ export class GameSession {
     acknowledgeAnswer() {
         const isCorrect = this.recentlyAnsweredCorrectly;
         if (isCorrect) {
-            if (this.getSquare().isHQ) {
+            if (this.getCurrentSquare().isHQ) {
                 this.awardPoint();
             }
-            if (this.getSquare().isCenter && this.checkForWinner()) {
+            if (this.getCurrentSquare().isCenter && this.checkForWinner()) {
                 return this.endGame(); // End use case 4 if player has won
             }
             // This player's turn continues.
@@ -312,8 +312,8 @@ export class GameSession {
      * @private
      */
     getQuestion() {
-        const color = this.getCurrentSquare().getColor();
-        const category = this.selectCategory(color);
+        const color = this.getCurrentSquare().color;
+        const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
         return this.currentQuestion;
     }
@@ -323,7 +323,7 @@ export class GameSession {
      * @private
      */
     awardPoint() {
-        const color = this.getSquare().getColor();
+        const color = this.getCurrentSquare().color;
         this.currentPlayer.awardPoint(color);
     }
 

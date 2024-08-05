@@ -34,19 +34,46 @@ $(document).ready(function() {
      // Handle starting the game
     $('#start-game-btn').click(function() {
         let players = [];
+        let categoryNames = {};
         for (let i = 1; i <= playerCount; i++) {
             let name = $(`#player-${i}-name`).val();
+            players.push(name);
+            console.log(name);
             let category = $(`#player-${i}-config select`).val();
-            players.push({ name: name, category: category });
+            console.log(category);
+            let testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
+            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;
+            
         }
+        console.log(categoryNames);
+        console.log(players);
         console.log('Starting game with players:', players);
 
         // Store player data in local storage
         localStorage.setItem('players', JSON.stringify(players));
 
+        startGame(categoryNames, players);
+
         // Redirect to gameplay.html
         window.location.href = 'gameplay.html';
     });
+
+    function startGame(categoryNames, players) {
+        console.log("hello")
+        $.ajax({
+            url: '/api/startGame',
+            method: 'POST',
+            data: JSON.stringify({ categoryNames: categoryNames, playerNames: players}),
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("hello")
+                console.log(response);
+            },
+            error: function (xhr, status, error) {
+                alert("Error Starting Game: " + error);
+            }
+        })};
 
     // Initialize by hiding extra player configs
     for (let i = playerCount + 1; i <= 4; i++) {

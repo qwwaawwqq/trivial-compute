@@ -61,18 +61,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function rollDice() {
-        const roll = Math.floor(Math.random() * 6) + 1;
-        requestAnimationFrame((timestamp)=>animateRoll(timestamp, roll));
-        return roll;
-    }
+    // function rollDice() {
+    //     const roll = Math.floor(Math.random() * 6) + 1;
+    //     requestAnimationFrame((timestamp)=>animateRoll(timestamp, roll));
+    //     return roll;
+    // }
 
     rollButton.addEventListener('click', () => {
-        const roll = rollDice();
+        
+        // const roll = 
+        rollDice();
         $('#end-turn').toggle();
         $('#roll-dice').toggle();
         
     });
+
+    function rollDice() {
+    $.ajax({
+        url: '/api/game/rollDie',
+        method: 'POST',
+        dataType: 'json',
+        success: function (response) {
+            console.log("hello")
+            console.log(response.data);
+            
+        },
+        error: function (xhr, status, error) {
+            alert("Error loading questions: " + error);
+        }
+    });
+}
 
     $('#end-turn').click(function() {
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;

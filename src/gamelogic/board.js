@@ -112,7 +112,7 @@ export class Board {
 
     toJSON() {
         const json = {};
-        for (position in this.squares) {
+        for (const position in this.squares) {
             json[position] = this.squares[position].toJSON();
         }
         return json;

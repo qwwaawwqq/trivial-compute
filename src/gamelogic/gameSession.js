@@ -201,7 +201,7 @@ export class GameSession {
             this.endTurn();
         }
         return {
-            endGameData: this.endGame(), 
+            endGameData: null, 
             nextPlayerName: this.currentPlayer.name,
             scoreboardToUpdate: scoreboardToUpdate,
             score: score
@@ -218,6 +218,30 @@ export class GameSession {
     selectCategory(color) {
         const category = this.categories[color];
         return category.pickRandomQuestion();
+    }
+
+    /**
+     * Retrieve the names of the categories and players, in the same format that would be provided the create() method.
+     * @returns {Object}
+     *      @property {Object<Color, string>} categoryNames
+     *      @property {Array<string>} playerNames
+     */
+    get names() {
+        const categoryNames = {};
+        for (const color in this.categories) {
+            categoryNames[color] = this.categories[color].name;
+        }
+
+        const playerNames = [];
+        for (let i = 0; i < this.players.length; i++) {
+            const playerName = this.players[i].name;
+            playerNames.push(playerName);
+        }
+
+        return {
+            categoryNames: categoryNames,
+            playerNames: playerNames
+        };
     }
 
     // Private methods

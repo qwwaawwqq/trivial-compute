@@ -1,5 +1,5 @@
 import { firebase_db, firebase_storage } from '../../../app.js'
-import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore'
+import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore'
 
 
 /////////////////
@@ -8,50 +8,54 @@ import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection, getDocs } fr
 /**
  * Reads questions from a specified category in a Firestore database.
  * @param {string} categoryName - The name of the category to retrieve questions from.
- * @param {function} callback - A callback function to handle the retrieved data.
  */
-function readQuestionsFromCategory(categoryName, callback) {
-    onSnapshot(collection(firebase_db, 'categories', categoryName, "questions"), (querySnapshot) => {
-        let questions = []
-        querySnapshot.forEach((doc) => {
-            questions.push(doc.data())
-        })
-        callback({ success: true, data: questions })
-    })
+async function readQuestionsFromCategory(categoryName) {
+    try {
+        const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
+        const querySnap = await getDocs(collectionRef);
+        let questions = [];
+        querySnap.forEach((doc) => {
+            questions.push(doc.data());
+        });
+        return { success: true, data: questions };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 }
 
 /**
  * Reads questions from a specified category in a Firestore database without subscribing.
  * @param {string} categoryName - The name of the category to retrieve questions from.
  */
-function readQuestionsFromCategoryOnce(categoryName) {
-    const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
-    return getDocs(collectionRef)
-    .then(querySnap => {
+async function readQuestionsFromCategoryOnce(categoryName) {
+    try {
+        const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
+        const querySnap = await getDocs(collectionRef);
         let questions = [];
         querySnap.forEach((doc) => {
-            questions.push(doc.data())
-        })
-        return questions;
-    })
-    .catch(error => {
-        console.error('Error getting document:', error);
-        throw new MissingBoardDataError(`Could not find category data in Firestore Database: ${error}`);
-    });
+            questions.push(doc.data());
+        });
+        return { success: true, data: questions };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 }
 
 /**
  * Reads all categories from a Firestore database.
- * @param {function} callback - A callback function to handle the retrieved data.
  */
-function readAllCategories(callback) {
-    onSnapshot(collection(firebase_db, 'categories'), (querySnapshot) => {
+async function readAllCategories() {
+    try {
+        const q = query(collection(firebase_db, "categories"));
+        const querySnapshot = await getDocs(q);
         let categories = []
         querySnapshot.forEach((doc) => {
             categories.push(doc.id)
-        })
-        callback({ success: true, data: categories })
-    })
+        });
+        return { success: true, data: categories };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
 }
 
 

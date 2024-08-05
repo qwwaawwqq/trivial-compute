@@ -19,9 +19,7 @@ function addNewCategory() {
             contentType: 'application/json',
             success: function (result) {
                 console.log("Server response:", result);
-                $('#new-category').val('');
-                loadCategories(); // Reload all categories after adding
-                alert("Category added successfully");
+                loadCategories();
             },
             error: function (xhr, status, error) {
                 console.error("Error details:", xhr.responseText);
@@ -37,6 +35,9 @@ function renameCategory() {
     let selectedRow = $('tr.table-warning');
     let newCategoryName = $('#rename-category').val();
     let oldCategoryName = selectedRow.find('td').text();
+
+    console.log("New Category Name:", newCategoryName);
+    console.log("Old Category Name:", oldCategoryName);
     if (selectedRow.length && newCategoryName) {
         $.ajax({
             url: '/api/updateCategory',
@@ -45,6 +46,7 @@ function renameCategory() {
             contentType: 'application/json',
             dataType: 'json',
             success: function (result) {
+                console.log(result)
                 if (result.success) {
                     $('#rename-category').val('');
                     loadCategories();
@@ -104,16 +106,16 @@ function loadCategories() {
         success: function (response) {
             console.log("Server response:", response);  // Log the entire response
             let categories = response;
-            
+
             // Check if the response is wrapped in a data property
             if (response.data && Array.isArray(response.data)) {
                 categories = response.data;
             }
-            
+
             if (Array.isArray(categories)) {
                 $('table tbody').empty();
                 categories.forEach(function (category) {
-                    $('table tbody').append(`<tr><td>${category}</td></tr>`);
+                    $('table tbody').append(`<tr id=${category}><td>${category}</td></tr>`);
                 });
                 bindRowClickEvent();
             } else {

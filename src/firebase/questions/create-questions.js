@@ -22,12 +22,14 @@ const __dirname = dirname(__filename);
  * @param {string} creatorName - The name of the creator of the category.
  * @param {function} callback - The callback function to execute after creating the category.
  */
-function createNewCategory(categoryName, creatorName, callback) {
-    const categoryRef = doc(collection(firebase_db, 'categories'), categoryName)
-    setDoc(categoryRef, {
-        creatorName: creatorName
-    })
-    callback({ success: true, message: "Added New Category" })
+async function createNewCategory(categoryName, creatorName, callback) {
+    try {
+        const categoryRef = doc(collection(firebase_db, 'categories'), categoryName);
+        await setDoc(categoryRef, { creatorName: creatorName });
+        return { success: true, message: "Added New Category" };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
 }
 
 /** 

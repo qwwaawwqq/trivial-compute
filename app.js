@@ -10,8 +10,8 @@ import { initializeApp } from 'firebase/app';
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
 import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
 import { readQuestionsFromCategory, readAllCategories } from './src/firebase/questions/read-questions.js'
-import { updateQuestion } from './src/firebase/questions/update-questions.js'
-import { deleteQuestion } from './src/firebase/questions/delete-questions.js'
+import { updateQuestion, updateCategory } from './src/firebase/questions/update-questions.js'
+import { deleteQuestion, deleteCategory } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
 import { getFirestore } from "firebase/firestore"
 import { GameSession } from './src/gamelogic/gameSession.js'
@@ -124,7 +124,7 @@ app.post('/api/startGame', (req, res) => {
             }
             res.status(200).send(gameStartData);
         });
-        
+
 
         // TODO add back the updates of gamesession to the database. for now rely on the app.locals copy.
         // createNewGameSession(newGame, (result) => {
@@ -334,36 +334,34 @@ app.post('/api//signOut', (req, res) => {
 // /// ///////////////////
 
 // Read Endpoints
-app.get("/api/readAllCategories", (req, res) => {
+app.get("/api/readAllCategories", async (req, res) => {
     try {
-        readAllCategories((result) => {
-            if (result.success) {
-                res.status(200).send(result.data);
-            } else {
-                res.status(500).send(result.error);
-            }
-        });
+        const result = await readAllCategories()
+        if (result.success) {
+            res.status(200).send(result.data);
+        } else {
+            res.status(500).send(result.error);
+        }
     } catch (error) {
-        console.log(error);
-        res.status(400).send(error.message);
+        console.log(console.log(error))
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
 
 
-app.post("/api/readQuestionsFromCategory", (req, res) => {
+app.post("/api/readQuestionsFromCategory", async (req, res) => {
     try {
         const { categoryName } = req.body;
-        readQuestionsFromCategory(categoryName, (result) => {
-            if (result.success) {
-                res.status(200).send(result.data);
-            } else {
-                res.status(500).send(result.error);
-            }
-        });
+        const result = await readQuestionsFromCategory(categoryName)
+        if (result.success) {
+            res.status(200).send(result.data);
+        } else {
+            res.status(500).send(result.error);
+        }
     } catch (error) {
         console.log(error)
-        res.status(400).send(error.message)
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 
 });
@@ -371,17 +369,19 @@ app.post("/api/readQuestionsFromCategory", (req, res) => {
 
 
 // Create endpoints
-app.put('/api/createNewCategory', (req, res) => {
+app.put('/api/createNewCategory', async (req, res) => {
     const { categoryName, creatorName } = req.body;
-    createNewCategory(categoryName, creatorName, (result) => {
-        if (!res.headersSent) {
-            if (result.success) {
-                res.status(200).send({ success: true, message: result.message });
-            } else {
-                res.status(500).send({ success: false, error: result.error });
-            }
+
+    try {
+        const result = await createNewCategory(categoryName, creatorName);
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
         }
-    });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
 });
 
 
@@ -453,6 +453,24 @@ app.put('/updateQuestion', (req, res) => {
 
 });
 
+// Update enpoints
+app.put('/api/updateCategory', async (req, res) => {
+    try {
+        const { oldName, newName } = req.body;
+        const result = await updateCategory(oldName, newName)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            console.log
+            res.status(500).json(result.error);
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+
+});
+
 
 // Delete Enpoints
 app.delete('/updateQuestion', (req, res) => {
@@ -471,19 +489,17 @@ app.delete('/updateQuestion', (req, res) => {
     }
 });
 
-app.delete('/api/deleteCategory', (req, res) => {
+app.delete('/api/deleteCategory', async (req, res) => {
     try {
         const { categoryName } = req.body;
-        deleteCategory(categoryName, (result) => {
-            if (result.success) {
-                res.status(200).json(result);
-            } else {
-                res.status(500).json(result);
-            }
-        });
-    } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
+        const result = await deleteCategory(categoryName)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 

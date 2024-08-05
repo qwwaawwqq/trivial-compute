@@ -3,14 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const rollButton = document.getElementById('roll-dice');
     const currentPlayerElement = document.getElementById('current-player');
     const returnButton = document.getElementById('return-button');
-    // const chooseDirectionButton = document.getElementById('choose-direction-button');
     const displayQuestionButton = document.getElementById('display-question-button');
     const chooseCategoryButton = document.getElementById('choose-category-button');
 
-    let players = [];
-    let currentPlayerIndex = 1; //starting with player 1.
-
-
+    
     function getNamesGui() {
         let gameID = localStorage.getItem('gameSessionID');
         $.ajax({
@@ -20,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: { gameSessionID : gameID},
             success: function (response) {
                 let gameCategories = {};
+                let players = [];
                 players = response.playerNames;
                 gameCategories = response.categoryNames;
                 console.log(gameCategories);
@@ -59,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentBoard = JSON.parse(localStorage.getItem('gameBoard'));
         console.log(currentBoard);
-
+        $('.moveDir').prop('disabled', true); //turn move buttons off;
         const gameBoard = $('.game-board'); //Grabs HTML element to append the squares.
 
         Object.keys(currentBoard).forEach(key => {
@@ -111,6 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: JSON.stringify({ gameSessionID : gameID}),
             success: function (response) {
                 requestAnimationFrame((timestamp)=>animateRoll(timestamp, response.roll));
+                updateDirectionButtonsGui(response.availableDirections);
+
             },
             error: function (xhr, status, error) {
                 alert("Error Roll Die: " + error);
@@ -119,6 +118,71 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
  
+    function updateDirectionButtonsGui(availableDirections){
+        let fixed_directions = ["LEFT", "RIGHT", "UP", "DOWN"];
+        fixed_directions.forEach(direction => {
+
+            let currentButton = document.getElementById(direction);
+            if (availableDirections.includes(direction)){
+                currentButton.disabled = false;
+            }
+            else {
+                currentButton.disabled = true;
+            }
+        });
+    }
+
+    $('.moveDir').click(function() {
+        let direction = $(this).attr("id");
+        console.log(direction);
+        sendMovement(direction);
+
+    })
+
+
+    function sendMovement(directionClick) {
+        let gameID = localStorage.getItem('gameSessionID');
+        console.log(gameID);
+        console.log(directionClick);
+        $.ajax({
+            url: '/api/game/pickDirection',
+            method: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ gameSessionID : gameID, direction: directionClick}),
+            success: function (response) {
+                // if (response.squareType == "ROLL_AGAIN"){
+                //     console.log("Rolling again.");
+                //     $('#current-player').text(`Let's Go Gambling! Roll Again`);
+                //     $('#end-turn').toggle();
+                //     $('#roll-dice').toggle();
+                //     clearDie();
+                // }
+
+                // else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
+                //     console.log(response.question.questionTitle);
+                //     $('.questionDisplay').text(response.question.questionTitle);
+                //     $('.pop-up').toggle();
+
+                // }
+                // updateDirectionButtonsGui(response.availableDirections);
+                // movePlayerToken(response.currentPlayerIndex, response.path.at(-1));
+
+            },
+            error: function (xhr, status, error) {
+                alert("Error Roll Die: " + error);
+            }
+        });
+    }
+
+
+    function movePlayerToken(playerIndex, destination) {
+        let token = $(`#player${playerIndex+1}_token`);
+        $(`#player${playerIndex}_token`).remove();
+        $(`#${destination}`).append(token);
+    }
+
+
 
     $('#end-turn').click(function() {
         $('#end-turn').toggle();
@@ -137,29 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add functionality to return to the previous page
     });
 
-
-    // chooseDirectionButton.addEventListener('click', () => {
-    //     const direction = prompt("Choose direction (e.g., North, South, East, West):");
-    //     alert(`You chose: ${direction}`);
-    //     // Add functionality to handle direction choice
-    // });
-
-    displayQuestionButton.addEventListener('click', () => {
-        const question = "Sample question?";
-        alert(question);
-        window.location.href = 'questionPop.html'
-        // Add functionality to display a question
-    });
-
-    chooseCategoryButton.addEventListener('click', () => {
-        window.location.href = 'centerSquare.html'
-        // Add functionality to handle category choice
-    });
-
     createBoardGui();
     getNamesGui();
-
-
 
 });
 

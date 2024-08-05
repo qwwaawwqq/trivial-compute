@@ -103,6 +103,7 @@ app.locals.activeGameSession = {};
  *          @property {Object}
  *              @property {Color} color - A Color (see color.js for valid values) representing this space's color.
  *              @property {SquareType} type - A SquareType (see squareType.js for valid values) representing this space's type, determining what happens when a player lands on it.
+ *      @property {string} currentPlayerName - The name of the current player. Can be used to determine the initial state of the turn indicator.
  */
 app.post('/api/startGame', (req, res) => {
     try {
@@ -111,7 +112,8 @@ app.post('/api/startGame', (req, res) => {
             app.locals.activeGameSession[newGame.GameSessionID] = newGame;
             const gameStartData = {
                 gameSessionID: newGame.GameSessionID,
-                board: newGame.gameboard.toJSON()
+                board: newGame.gameboard.toJSON(),
+                currentPlayer: newGame.currentPlayer.name
             }
             res.status(200).send(gameStartData);
         });
@@ -161,12 +163,14 @@ app.put('/api/game/rollDie', (req, res) => {
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
  * @param {Direction} direction - The Direction (see direction.js for valid values) in which the player wants to move.
  * @returns {Object} An object containing the path and relevant decision information:
-*      @property {Array<int>} path - An array of positions the player has moved through. This includes both their starting and final positions.
-*      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
-*      @property {Object<Color, string>|null} categoryOptions - An object mapping Colors to categories if the square type is CENTER, otherwise null.
-*      @property {Object|null} question - An object representing a question if the square type is NORMAL, otherwise null. See the Question subclass definitions for the fields.
-*      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
-*/
+ *      @property {Array<int>} path - An array of positions the player has moved through. This includes both their starting and final positions.
+ *      @property {string} currentPlayerName - The name of the current player. Can be used to determine which player's token to move.
+ *      @property {string} currentPlayerTokenColor - The color of the current player's token. Can be used to determine which player's token to move.
+ *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
+ *      @property {Object<Color, string>|null} categoryOptions - An object mapping Colors to categories if the square type is CENTER, otherwise null.
+ *      @property {Object|null} question - An object representing a question if the square type is NORMAL, otherwise null. See the Question subclass definitions for the fields.
+ *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
+ */
 app.put('/api/game/pickDirection', (req, res) => {
     const { gameSessionID, direction } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];

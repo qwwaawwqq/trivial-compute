@@ -95,12 +95,14 @@ export class GameSession {
      * Updates their position.
      * @param {Direction} direction - The direction in which the player wants to move.
      * @returns {Object} An object containing the path and relevant decision information:
-    *      @property {Array<int>} path - An array of positions the player has moved through.
-    *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
-    *      @property {Object<Color, string>|null} categoryOptions - An object mapping colors to category names if the square type is CENTER, otherwise null.
-    *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
-    *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
-    */
+     *      @property {Array<int>} path - An array of positions the player has moved through.
+     *      @property {string} currentPlayerName - The name of the current player. Can be used to determine which player's token to move.
+     *      @property {string} currentPlayerColor - The color of the current player's token. Can be used to determine which player's token to move.
+     *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
+     *      @property {Object<Color, string>|null} categoryOptions - An object mapping colors to category names if the square type is CENTER, otherwise null.
+     *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
+     *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
+     */
     pickDirection(direction) {
         let path = [];
         let nextDirection = direction;
@@ -126,6 +128,8 @@ export class GameSession {
             const { squareType, categoryOptions, question } = this.activateSquare();
             return {
                 path: path,
+                currentPlayerName: this.currentPlayer.name,
+                currentPlayerTokenColor: this.currentPlayer.tokenColor,
                 squareType: squareType,
                 categoryOptions: categoryOptions,
                 question: question,
@@ -137,6 +141,8 @@ export class GameSession {
             // Since we are in the middle of a turn, do not allow the player to turn back.
             return {
                 path: path,
+                currentPlayerName: this.currentPlayer.name,
+                currentPlayerTokenColor: this.currentPlayer.tokenColor,
                 squareType: null,
                 categoryOptions: null,
                 question: null,

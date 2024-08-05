@@ -32,9 +32,7 @@ export class GameSession {
 
     /**
      * Factory method to generate a new GameSession instance.
-     * This is the start of use case 1.
-     * This should be called by the API route handling the press of the button that starts the game from the config screen.
-     * @param {Object<string, string>} categoryNames - The names of the categories.
+     * @param {Object<Color, string>} categoryNames - The names of the categories.
      * @param {Array<string>} playerNames - The names of the players.
      * @returns {Promise<GameSession>} A promise that resolves to a new GameSession instance.
      */
@@ -95,11 +93,11 @@ export class GameSession {
      * Then, determine the path the player will take through spaces as long as there's no intersection.
      * Stop when there is an intersection, then return the path the player took and their next options.
      * Updates their position.
-     * @param {string} direction - The direction in which the player wants to move.
+     * @param {Direction} direction - The direction in which the player wants to move.
      * @returns {Object} An object containing the path and relevant decision information:
     *      @property {Array<int>} path - An array of positions the player has moved through.
     *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
-    *      @property {Array|null} categoryOptions - An array of categories if the square type is CENTER, otherwise null.
+    *      @property {Object<Color, string>|null} categoryOptions - An object mapping colors to category names if the square type is CENTER, otherwise null.
     *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
     *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
     */
@@ -173,7 +171,7 @@ export class GameSession {
         } else {
             this.endTurn();
         }
-        return null; // End use cases 3 or 4
+        return this.currentPlayer.name; // End use cases 3 or 4
     }
 
     /**
@@ -194,7 +192,7 @@ export class GameSession {
      * DO NOT DIRECTLY INVOKE EXTERNALLY - please use GameSession.create() instead.
      * Constructor for a new GameSession.
      * @param {Board} board - The game board.
-     * @param {Object<string, Category>} categories - The game categories associated with different color keys.
+     * @param {Object<Color, Category>} categories - The game categories associated with different color keys.
      * @param {Array<Player>} players - The list of players in the game session.
      * @private
      */
@@ -277,7 +275,7 @@ export class GameSession {
      * Used when landing on a square. The return value provides the information needed to prompt the user with a corresponding UI depending on the square's type.
      * @returns {Object} An object containing the type of square and any additional information:
      *      @property {SquareType} squareType - The type of the current square.
-     *      @property {Array|null} categoryOptions - An array of categories if the square type is CENTER, otherwise null.
+     *      @property {Object<Color, string>|null} categoryOptions - An object of categories if the square type is CENTER, otherwise null.
      *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
      * @private
      */
@@ -289,11 +287,16 @@ export class GameSession {
         if (this.getCurrentSquare().isRollAgain) {
             squareType = SquareType.ROLL_AGAIN;
         } else if (this.getCurrentSquare().isCenter) {
+            // This should prompt the player to choose a category.
             squareType = SquareType.CENTER;
-            categoryOptions = this.categories; // This should prompt the player to choose a category.
+            categoryOptions = []; 
+            for (key in this.categories) {
+                categoryOptions[key] = categories[key].toJSON();
+            }
         } else {
+            // This should prompt the player to answer a question.
             squareType = SquareType.NORMAL;
-            question = this.getQuestion(); // This should prompt the player to answer a question.
+            question = this.getQuestion().toJSON(); 
         }
 
         return {

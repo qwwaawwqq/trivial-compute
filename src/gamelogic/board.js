@@ -34,8 +34,6 @@ export class Board {
         let board = new Board();
         return readBoard()
             .then(boardData => {
-                console.log('here', boardData);
-
                 // Translate stored JSON in database to local objects.
                 board.squares = {};
                 for (let position in boardData) {

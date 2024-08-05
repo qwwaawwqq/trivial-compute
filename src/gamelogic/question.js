@@ -35,4 +35,16 @@ export class Question {
     getAnswer() {
         return this.answer;
     }
+
+    toJSON() {
+        return {
+            typeOfQuestion: this.typeOfQuestion,
+            questionTitle: this.questionTitle,
+            questionStats: this.questionStats.toJSON(),
+            dateCreated: this.dateCreated,
+            difficultyLevel: this.difficultyLevel,
+            creator: this.creator,
+            answer: this.answer
+        }
+    }
 }

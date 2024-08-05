@@ -3,5 +3,6 @@ export const Color = Object.freeze({
     GREEN: 'GREEN',
     BLUE: 'BLUE',
     YELLOW: 'YELLOW',
-    WHITE: 'WHITE'
+    WHITE: 'WHITE',
+    CLEAR: 'CLEAR'
 });

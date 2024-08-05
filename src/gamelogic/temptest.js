@@ -70,12 +70,12 @@ import { boardFactory } from './factory.js'
 //  * SET
 //  */
 
-// const docRef = doc(firebase_db, 'board', 'board');
+const docRef = doc(firebase_db, 'board', 'board');
 
-// setDoc(docRef, boardFactory()).then(() => {
-//   console.log('Document successfully written!');
-// }).catch((error) => {
-//   console.error('Error writing document:', error);
-// });
+setDoc(docRef, boardFactory()).then(() => {
+  console.log('Document successfully written!');
+}).catch((error) => {
+  console.error('Error writing document:', error);
+});
 
 

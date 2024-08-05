@@ -21,7 +21,7 @@ function readBoard() {
     .then(docSnap => {
         if (docSnap.exists()) {
             const boardData = docSnap.data();
-            console.log('Loaded Board:', boardData);
+            console.log('Loaded board');
             return boardData;
         } else {
             console.log('Failed to find board');

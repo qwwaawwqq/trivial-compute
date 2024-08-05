@@ -10,8 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const players = ['Larry', 'Curly', 'Moe', 'Shemp'];
     let currentPlayerIndex = 1; // Starting with Curly
-    let gameID = localStorage.getItem('gameSessionID');
-    console.log(gameID);
+
 
     function createBoard() {
         const boardLayout = [
@@ -71,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     rollButton.addEventListener('click', () => {
         $('#end-turn').toggle();
         $('#roll-dice').toggle();
+        let gameID = localStorage.getItem('gameSessionID');
+        console.log(gameID);
         $.ajax({
             url: '/api/game/rollDie',
             method: 'PUT',
@@ -78,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             contentType: 'application/json',
             data: JSON.stringify({ gameSessionID : gameID}),
             success: function (response) {
-      
-                console.log(response.roll);
+                requestAnimationFrame((timestamp)=>animateRoll(timestamp, response.roll));
             },
             error: function (xhr, status, error) {
                 alert("Error Roll Die: " + error);

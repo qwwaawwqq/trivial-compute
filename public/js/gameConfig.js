@@ -1,3 +1,4 @@
+localStorage.removeItem('gameSessionID');
 $(document).ready(function() {
     // Handle adding players (limited to 4 for simplicity)
     let playerCount = 4;
@@ -50,12 +51,10 @@ $(document).ready(function() {
 
         startGame(categoryNames, players);
 
-        // Redirect to gameplay.html
-        window.location.href = 'gameplay.html';
     });
 
     function startGame(categoryNames, players) {
-        console.log("hello")
+
         $.ajax({
             url: '/api/startGame',
             method: 'POST',
@@ -63,8 +62,10 @@ $(document).ready(function() {
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
+                console.log("start test" + response.gameSessionID);
                 localStorage.setItem('gameSessionID', response.gameSessionID);
                 localStorage.setItem('gameBoard', JSON.stringify(response.board));
+                window.location.href = 'gameplay.html';
             },
             error: function (xhr, status, error) {
                 alert("Error Starting Game: " + error);

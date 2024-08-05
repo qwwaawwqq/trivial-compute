@@ -363,8 +363,7 @@ export class GameSession {
      */
     endGame() {
         return {
-            "players": this.players,
-            "winner": this.currentPlayer
+            "winner": this.currentPlayer.name
         };
     }
 

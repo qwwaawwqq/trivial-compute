@@ -38,15 +38,11 @@ $(document).ready(function() {
         for (let i = 1; i <= playerCount; i++) {
             let name = $(`#player-${i}-name`).val();
             players.push(name);
-            console.log(name);
             let category = $(`#player-${i}-config select`).val();
-            console.log(category);
             let testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
-            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;
-            
+            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;      
         }
-        console.log(categoryNames);
-        console.log(players);
+
         console.log('Starting game with players:', players);
 
         // Store player data in local storage
@@ -67,8 +63,8 @@ $(document).ready(function() {
             dataType: 'json',
             contentType: 'application/json',
             success: function (response) {
-                console.log("hello")
-                console.log(response);
+                localStorage.setItem('gameSessionID', response.gameSessionID);
+                localStorage.setItem('gameBoard', JSON.stringify(response.board));
             },
             error: function (xhr, status, error) {
                 alert("Error Starting Game: " + error);

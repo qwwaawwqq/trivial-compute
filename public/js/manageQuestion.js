@@ -11,14 +11,15 @@ function bindControlButtons() {
 
 function loadQuestions() {
     $.ajax({
-        url: '/api/readQuestionsFromCategory',
+        url: '/api/readAllQuestions',
         method: 'GET',
         dataType: 'json',
-        success: function (response) {
-            let questions = response.data;
+        success: function (result) {
+            let questions = result;
+            console.log(questions)
             $('#question-table-body').empty();
             questions.forEach(function (question) {
-                $('#question-table-body').append(`<tr><td>${question.category}</td><td>${question.format}</td><td>${question.question}</td></tr>`);
+                $('#question-table-body').append(`<tr><td>${question.category}</td><td>${question.questionType}</td><td>${question.question}</td></tr>`);
             });
             bindRowClickEvent();
         },

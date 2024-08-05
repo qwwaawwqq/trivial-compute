@@ -5,6 +5,27 @@ import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'fir
 /////////////////
 // Read Functions 
 //////////////////
+
+
+/**
+ * Reads all categories from a Firestore database.
+ */
+async function readAllCategories() {
+    try {
+        const q = query(collection(firebase_db, "categories"));
+        const querySnapshot = await getDocs(q);
+        let categories = []
+        querySnapshot.forEach((doc) => {
+            categories.push(doc.id)
+        });
+        return { success: true, data: categories };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+
+
 /**
  * Reads questions from a specified category in a Firestore database.
  * @param {string} categoryName - The name of the category to retrieve questions from.
@@ -18,6 +39,30 @@ async function readQuestionsFromCategory(categoryName) {
             questions.push(doc.data());
         });
         return { success: true, data: questions };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
+async function readAllQuestions() {
+    try {
+        const categories = await readAllCategories()
+        let allQuestions = []
+        for (const category of categories.data) {
+            const questionPerCategory = await readQuestionsFromCategory(category)
+            for (const question in questionPerCategory.data) {
+                const questionDetailsFull = questionPerCategory.data[question]
+                let questionDetails = {
+                    category: category,
+                    questionType: questionDetailsFull.questionType,
+                    question: questionDetailsFull.question
+                }
+                allQuestions.push(questionDetails)
+                console.log(questionPerCategory.data[question])
+
+            }
+        }
+        return { success: true, data: allQuestions };
     } catch (error) {
         return { success: false, error: error.message };
     }
@@ -41,24 +86,9 @@ async function readQuestionsFromCategoryOnce(categoryName) {
     }
 }
 
-/**
- * Reads all categories from a Firestore database.
- */
-async function readAllCategories() {
-    try {
-        const q = query(collection(firebase_db, "categories"));
-        const querySnapshot = await getDocs(q);
-        let categories = []
-        querySnapshot.forEach((doc) => {
-            categories.push(doc.id)
-        });
-        return { success: true, data: categories };
-    } catch (error) {
-        return { success: false, error: error.message };
-    }
-}
 
 
 
 
-export { readQuestionsFromCategory, readQuestionsFromCategoryOnce, readAllCategories }
+
+export { readQuestionsFromCategory, readQuestionsFromCategoryOnce, readAllCategories, readAllQuestions }

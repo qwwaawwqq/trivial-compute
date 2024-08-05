@@ -9,7 +9,7 @@ import { initializeApp } from 'firebase/app';
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
 import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
-import { readQuestionsFromCategory, readAllCategories } from './src/firebase/questions/read-questions.js'
+import { readQuestionsFromCategory, readAllCategories, readAllQuestions } from './src/firebase/questions/read-questions.js'
 import { updateQuestion, updateCategory } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion, deleteCategory } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"
@@ -334,6 +334,20 @@ app.post('/api//signOut', (req, res) => {
 // /// ///////////////////
 
 // Read Endpoints
+app.get("/api/readAllQuestions", async (req, res) => {
+    try {
+        const result = await readAllQuestions()
+        if (result.success) {
+            res.status(200).send(result.data);
+        } else {
+            res.status(500).send(result.error);
+        }
+    } catch (error) {
+        console.log(console.log(error))
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+});
+
 app.get("/api/readAllCategories", async (req, res) => {
     try {
         const result = await readAllCategories()

@@ -35,13 +35,13 @@ export class Player {
      * @param {int} [position=Board.CENTER_POSITION] - The starting position of the player.
      * @param {Object<Color, boolean>} [score=Player.DEFAULT_SCORE] - The score of the player.
      */
-    constructor(name, tokenColor, grade = null, email = null, position = Board.CENTER_POSITION, score = Player.DEFAULT_SCORE) {
+    constructor(name, tokenColor, grade = null, email = null, position = Board.CENTER_POSITION, score = null) {
         this.name = name;
         this.tokenColor = tokenColor;
         this.grade = grade;
         this.email = email;
         this.position = position;
-        this._score = score;
+        this._score = {...Player.DEFAULT_SCORE};
         /**
          * Compared to my current position, which direction was this player's previous square in?
          * @type {string|null}

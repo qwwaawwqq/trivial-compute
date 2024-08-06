@@ -19,7 +19,7 @@ function loadQuestions() {
             console.log(questions)
             $('#question-table-body').empty();
             questions.forEach(function (question) {
-                $('#question-table-body').append(`<tr><td>${question.category}</td><td>${question.questionType}</td><td>${question.question}</td></tr>`);
+                $('#question-table-body').append(`<tr id=${question.uuid}><td>${question.category}</td><td>${question.questionType}</td><td>${question.question}</td></tr>`);
             });
             bindRowClickEvent();
         },
@@ -40,22 +40,24 @@ function deleteQuestion() {
     let selectedRow = $('tr.table-warning');
     if (selectedRow.length) {
         let questionText = selectedRow.find('td:last').text();
-        $.ajax({
-            url: '/api/deleteQuestion',
-            method: 'DELETE',
-            data: JSON.stringify({ question: questionText }),
-            contentType: 'application/json',
-            success: function (result) {
-                if (result.success) {
-                    loadQuestions();
-                } else {
-                    alert("Error deleting question: " + result.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("Error deleting question: " + error);
-            }
-        });
+        console.log(selectedRowelectedRow.find('td:last'))
+
+        // $.ajax({
+        //     url: '/api/deleteQuestion',
+        //     method: 'DELETE',
+        //     data: JSON.stringify({ question: questionText }),
+        //     contentType: 'application/json',
+        //     success: function (result) {
+        //         if (result.success) {
+        //             loadQuestions();
+        //         } else {
+        //             alert("Error deleting question: " + result.error);
+        //         }
+        //     },
+        //     error: function (xhr, status, error) {
+        //         alert("Error deleting question: " + error);
+        //     }
+        // });
     } else {
         alert("Please select a question to delete.");
     }

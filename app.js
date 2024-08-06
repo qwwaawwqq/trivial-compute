@@ -310,7 +310,7 @@ app.post('/api/login', (req, res) => {
 
 
 // Route to sign out the current user
-app.post('/api//signOut', (req, res) => {
+app.post('/api/signOut', (req, res) => {
     try {
         signOutUser((result) => {
             if (result.success) {
@@ -348,6 +348,7 @@ app.get("/api/readAllQuestions", async (req, res) => {
     }
 });
 
+
 app.get("/api/readAllCategories", async (req, res) => {
     try {
         const result = await readAllCategories()
@@ -361,7 +362,6 @@ app.get("/api/readAllCategories", async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
-
 
 
 app.post("/api/readQuestionsFromCategory", async (req, res) => {
@@ -399,35 +399,32 @@ app.put('/api/createNewCategory', async (req, res) => {
 });
 
 
-app.put('/api/addTextOpenEndedQuestionToCategory', (req, res) => {
+app.put('/api/addTextOpenEndedQuestionToCategory', async (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-        addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, (result) => {
-            if (result.success) {
-                res.status(200).send(result.message);
-            } else {
-                res.status(500).send(result.error);
-            }
-        });
-    } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
+        const result = await addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, choices)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
-app.put('/api/addTextMultipleChoiceQuestionToCategory', (req, res) => {
+app.put('/api/addTextMultipleChoiceQuestionToCategory', async (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-        addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, (result) => {
-            if (result.success) {
-                res.status(200).send(result.message);
-            } else {
-                res.status(500).send(result.error);
-            }
-        });
+        const result = await addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
+        }
     } catch (error) {
         console.log(error)
-        res.status(400).send(error.message)
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 
 });

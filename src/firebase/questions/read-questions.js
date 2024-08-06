@@ -36,7 +36,9 @@ async function readQuestionsFromCategory(categoryName) {
         const querySnap = await getDocs(collectionRef);
         let questions = [];
         querySnap.forEach((doc) => {
-            questions.push(doc.data());
+            let question = doc.data()
+            question["uuid"] = doc.id
+            questions.push(question);
         });
         return { success: true, data: questions };
     } catch (error) {
@@ -52,14 +54,8 @@ async function readAllQuestions() {
             const questionPerCategory = await readQuestionsFromCategory(category)
             for (const question in questionPerCategory.data) {
                 const questionDetailsFull = questionPerCategory.data[question]
-                let questionDetails = {
-                    category: category,
-                    questionType: questionDetailsFull.questionType,
-                    question: questionDetailsFull.question
-                }
-                allQuestions.push(questionDetails)
-                console.log(questionPerCategory.data[question])
-
+                questionDetailsFull["category"] = category
+                allQuestions.push(questionDetailsFull)
             }
         }
         return { success: true, data: allQuestions };

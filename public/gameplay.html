@@ -17,17 +17,31 @@
             <div class="pop">
                 <div class="questionDisplay"></div>
                 <div class="questionAnswer">
-                    <input type="text" class="form-control mb-2" id="player-answer" value="Answer">
+                    <input type="text" class="form-control mb-2" id="player_answer" value="">
+                </div>
+                <div class="realAnswer">
+
                 </div>
                 <div class="submitButton">
-                    <button class="btn btn-lg btn-primary">Submit</button>
+                    <button class="btn btn-lg btn-primary" id="player_submit">Submit</button>
                 </div>
+                <div class="compareAnswer"><h3></h3></div>
+                <div class="acknowledgeButton">
+                    <button class="btn btn-lg btn-primary" id="acknowledge">Confirm</button>
+                </div>
+            </div>
+            <div class="pop2">
+                <div class="centerSqareText">You landed on the center square! Choose a category below.</div>
+                <button class="btn btn-lg btn-primary catq1 textq" id="YELLOW"></button>
+                <button class="btn btn-lg btn-primary catq2 textq" id="RED"></button>
+                <button class="btn btn-lg btn-primary catq3 textq" id="BLUE"></button>
+                <button class="btn btn-lg btn-primary catq4 textq" id="GREEN"></button>
             </div>
             <div class="game-info">
                 <div class = "mt-3" id="current-player"></div>
                 <canvas id="dice"></canvas>
                 <button id="roll-dice" class="btn btn-primary p-3 mt-2">Roll the Die!</button>
-                <button id="end-turn" class="hidden btn btn-danger">End Turn</button>
+                <!-- <button id="end-turn" class="hidden btn btn-danger">End Turn</button> -->
                 <div class="mb-2 py-2 container text-center direction">Move Direction
                 <div class="row mb-1">
                     <div class="col">

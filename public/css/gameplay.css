@@ -22,15 +22,60 @@ body {
         background-position: 0% 50%;
     }
 }
-/* 
-.pop-up {
-} */
+
+.pop2{
+    z-index: 15;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: absolute;
+    padding-top: 70px;
+    width: 500px;
+    height: 600px;
+    background-color: white;
+    border-radius: 5px;
+    border: 5px solid black;
+    font-size: 30px;
+    gap: 10px;
+}
+
+.centerSqareText {
+    grid-column: 1/3;
+    grid-row: 1;
+    margin-top: 30px;
+}
+
+.pop2 .catq1{
+    grid-column: 1;
+    grid-row: 2;
+    background-color: yellow;
+    color: black;
+}
+
+.pop2 .catq2 {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: red;
+}
+.pop2 .catq3{
+    grid-column: 1;
+    grid-row: 3;
+    background-color: blue;
+}
+.pop2 .catq4 {
+    grid-column: 2;
+    grid-row: 3;
+    background-color: green;
+}
+
 
 .pop {
     z-index: 15;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 2fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 2fr 1fr 1fr;
     padding-left: 40px;
     padding-right: 40px;
     position: absolute;
@@ -41,13 +86,23 @@ body {
     border-radius: 5px;
     border: 5px solid black;
     font-size: 30px;
-
 }
 .questionDisplay {
     grid-column: 1/1;
     grid-row: 2/3;
 }
 
+.compareAnswer {
+    grid-column: 1/1;
+    grid-row: 4/5;
+}
+
+.realAnswer{
+    grid-row:4/5;
+}
+.acknowledgeButton{
+    grid-row: 6/7;
+}
 
 .questionAnswer{
     grid-column: 1/1;
@@ -174,28 +229,28 @@ button:disabled {
     top: 5px;
     left: 5px;
     background-color: red;
-    border: 1px solid white;
+    border: 3px solid white;
 }
 #player2_token {
     position: absolute;
     top: 5px;
     right: 5px;
     background-color: yellow;
-    border: 1px solid white;
+    border: 3px solid white;
 }
 #player3_token {
     position: absolute;
     bottom: 5px;
     left: 5px;
     background-color: green;
-    border: 1px solid white;
+    border: 3px solid white;
 }
 #player4_token {
     position: absolute;
     bottom: 5px;
     right: 5px;
     background-color: blue;
-    border: 1px solid white;
+    border: 3px solid white;
 }
 
 
@@ -261,10 +316,10 @@ button {
 .player1_score {
     background-color: white; /* Grey color */
     border: 3px solid black;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
     position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
@@ -275,7 +330,7 @@ button {
     right: -30px;
     bottom: -30px;
     left: -30px;
-    border: 4px solid red; /* Border styling */
+    border: 5px solid red; /* Border styling */
     background-color: transparent; 
     z-index: 1;
     box-sizing: border-box; 
@@ -283,10 +338,10 @@ button {
 .player2_score {
     background-color: white; /* Grey color */
     border: 3px solid black;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
     position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
@@ -297,7 +352,7 @@ button {
     right: -30px;
     bottom: -30px;
     left: -30px;
-    border: 4px solid yellow; /* Border styling */
+    border: 5px solid yellow; /* Border styling */
     background-color: transparent; 
     z-index: 1;
     box-sizing: border-box; 
@@ -305,10 +360,10 @@ button {
 .player3_score {
     background-color: white; /* Grey color */
     border: 3px solid black;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
     position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
@@ -319,7 +374,7 @@ button {
     right: -30px;
     bottom: -30px;
     left: -30px;
-    border: 4px solid green; /* Border styling */
+    border: 5px solid green; /* Border styling */
     background-color: transparent; 
     z-index: 1;
     box-sizing: border-box; 
@@ -327,10 +382,10 @@ button {
 .player4_score {
     background-color: white; /* Grey color */
     border: 3px solid black;
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
     position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
@@ -341,7 +396,7 @@ button {
     right: -30px;
     bottom: -30px;
     left: -30px;
-    border: 4px solid blue; /* Border styling */
+    border: 5px solid blue; /* Border styling */
     background-color: transparent; 
     z-index: 1;
     box-sizing: border-box; 

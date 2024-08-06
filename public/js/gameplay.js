@@ -38,6 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 })
 
+                for (let o=1; o<5; o++){
+                    let catKey = $(`.catq${o}`).attr('id');
+                    // console.log(catKey);
+                    // console.log(gameCategories[catKey]);
+                    $(`.catq${o}`).text(`${gameCategories[catKey]}`)
+                }
+
                 $('#current-player').text(`It's currently ${players[0]}'s turn!`);
                 let playerBlocks = [12, 16, 52, 56];
                 for (let j=0; j<4; j++){
@@ -53,12 +60,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     function createBoardGui() {
-
+        $('.pop').toggle(); //hide pop up right away
+        $('.pop2').toggle();
         const currentBoard = JSON.parse(localStorage.getItem('gameBoard'));
         console.log(currentBoard);
         $('.moveDir').prop('disabled', true); //turn move buttons off;
         const gameBoard = $('.game-board'); //Grabs HTML element to append the squares.
-
+        
         Object.keys(currentBoard).forEach(key => {
             let currentSquare = currentBoard[key];
             const square = document.createElement('div');
@@ -76,15 +84,67 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (key == 22) {
                 square.classList.add("player1_score");
+                const div_score_1 = document.createElement('div');
+                div_score_1.id = 'score1-1';
+                const div_score_2 = document.createElement('div');
+                div_score_2.id = 'score1-2';
+                const div_score_3 = document.createElement('div');
+                div_score_3.id = 'score1-3';
+                const div_score_4 = document.createElement('div');
+                div_score_4.id = 'score1-4';
+
+                const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
+                for (let k = 0; k < divs.length; k++) {
+                    square.appendChild(divs[k]);
+                }
             }
             else if (key == 26) {
                 square.classList.add("player2_score");
+                const div_score_1 = document.createElement('div');
+                div_score_1.id = 'score2-1';
+                const div_score_2 = document.createElement('div');
+                div_score_2.id = 'score2-2';
+                const div_score_3 = document.createElement('div');
+                div_score_3.id = 'score2-3';
+                const div_score_4 = document.createElement('div');
+                div_score_4.id = 'score2-4';
+
+                const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
+                for (let k = 0; k < divs.length; k++) {
+                    square.appendChild(divs[k]);
+            }
             }
             else if (key == 62) {
                 square.classList.add("player3_score");
+                const div_score_1 = document.createElement('div');
+                div_score_1.id = 'score3-1';
+                const div_score_2 = document.createElement('div');
+                div_score_2.id = 'score3-2';
+                const div_score_3 = document.createElement('div');
+                div_score_3.id = 'score3-3';
+                const div_score_4 = document.createElement('div');
+                div_score_4.id = 'score3-4';
+
+                const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
+                for (let k = 0; k < divs.length; k++) {
+                    square.appendChild(divs[k]);
+            }
             }
             else if (key == 66) {
                 square.classList.add("player4_score");
+                const div_score_1 = document.createElement('div');
+                div_score_1.id = 'score3-1';
+                const div_score_2 = document.createElement('div');
+                div_score_2.id = 'score3-2';
+                const div_score_3 = document.createElement('div');
+                div_score_3.id = 'score3-3';
+                const div_score_4 = document.createElement('div');
+                div_score_4.id = 'score3-4';
+
+                const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
+                for (let k = 0; k < divs.length; k++) {
+                    square.appendChild(divs[k]);
+            }
             }
             console.log(square.outerHTML);
 
@@ -96,8 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     rollButton.addEventListener('click', () => {
-        $('#end-turn').toggle();
-        $('#roll-dice').toggle();
         let gameID = localStorage.getItem('gameSessionID');
         console.log(gameID);
         $.ajax({
@@ -109,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
             success: function (response) {
                 requestAnimationFrame((timestamp)=>animateRoll(timestamp, response.roll));
                 updateDirectionButtonsGui(response.availableDirections);
+                $('#roll-dice').prop('disabled', true);
 
             },
             error: function (xhr, status, error) {
@@ -140,6 +199,67 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
+    $('#player_submit').click(function() {
+        let playerAnswer = $('#player_answer').val();
+        
+        // Log the value to the console
+        console.log(playerAnswer);
+        let gameID = localStorage.getItem('gameSessionID');
+        $('.realAnswer').toggle();
+        $('.acknowledgeButton').toggle();
+        $('.submitButton').toggle();
+
+
+        $.ajax({
+            url: '/api/game/evaluateAnswer',
+            method: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ gameSessionID : gameID, answer: playerAnswer}),
+            success: function (response) {
+                $('.realAnswer').text(response.correctAnswer);
+                if (playerAnswer == response.correctAnswer){
+                    $('.compareAnswer').text("CORRECT!");
+                }
+                else{
+                    $('.compareAnswer').text("INCORRECT!");
+                }
+                $('.compareAnswer').toggle();
+            },
+            error: function (xhr, status, error) {
+                alert("Error Evaluate Answer: " + error);
+            }
+        });
+
+    })
+
+
+    $('.acknowledgeButton').click(function() {
+        $('.realAnswer').toggle();
+        $('.compareAnswer').text("");
+        $('.pop').toggle(); 
+        $('#roll-dice').prop('disabled', false);
+        $('.submitButton').toggle();
+        // Log the value to the console
+        let gameID = localStorage.getItem('gameSessionID');
+
+        $.ajax({
+            url: '/api/game/acknowledgeAnswer',
+            method: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ gameSessionID : gameID}),
+            success: function (response) {
+                $('#current-player').text(`It's currently ${response.nextPlayerName}'s turn!`);
+                console.log(response.nextPlayerName);
+            },
+            error: function (xhr, status, error) {
+                alert("Error Evaluate Answer: " + error);
+            }
+        });
+
+    })
+
     function sendMovement(directionClick) {
         let gameID = localStorage.getItem('gameSessionID');
         console.log(gameID);
@@ -154,15 +274,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.squareType == "ROLL_AGAIN"){
                     console.log("Rolling again.");
                     $('#current-player').text(`Let's Go Gambling! Roll Again`);
-                    $('#end-turn').toggle();
-                    $('#roll-dice').toggle();
+                    $('#roll-dice').prop('disabled', false);
                     clearDie();
                 }
 
                 else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
                     console.log(response.question.questionTitle);
                     $('.questionDisplay').text(response.question.questionTitle);
-                    $('.pop-up').toggle();
+                    $('.pop').toggle();
+                    $('.realAnswer').toggle();
+                    $('.acknowledgeButton').toggle();
+                    $('.compareAnswer').toggle();
+
+                }
+                else if(response.squareType =="CENTER") {
+                    $('.pop2').toggle();
 
                 }
                 updateDirectionButtonsGui(response.availableDirections);
@@ -200,6 +326,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Add functionality to return to the previous page
     });
+
+    $('.textq').click(function() {
+        let direction = $(this).attr("id");
+        $('.pop2').toggle();
+        getCategoryQuestion(direction);
+
+    })
+
+    function getCategoryQuestion(colorID) {
+        let gameID = localStorage.getItem('gameSessionID');
+        $.ajax({
+            url: '/api/game/selectCategory',
+            method: 'PUT',
+            dataType: 'json',
+            contentType: 'application/json',
+            data: JSON.stringify({ gameSessionID : gameID, color: colorID}),
+            success: function (response) {
+                $('.questionDisplay').text(response.questionTitle);
+                $('.pop').toggle();
+                $('.realAnswer').toggle();
+                $('.acknowledgeButton').toggle();
+                $('.compareAnswer').toggle();
+            },
+            error: function (xhr, status, error) {
+                alert("Error Select Category: " + error);
+            }
+        });
+    }
+
+
+
+
+
 
     createBoardGui();
     getNamesGui();

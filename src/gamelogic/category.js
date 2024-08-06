@@ -38,7 +38,7 @@ export class Category {
                 let category = new Category(name);
                 
                 const questions = []
-                for (const questionData of questionsData) {
+                for (const questionData of questionsData.data) {
                     const question = this.instantiateQuestionSubclass(questionData);
                     questions.push(question);
                 }

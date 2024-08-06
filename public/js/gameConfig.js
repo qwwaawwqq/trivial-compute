@@ -42,7 +42,7 @@ $(document).ready(function() {
             players.push(name);
             let category = $(`#player-${i}-config select`).val();
             let testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
-            categoryNames[testColors[i-1]] = `DO_NOT_TOUCH_${i}`;      
+            categoryNames[testColors[i-1]] = category;      
         }
 
         console.log('Starting game with players:', players);

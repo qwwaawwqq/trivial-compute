@@ -345,9 +345,9 @@ export class GameSession {
         } else if (this.getCurrentSquare().isCenter) {
             // This should prompt the player to choose a category.
             squareType = SquareType.CENTER;
-            categoryOptions = []; 
-            for (key in this.categories) {
-                categoryOptions[key] = categories[key].toJSON();
+            categoryOptions = {}; 
+            for (const key in this.categories) {
+                categoryOptions[key] = this.categories[key].toJSON();
             }
         } else if (this.getCurrentSquare().isHQ) {
             // This should prompt the player to answer a question.

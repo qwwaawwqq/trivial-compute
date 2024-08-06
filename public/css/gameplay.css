@@ -96,19 +96,23 @@ body {
     grid-column: 1/1;
     grid-row: 4/5;
 }
-
 .realAnswer{
-    grid-row:4/5;
+
+    grid-row:5/6;
 }
-.acknowledgeButton{
+
+.correctButton{
     grid-row: 6/7;
+}
+.incorrectButton{
+    grid-row: 7/8;
 }
 
 .questionAnswer{
     grid-column: 1/1;
     grid-row: 3/4;
 }
-.submitButton{
+.revealButton{
     grid-row: 5/6;
 }
 

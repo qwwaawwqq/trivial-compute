@@ -199,31 +199,24 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
-    $('#player_submit').click(function() {
-        let playerAnswer = $('#player_answer').val();
+    $('#reveal').click(function() {
         
         // Log the value to the console
-        console.log(playerAnswer);
         let gameID = localStorage.getItem('gameSessionID');
-        $('.realAnswer').toggle();
-        $('.acknowledgeButton').toggle();
-        $('.submitButton').toggle();
-
+        $('.revealButton').toggle();
+        $('.correctButton').toggle();
+        $('.incorrectButton').toggle();
 
         $.ajax({
-            url: '/api/game/evaluateAnswer',
+            url: '/api/game/showAnswer',
             method: 'PUT',
             dataType: 'json',
             contentType: 'application/json',
-            data: JSON.stringify({ gameSessionID : gameID, answer: playerAnswer}),
+            data: JSON.stringify({ gameSessionID : gameID}),
             success: function (response) {
                 $('.realAnswer').text(response.correctAnswer);
-                if (playerAnswer == response.correctAnswer){
-                    $('.compareAnswer').text("CORRECT!");
-                }
-                else{
-                    $('.compareAnswer').text("INCORRECT!");
-                }
+                $('.realAnswer').toggle();
+                $('.compareAnswer').text("Correct Answer:");
                 $('.compareAnswer').toggle();
             },
             error: function (xhr, status, error) {
@@ -234,21 +227,24 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
 
-    $('.acknowledgeButton').click(function() {
-        $('.realAnswer').toggle();
-        $('.compareAnswer').text("");
+    $('.judge').click(function() {
+        // $('.realAnswer').toggle();
+        // $('.compareAnswer').toggle();
+        // $('.compareAnswer').text("");
         $('.pop').fadeToggle(); 
         $('#roll-dice').prop('disabled', false);
-        $('.submitButton').toggle();
+        $('.revealButton').toggle();
         // Log the value to the console
         let gameID = localStorage.getItem('gameSessionID');
+        let id = $(this).attr("id");
+        const isCorrect = id === "correct";
 
         $.ajax({
-            url: '/api/game/acknowledgeAnswer',
+            url: '/api/game/judgeAnswer',
             method: 'PUT',
             dataType: 'json',
             contentType: 'application/json',
-            data: JSON.stringify({ gameSessionID : gameID}),
+            data: JSON.stringify({ gameSessionID : gameID, isCorrect: isCorrect}),
             success: function (response) {
                 $('#current-player').text(`It's currently ${response.nextPlayerName}'s turn!`);
                 console.log(response.nextPlayerName);
@@ -283,8 +279,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     $('.questionDisplay').text(response.question.questionTitle);
                     $('.pop').fadeToggle(300);
                     $('.realAnswer').toggle();
-                    $('.acknowledgeButton').toggle();
                     $('.compareAnswer').toggle();
+                    $('.correctButton').toggle();
+                    $('.incorrectButton').toggle();
 
                 }
                 else if(response.squareType =="CENTER") {
@@ -346,8 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('.questionDisplay').text(response.questionTitle);
                 $('.pop').fadeToggle();
                 $('.realAnswer').toggle();
-                $('.acknowledgeButton').toggle();
                 $('.compareAnswer').toggle();
+                $('.correctButton').toggle();
+                $('.incorrectButton').toggle();
             },
             error: function (xhr, status, error) {
                 alert("Error Select Category: " + error);

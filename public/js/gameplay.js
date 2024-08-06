@@ -1,11 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const diceElement = document.getElementById('dice');
     const rollButton = document.getElementById('roll-dice');
-    const currentPlayerElement = document.getElementById('current-player');
-    const returnButton = document.getElementById('return-button');
-    const displayQuestionButton = document.getElementById('display-question-button');
-    const chooseCategoryButton = document.getElementById('choose-category-button');
-
     
     function getNamesGui() {
         let gameID = localStorage.getItem('gameSessionID');
@@ -58,10 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     
-
     function createBoardGui() {
         $('.pop').toggle(); //hide pop up right away
         $('.pop2').toggle();
+        $('.pop3').toggle();
         const currentBoard = JSON.parse(localStorage.getItem('gameBoard'));
         console.log(currentBoard);
         $('.moveDir').prop('disabled', true); //turn move buttons off;
@@ -86,12 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 square.classList.add("player1_score");
                 const div_score_1 = document.createElement('div');
                 div_score_1.id = 'score1-1';
+                div_score_1.classList.add('scoreDisplay');
                 const div_score_2 = document.createElement('div');
                 div_score_2.id = 'score1-2';
+                div_score_2.classList.add('scoreDisplay');
                 const div_score_3 = document.createElement('div');
                 div_score_3.id = 'score1-3';
+                div_score_3.classList.add('scoreDisplay');
                 const div_score_4 = document.createElement('div');
                 div_score_4.id = 'score1-4';
+                div_score_4.classList.add('scoreDisplay');
 
                 const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
                 for (let k = 0; k < divs.length; k++) {
@@ -102,12 +100,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 square.classList.add("player2_score");
                 const div_score_1 = document.createElement('div');
                 div_score_1.id = 'score2-1';
+                div_score_1.classList.add('scoreDisplay');
                 const div_score_2 = document.createElement('div');
                 div_score_2.id = 'score2-2';
+                div_score_2.classList.add('scoreDisplay');
                 const div_score_3 = document.createElement('div');
                 div_score_3.id = 'score2-3';
+                div_score_3.classList.add('scoreDisplay');
                 const div_score_4 = document.createElement('div');
                 div_score_4.id = 'score2-4';
+                div_score_4.classList.add('scoreDisplay');
 
                 const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
                 for (let k = 0; k < divs.length; k++) {
@@ -118,12 +120,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 square.classList.add("player3_score");
                 const div_score_1 = document.createElement('div');
                 div_score_1.id = 'score3-1';
+                div_score_1.classList.add('scoreDisplay');
                 const div_score_2 = document.createElement('div');
                 div_score_2.id = 'score3-2';
+                div_score_2.classList.add('scoreDisplay');
                 const div_score_3 = document.createElement('div');
                 div_score_3.id = 'score3-3';
+                div_score_3.classList.add('scoreDisplay');
                 const div_score_4 = document.createElement('div');
                 div_score_4.id = 'score3-4';
+                div_score_4.classList.add('scoreDisplay');
 
                 const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
                 for (let k = 0; k < divs.length; k++) {
@@ -133,13 +139,17 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (key == 66) {
                 square.classList.add("player4_score");
                 const div_score_1 = document.createElement('div');
-                div_score_1.id = 'score3-1';
+                div_score_1.id = 'score4-1';
+                div_score_1.classList.add('scoreDisplay');
                 const div_score_2 = document.createElement('div');
-                div_score_2.id = 'score3-2';
+                div_score_2.id = 'score4-2';
+                div_score_2.classList.add('scoreDisplay');
                 const div_score_3 = document.createElement('div');
-                div_score_3.id = 'score3-3';
+                div_score_3.id = 'score4-3';
+                div_score_3.classList.add('scoreDisplay');
                 const div_score_4 = document.createElement('div');
-                div_score_4.id = 'score3-4';
+                div_score_4.id = 'score4-4';
+                div_score_4.classList.add('scoreDisplay');
 
                 const divs = [div_score_1, div_score_2, div_score_3, div_score_4];
                 for (let k = 0; k < divs.length; k++) {
@@ -151,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.append(square);
         })
 
-        // addPlayerPieces();
     }
 
 
@@ -215,9 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
             data: JSON.stringify({ gameSessionID : gameID}),
             success: function (response) {
                 $('.realAnswer').text(response.correctAnswer);
-                $('.realAnswer').toggle();
+                $('.realAnswer').fadeToggle(300);
                 $('.compareAnswer').text("Correct Answer:");
-                $('.compareAnswer').toggle();
+                $('.compareAnswer').fadeToggle(300);
             },
             error: function (xhr, status, error) {
                 alert("Error Evaluate Answer: " + error);
@@ -248,6 +257,17 @@ document.addEventListener('DOMContentLoaded', () => {
             success: function (response) {
                 $('#current-player').text(`It's currently ${response.nextPlayerName}'s turn!`);
                 console.log(response.nextPlayerName);
+                console.log(response);
+                if (response.scoreboardToUpdate != null) {
+                    let playerScoreIndex = response.scoreboardToUpdate + 1;
+                    updateScore(playerScoreIndex, response.score);
+                }
+                if (response.endGameData != null) {
+
+                    let winnerName = response.endGameData.winner;
+                    $('#gameWinner').text(winnerName + " is the winner!");
+                    $(".pop3").fadeToggle(200);
+                }
             },
             error: function (xhr, status, error) {
                 alert("Error Evaluate Answer: " + error);
@@ -255,6 +275,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     })
+
+
+    function updateScore(index, score){
+        if (score.RED){
+            $(`#score${index}-1`).addClass("scoreRed");
+        }
+        if (score.YELLOW){
+            $(`#score${index}-2`).addClass("scoreYellow");
+        }
+        if (score.GREEN){
+            $(`#score${index}-3`).addClass("scoreGreen");
+        }
+        if (score.BLUE){
+            $(`#score${index}-4`).addClass("scoreBlue");
+        }
+    }
+
+
+
+    // "RED": true,
+    // "BLUE": false,
+    // "GREEN": false,
+    // "YELLOW": true
+
 
     function sendMovement(directionClick) {
         let gameID = localStorage.getItem('gameSessionID');
@@ -313,7 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearDie();
     });
 
-    returnButton.addEventListener('click', () => {
+    $("#return-button").click(function() {
         let consent = confirm("Return to Home?");
         if (consent) {
             window.location.href = 'gameConfig.html'
@@ -322,7 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Somebody tried to quit");
         }
         // Add functionality to return to the previous page
-    });
+    })
+
 
     $('.textq').click(function() {
         let direction = $(this).attr("id");
@@ -352,11 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-
-
-
-
 
     createBoardGui();
     getNamesGui();

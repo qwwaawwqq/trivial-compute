@@ -345,7 +345,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function movePlayerToken(playerIndex, destination) {
         let token = $(`#player${playerIndex+1}_token`);
-        $(`#player${playerIndex}_token`).remove();
+        console.log(token);
+        $(`#player${playerIndex+1}_token`).remove();
         $(`#${destination}`).append(token);
     }
 

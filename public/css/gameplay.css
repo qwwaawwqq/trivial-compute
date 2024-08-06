@@ -285,7 +285,7 @@ button:disabled {
 
 
 .player-piece {
-    z-index: 10;
+    z-index: 12;
     border-radius: 50%;
     width: 28px;
     height: 28px;

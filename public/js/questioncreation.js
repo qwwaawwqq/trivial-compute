@@ -49,6 +49,8 @@ function loadCategories() {
 }
 
 function updateQuestionsPerType() {
+    $("#question-type-options").empty()
+    $("#question-type-dropdown").val()
     const type = $("#question-type-dropdown").val()
     if (type == "Multiple Choice") {
         $("#question-type-options").append(`

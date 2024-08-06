@@ -6,15 +6,9 @@ $(document).ready(function () {
 
 
 function bindControlButtons() {
-    // $('#deleteQuestionButton').on('click', deleteQuestion);
     // $('#previewQuestionButton').on('click', previewQuestion);
-    // $('#addQuestionButton').on('click', addQuestion);
     $('#question-type-dropdown').on('change', updateQuestionsPerType)
 }
-
-// function updateQuestionsPerType() {
-//     console.log($("#question-type-dropdown").val())
-// }
 
 function loadCategories() {
     $.ajax({
@@ -159,6 +153,8 @@ function addOpenEndedQuestion() {
         }
     });
 }
+
+
 
 function exitPreview() {
     window.location.href = 'manageQuestion.html'; // Adjust the path if necessary

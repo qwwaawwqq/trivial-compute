@@ -39,25 +39,27 @@ function bindRowClickEvent() {
 function deleteQuestion() {
     let selectedRow = $('tr.table-warning');
     if (selectedRow.length) {
-        let questionText = selectedRow.find('td:last').text();
-        console.log(selectedRowelectedRow.find('td:last'))
+        let category = selectedRow.find('td:first').text();
+        let questionId = selectedRow.attr('id');
+        console.log(category, questionId)
 
-        // $.ajax({
-        //     url: '/api/deleteQuestion',
-        //     method: 'DELETE',
-        //     data: JSON.stringify({ question: questionText }),
-        //     contentType: 'application/json',
-        //     success: function (result) {
-        //         if (result.success) {
-        //             loadQuestions();
-        //         } else {
-        //             alert("Error deleting question: " + result.error);
-        //         }
-        //     },
-        //     error: function (xhr, status, error) {
-        //         alert("Error deleting question: " + error);
-        //     }
-        // });
+        $.ajax({
+            url: '/api/deleteQuestion',
+            method: 'POST',
+            data: JSON.stringify({ category: category, questionId: questionId }),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (result) {
+                if (result.success) {
+                    loadQuestions();
+                } else {
+                    alert("Error deleting question: " + result.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("Error deleting question: " + error);
+            }
+        });
     } else {
         alert("Please select a question to delete.");
     }

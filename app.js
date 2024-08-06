@@ -484,19 +484,17 @@ app.put('/api/updateCategory', async (req, res) => {
 
 
 // Delete Enpoints
-app.delete('/updateQuestion', (req, res) => {
+app.delete('/api/deleteQuestions', async (req, res) => {
     try {
         const { categoryName, questionID } = req.body;
-        deleteQuestionn(categoryName, questionID, (result) => {
-            if (result.success) {
-                res.status(200).send(result.message);
-            } else {
-                res.status(500).send(result.error);
-            }
-        });
-    } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
+        const result = await deleteQuestion(categoryName, questionID)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            res.status(500).json(result);
+        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 
@@ -514,19 +512,19 @@ app.delete('/api/deleteCategory', async (req, res) => {
     }
 });
 
-app.delete('/api/deleteQuestion', (req, res) => {
+app.post('/api/deleteQuestion', async (req, res) => {
     try {
-        const { categoryName, questionID } = req.body;
-        deleteQuestion(categoryName, questionID, (result) => {
-            if (result.success) {
-                res.status(200).json(result);
-            } else {
-                res.status(500).json(result);
-            }
-        });
-    } catch (error) {
-        console.log(error)
-        res.status(400).send(error.message)
+        const { category, questionId } = req.body;
+        const result = await deleteQuestion(category, questionId)
+        if (result.success) {
+            res.status(200).json(result);
+        } else {
+            console.log(result)
+            res.status(500).json(result);
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 });
 

@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.acknowledgeButton').click(function() {
         $('.realAnswer').toggle();
         $('.compareAnswer').text("");
-        $('.pop').toggle(); 
+        $('.pop').fadeToggle(); 
         $('#roll-dice').prop('disabled', false);
         $('.submitButton').toggle();
         // Log the value to the console
@@ -281,14 +281,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
                     console.log(response.question.questionTitle);
                     $('.questionDisplay').text(response.question.questionTitle);
-                    $('.pop').toggle();
+                    $('.pop').fadeToggle(300);
                     $('.realAnswer').toggle();
                     $('.acknowledgeButton').toggle();
                     $('.compareAnswer').toggle();
 
                 }
                 else if(response.squareType =="CENTER") {
-                    $('.pop2').toggle();
+                    $('.pop2').fadeToggle(300);
 
                 }
                 updateDirectionButtonsGui(response.availableDirections);
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: JSON.stringify({ gameSessionID : gameID, color: colorID}),
             success: function (response) {
                 $('.questionDisplay').text(response.questionTitle);
-                $('.pop').toggle();
+                $('.pop').fadeToggle();
                 $('.realAnswer').toggle();
                 $('.acknowledgeButton').toggle();
                 $('.compareAnswer').toggle();

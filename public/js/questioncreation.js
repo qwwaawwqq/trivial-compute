@@ -102,24 +102,24 @@ function updateQuestionsPerType() {
             <button class="btn btn-primary" onclick="addOpenEndedQuestion()">Add Multiple Choice Question</button>
             `
         )
-    } else if (type == "Video") {
+    } else {
         $("#question-type-options").append(`
-            <small class="form-text text-muted">
-                Question
-            </small>
-            <input id="v-question" type="text" class="form-control d-inline-block" id="rename-category"
-            placeholder="Question">
-            <small class="form-text text-muted">
-                Answer
-            </small>
-             <input id="oe-answer" type="text" class="form-control d-inline-block" id="rename-category"
-            placeholder="Answer">
-            <input id="video-file" type="file" id="myFile" name="filename">
-            <button class="btn btn-primary" onclick="addMediaQuestion()">Add ${type} Question</button>
-            `
-        )
+                <small class="form-text text-muted">
+                    Question
+                </small>
+                <input id="media-question" type="text" class="form-control d-inline-block" id="rename-category"
+                placeholder="Question">
+                <small class="form-text text-muted">
+                    Answer
+                </small>
+                 <input id="media-answer" type="text" class="form-control d-inline-block" id="rename-category"
+                placeholder="Answer">
+                <input id="file" type="file" id="myFile" name="filename">
+                <button class="btn btn-primary" onclick="addMediaQuestion()">Add ${type} Question</button>
+                `)
     }
 }
+
 
 function addMultipleChoiceQuestion() {
     let categoryName = $('#question-category-dropdown').val();
@@ -173,12 +173,11 @@ function addMediaQuestion() {
     let type = $("#question-type-dropdown").val()
     let categoryName = $('#question-category-dropdown').val();
     let difficultyLevel = $('#question-difficulty-dropdown').val();
-    let answer = $('#v-answer').val();
+    let answer = $('#media-answer').val();
     let creator = $('#creator').val();
-    let question = $('#v-question').val();
-    let fileInput = $('#video-file')[0];
+    let question = $('#media-question').val();
+    let fileInput = $('#file')[0];
     let file = fileInput.files[0];
-    // //categoryName, difficultyLevel, creator, answer, question, type, file
 
     const formData = new FormData();
     formData.append('file', file); // Append the file to the form data

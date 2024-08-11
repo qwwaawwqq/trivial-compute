@@ -472,13 +472,14 @@ app.put('/api/addTextMultipleChoiceQuestionToCategory', async (req, res) => {
 
 });
 
-app.post('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
+app.put('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
         addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
             if (result.success) {
                 res.status(200).send(result.message);
             } else {
+                console.log(result.error)
                 res.status(500).send(result.error);
             }
         });

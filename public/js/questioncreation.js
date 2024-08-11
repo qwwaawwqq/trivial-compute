@@ -102,7 +102,22 @@ function updateQuestionsPerType() {
             <button class="btn btn-primary" onclick="addOpenEndedQuestion()">Add Multiple Choice Question</button>
             `
         )
-
+    } else if (type == "Video") {
+        $("#question-type-options").append(`
+            <small class="form-text text-muted">
+                Question
+            </small>
+            <input id="v-question" type="text" class="form-control d-inline-block" id="rename-category"
+            placeholder="Question">
+            <small class="form-text text-muted">
+                Answer
+            </small>
+             <input id="oe-answer" type="text" class="form-control d-inline-block" id="rename-category"
+            placeholder="Answer">
+            <input id="video-file" type="file" id="myFile" name="filename">
+            <button class="btn btn-primary" onclick="addMediaQuestion()">Add ${type} Question</button>
+            `
+        )
     }
 }
 
@@ -118,8 +133,6 @@ function addMultipleChoiceQuestion() {
     choice.push($('#mc-choice-2').val())
     choice.push($('#mc-choice-3').val())
     choice.push($('#mc-choice-4').val())
-
-
     $.ajax({
         url: '/api/addTextMultipleChoiceQuestionToCategory',
         method: 'PUT',
@@ -138,8 +151,8 @@ function addMultipleChoiceQuestion() {
 function addOpenEndedQuestion() {
     let categoryName = $('#question-category-dropdown').val();
     let difficultyLevel = $('#question-difficulty-dropdown').val();
-    let creator = $('#oe-answer').val();
-    let answer = $('#creator').val();
+    let answer = $('#oe-answer').val();
+    let creator = $('#creator').val();
     let question = $('#oe-question').val();
     $.ajax({
         url: '/api/addTextOpenEndedQuestionToCategory',
@@ -156,6 +169,43 @@ function addOpenEndedQuestion() {
     });
 }
 
+function addMediaQuestion() {
+    let type = $("#question-type-dropdown").val()
+    let categoryName = $('#question-category-dropdown').val();
+    let difficultyLevel = $('#question-difficulty-dropdown').val();
+    let answer = $('#v-answer').val();
+    let creator = $('#creator').val();
+    let question = $('#v-question').val();
+    let fileInput = $('#video-file')[0];
+    let file = fileInput.files[0];
+    // //categoryName, difficultyLevel, creator, answer, question, type, file
+
+    const formData = new FormData();
+    formData.append('file', file); // Append the file to the form data
+    formData.append('categoryName', categoryName);
+    formData.append('difficultyLevel', difficultyLevel);
+    formData.append('answer', answer);
+    formData.append('creator', creator);
+    formData.append('question', question);
+    formData.append('type', type);
+
+
+    $.ajax({
+        url: '/api/addMediaQuestionToCategory',
+        method: 'PUT',
+        type: 'PUT',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            alert("Question Created")
+        },
+        error: function (xhr, status, error) {
+            console.error("Error details:", xhr.responseText);
+            alert("Error adding category: " + xhr.responseText);
+        }
+    });
+}
 
 
 function exitPreview() {

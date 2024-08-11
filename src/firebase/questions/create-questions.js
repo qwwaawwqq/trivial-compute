@@ -111,7 +111,8 @@ async function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyL
  */
 function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
     try {
-        const storageRef = ref(firebasee_storage, `${type}/${file.originalname + "_" + v4()}`);
+
+        const storageRef = ref(firebase_storage, `${type.toLowerCase()}/${file.originalname + "_" + v4()}`);
         const storagePath = storageRef._location.path_
         const questionId = v4()
         const metadata = {
@@ -135,6 +136,7 @@ function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answ
         })
         callback({ success: true, message: "Created New Image Question" })
     } catch (error) {
+        console.log(error)
         callback({ success: false, message: "Cannot Create New Text Multiple Choice Questions" })
     }
 }

@@ -72,10 +72,12 @@ export class Category {
         const difficultyLevel = questionObject["difficultyLevel"];
         const creator = questionObject["creator"];
         const answer = questionObject["answer"];
-        const questionType = questionObject["typeType"];
+        const questionType = questionObject["questionType"];
+
+        
         
         switch (questionType) {
-            case "openEnded":
+            case "Text":
                 return new OpenEndedTextQuestion(
                     questionTitle, 
                     questionStats, 
@@ -84,7 +86,7 @@ export class Category {
                     creator, 
                     answer
                 );
-            case QuestionType.FREE_TEXT:
+            case "text":
                 return new OpenEndedTextQuestion(
                     questionTitle, 
                     questionStats, 
@@ -93,7 +95,7 @@ export class Category {
                     creator, 
                     answer
                 );
-            case QuestionType.MULTIPLE_CHOICE:
+            case "Multiple Choice":
                 return new MultipleChoiceTextQuestion(
                     questionObject["options"],
                     questionTitle, 
@@ -103,9 +105,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case QuestionType.AUDIO:
+            case "Audio":
                 return new AudioQuestion(
-                    questionObject["audioURL"],
+                    questionObject["fileLocation"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 
@@ -113,9 +115,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case QuestionType.IMAGE:
+            case "Image":
                 return new ImageQuestion(
-                    questionObject["imageURL"],
+                    questionObject["fileLocation"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 
@@ -123,9 +125,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case QuestionType.VIDEO:
+            case "Video":
                 return new VideoQuestion(
-                    questionObject["videoURL"],
+                    questionObject["fileLocation"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 

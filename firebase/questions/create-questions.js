@@ -109,10 +109,10 @@ function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, 
  */
 function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
     try {
-        const storageRef = ref(firebasee_storage, `${type}/${file.originalname + "_" + v4()}`);
+        const questionId = v4()
+        const storageRef = ref(firebase_storage, `${type}/${file.originalname + "_" + questionId}`);
         const storagePath = storageRef._location.path_
         const db = getFirestore();
-        const questionId = v4()
         const metadata = {
             contentType: file.mimetype
         }

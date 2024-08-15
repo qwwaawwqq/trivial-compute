@@ -25,26 +25,27 @@ export class Question {
         this.dateCreated = dateCreated;
         this.difficultyLevel = difficultyLevel;
         this.creator = creator;
-        this.answer = answer;
+        this._answer = answer;
     }
 
     /**
      * Returns the correct answer to the question.
      * @returns {string} - The correct answer.
      */
-    getAnswer() {
-        return this.answer;
+    get answer() {
+        return this._answer;
     }
 
     toJSON() {
-        return {
-            typeOfQuestion: this.typeOfQuestion,
-            questionTitle: this.questionTitle,
-            questionStats: this.questionStats.toJSON(),
-            dateCreated: this.dateCreated,
-            difficultyLevel: this.difficultyLevel,
-            creator: this.creator,
-            answer: this.answer
-        }
+        return this;
+        // return {
+        //     typeOfQuestion: this.typeOfQuestion,
+        //     questionTitle: this.questionTitle,
+        //     questionStats: this.questionStats.toJSON(),
+        //     dateCreated: this.dateCreated,
+        //     difficultyLevel: this.difficultyLevel,
+        //     creator: this.creator,
+        //     answer: this.answer
+        // }
     }
 }

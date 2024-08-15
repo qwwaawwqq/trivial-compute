@@ -160,7 +160,7 @@ export class GameSession {
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     evaluateAnswer(answer) {
-        const correctAnswer = this.currentQuestion.getAnswer();
+        const correctAnswer = this.currentQuestion.answer;
         const isCorrect = correctAnswer === answer;
         this.recentlyAnsweredCorrectly = isCorrect;
         return {
@@ -216,7 +216,7 @@ export class GameSession {
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     showAnswer() {
-        const correctAnswer = this.currentQuestion.getAnswer();
+        const correctAnswer = this.currentQuestion.answer;
         return {
             "correctAnswer": correctAnswer
         };
@@ -272,6 +272,7 @@ export class GameSession {
     selectCategory(color) {
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
+        console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -447,6 +448,7 @@ export class GameSession {
         const color = this.getCurrentSquare().color;
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
+        console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 

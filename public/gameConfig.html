@@ -4,17 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute - Game Configuration</title>
+    <!-- Bootstrap CSS for styling -->
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <!-- Custom CSS for additional styling -->
     <link rel="stylesheet" href="./css/gameConfig.css">
+    <!-- jQuery library for DOM manipulation and AJAX -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Custom JavaScript for game configuration logic -->
     <script src="./js/gameConfig.js"></script>
 </head>
 <body>
 
+    <!-- Main container for the game configuration -->
     <div class="container border border-3 border-dark rounded p-4">
+        <!-- Header row -->
         <div class="row justify-content-center align-content-center h-100">
-                <h1 class="display-4 text-center mb-4">Trivial Compute Game Configuration</h1>
+                <h1 class="text-center mb-4">Trivial Compute Game Configuration</h1>
                 </div>
+        <!-- Player management buttons row -->
         <div class="row justify-content-center">  
             <div class="col-auto mb-3">              
             <button id="add-player-btn" class="btn btn-secondary btn-fixed">Add Player</button>
@@ -22,55 +29,41 @@
         </div>
             </div>    
 
+                <!-- Player configuration section -->
                 <div class="row mb-3">
                     <div class="col-2">
                    </div>
                     <div class="col-12 d-flex justify-content-around my-3">
+                        <!-- Player 1 configuration -->
                         <div class="player-config text-center" id="player-1-config">
                             <label for="player-1-name" class="btn btn-danger mb-2">Player 1</label>
                             <input type="text" class="form-control mb-2" id="player-1-name" value="Larry">
-                        </div>
-                        <div class="player-config text-center" id="player-2-config">
-                            <label for="player-2-name" class="btn btn-warning mb-2">Player 2</label>
-                            <input type="text" class="form-control mb-2" id="player-2-name" value="Curly">
-                        </div>
-                        <div class="player-config text-center" id="player-3-config">
-                            <label for="player-3-name" class="btn btn-success mb-2">Player 3</label>
-                            <input type="text" class="form-control mb-2" id="player-3-name" value="Moe">
-                        </div>
-                        <div class="player-config text-center" id="player-4-config">
-                            <label for="player-4-name" class="btn btn-primary mb-2">Player 4</label>
-                            <input type="text" class="form-control mb-2" id="player-4-name" value="Shemp">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row mb-3">
-                    <div class="col-2">
-                   </div>
-                    <div class="col-12 d-flex justify-content-around my-3">
-                        <div class="category-config text-center" id="category-YELLOW-config">
                             <label for="yellow-category-select" class="btn btn-warning">Yellow Category</label>
                             <select class="form-select my-2 category-select" id="yellow-category-select">
-                                <option>Geography</option>
+                                <option selected>Geography</option>
                                 <option>Art & Literature</option>
                                 <option>Science & Nature</option>
                                 <option>History</option>
                                 <option>Sports & Leisure</option>
                             </select>
                         </div>
-                        <div class="category-config text-center" id="category-BLUE-config">
+                        <!-- Player 2 configuration -->
+                        <div class="player-config text-center" id="player-2-config">
+                            <label for="player-2-name" class="btn btn-warning mb-2">Player 2</label>
+                            <input type="text" class="form-control mb-2" id="player-2-name" value="Curly">
                             <label for="blue-category-select" class="btn btn-primary">Blue Category</label>
                             <select class="form-select my-2 category-select" id="blue-category-select">
                                 <option>Geography</option>
-                                <option selected>Art & Literature</option>
+                                <option>Art & Literature</option>
                                 <option>Science & Nature</option>
                                 <option>History</option>
-                                <option>Sports & Leisure</option>
+                                <option selected> Sports & Leisure</option>
                             </select>
                         </div>
-                        <div class="category-config text-center" id="category-RED-config">
+                        <!-- Player 3 configuration -->
+                        <div class="player-config text-center" id="player-3-config">
+                            <label for="player-3-name" class="btn btn-success mb-2">Player 3</label>
+                            <input type="text" class="form-control mb-2" id="player-3-name" value="Moe">
                             <label for="red-category-select" class="btn btn-danger">Red Category</label>
                             <select class="form-select my-2 category-select" id="red-category-select">
                                 <option>Geography</option>
@@ -80,7 +73,10 @@
                                 <option>Sports & Leisure</option>
                             </select>
                         </div>
-                        <div class="category-config text-center" id="category-GREEN-config">
+                        <!-- Player 4 configuration -->
+                        <div class="player-config text-center" id="player-4-config">
+                            <label for="player-4-name" class="btn btn-primary mb-2">Player 4</label>
+                            <input type="text" class="form-control mb-2" id="player-4-name" value="Shemp">
                             <label for="green-category-select" class="btn btn-success">Green Category</label>
                             <select class="form-select my-2 category-select" id="green-category-select">
                                 <option>Geography</option>
@@ -92,6 +88,7 @@
                         </div>
                     </div>
                 </div>
+                    <!-- Navigation buttons -->
                     <div class="row justify-content-center">
                         <div class="col-auto">
                         <button id="return" class="btn btn-lg btn-secondary mx-">Return</button>

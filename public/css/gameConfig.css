@@ -1,3 +1,4 @@
+/* Global styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -11,6 +12,7 @@ body {
 	animation: gradient 15s ease infinite;
 }
 
+/* Animation for background gradient */
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;
@@ -23,6 +25,7 @@ body {
 	}
 }
 
+/* Main container styles */
 .container {
     text-align: center;
     background-color: white;
@@ -31,8 +34,15 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+    font-weight: bold;
+    font-family: 'Bangers', cursive, Arial, sans-serif;
+    color: var(--text-color);
+}
 
-
+/* Player configuration styles */
 .player-config {
     border: 1px solid #ccc;
     padding: 10px;
@@ -40,18 +50,13 @@ body {
 
 }
 
-.category-config {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-
-}
-
+/* Fixed width for buttons */
 .btn-fixed {
     width: 150px;
 
 }
 
+/* Button hover effect */
 button {
     margin: 5px;
     transition: transform 0.2s ease-in-out;

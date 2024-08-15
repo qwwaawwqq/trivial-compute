@@ -5,34 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute - Add/Modify Question</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/questioncreation.css">
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="./js/questioncreation.js" defer></script>
 </head>
 
 <body>
+    <!-- Main container -->
     <div class="container overflow-auto">
+        <!-- Page header -->
         <h1 class="display-4 text-center">Trivial Compute</h1>
+        <!-- Exit preview button -->
         <div class="text-right mb-3">
             <button class="btn btn-primary" onclick="exitPreview()">Exit Preview</button>
         </div>
+        <!-- Question container -->
         <div class="question-container">
+            <!-- Question header -->
             <div class="question-header bg-success text-white p-2">
                 <span id="question-category">New Question:</span>
             </div>
+            <!-- Question body -->
             <div class="question-body p-3">
+                <!-- Category selection -->
                 <small class="form-text text-muted">
                     Click the dropdown below to change the category.
                 </small>
                 <select id="question-category-dropdown" class="form-control mt-2">
-                    <!-- Add more categories as needed -->
+                    <!-- Categories will be dynamically added here -->
                 </select>
+                <!-- Creator input -->
                 <small class="form-text text-muted">
                     Creator
                 </small>
                 <input id="creator" type="text" class="form-control d-inline-block" id="rename-category"
                     placeholder="Enter Creator Name">
+                <!-- Difficulty selection -->
                 <small class="form-text text-muted">
                     Difficulty
                 </small>
@@ -42,11 +55,10 @@
                     <option>Medium</option>
                     <option>Hard</option>
                 </select>
-
+                <!-- Question type selection -->
                 <small class="form-text text-muted">
                     Question Type
                 </small>
-
                 <select id="question-type-dropdown" class="form-control mt-2" placeholder>
                     <option value="" disabled selected>Select Question Type</option>
                     <option>Multiple Choice</option>
@@ -55,6 +67,7 @@
                     <option>Audio</option>
                     <option>Image</option>
                 </select>
+                <!-- Question type options -->
                 <div id="question-type-options">
                 </div>
             </div>

@@ -4,20 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute - Category Manager</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/manageCategories.css">
+    <!-- jQuery library -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Custom JavaScript -->
     <script src="./js/manageCategories.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1 class="display-4 text-center">Trivial Compute Category Manager</h1>
+        <!-- Page header -->
+        <h1 class="text-center">Trivial Compute Category Manager</h1>
+        
+        <!-- Return button -->
         <div class="text-right">
             <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
         </div>
+        
         <div class="row">
             <div class="col-12">
-                <div class="form-group">
+                <div class="form-group text-center">
+                    <!-- Add new category input field and button -->
                     <label for="new-category">Add New Category:</label>
                     <input type="text" class="form-control d-inline-block" id="new-category" style="width: auto;">
                     <button id="add-category-btn" class="btn btn-secondary">Add</button>
@@ -32,11 +41,14 @@
                         <!-- Categories will be dynamically inserted here -->
                     </tbody>
                 </table>
-                <button class="btn btn-danger">Delete Selected Category</button>
-                <div class="form-group mt-3">
+                <div class="form-group mt-4 text-center">
+                    <!-- Rename category input field and button -->
                     <label for="rename-category">Rename Selected Category To:</label>
                     <input type="text" class="form-control d-inline-block" id="rename-category" style="width: auto;">
                     <button id="rename-category-btn" class="btn btn-info">Rename</button>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-danger">Delete Selected Category</button>
                 </div>
             </div>
         </div>

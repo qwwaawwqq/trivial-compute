@@ -295,6 +295,19 @@ app.get('/api/game/names', (req, res) => {
     res.status(200).send(namesData);
 });
 
+/**
+ * Save this game session to the Firestore under gameSessions.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ */
+app.post('/api/game/save', (req, res) => {
+    const { gameSessionID } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    console.log("HEY");
+    console.log(gameSessionID);
+    gameSession.saveJSON();
+    res.status(200).send();
+});
+
 // TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()
 app.get('/api/activeGameSessions', (req, res) => {
     try {

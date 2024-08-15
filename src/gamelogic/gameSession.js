@@ -7,6 +7,9 @@ import { Question } from './question.js';
 import { Color } from './color.js';
 import { SquareType } from './squareType.js';
 
+import { firebase_db, firebase_storage } from '../../app.js'
+import { doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
+
 import { v4 } from "uuid";
 
 class InvalidPlayerCountError extends Error {
@@ -296,6 +299,21 @@ export class GameSession {
         };
     }
 
+    /**
+     * Saves this game session as a JSON to Firestore.
+     */
+    saveJSON() {
+        const json = this.toJSON();
+        const docRef = doc(firebase_db, 'gameSessions', this.GameSessionID);
+        console.log(json);
+        setDoc(docRef, json).then(() => {
+            console.log('Game session successfully saved!');
+        }).catch((error) => {
+            console.error('Error saving game session:', error);
+        });
+
+    }
+
     // Private methods
 
     /**
@@ -461,7 +479,32 @@ export class GameSession {
         };
     }
 
+    toJSON() {
+        const playerJSONs = [];
+        for (const player of this.players) {
+            playerJSONs.push(player.toJSON());
+        }
 
+        const categoryJSONs = {};
+        for (const color in this.categories) {
+            categoryJSONs[color] = this.categories[color].toJSON();
+        }
+
+        let currentQuestion = null;
+        if (!(this.currentQuestion === null)) {
+            currentQuestion = this.currentQuestion.toJSON();
+        }
+
+        return {
+            gameboard: this.gameboard.toJSON(),
+            categories: categoryJSONs,
+            players: playerJSONs,
+            currentPlayerIndex: this.currentPlayerIndex,
+            recentlyAnsweredCorrectly: this.recentlyAnsweredCorrectly,
+            currentQuestion: currentQuestion,
+            GameSessionID: this.GameSessionID
+        }
+    }
 
     tempDebug(id) {
         console.log(id);

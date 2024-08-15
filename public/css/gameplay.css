@@ -1,16 +1,183 @@
-/* Global styles */
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0;
     background-color: #f0f0f0;
+    background: linear-gradient(-45deg, #f83b01, #d4dd2c, #2370d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
 }
 
-/* Game container styles */
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.pop3{
+    z-index: 15;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: absolute;
+    padding-top: 70px;
+    width: 900px;
+    height: 600px;
+    background-color: white;
+    border-radius: 5px;
+    border: 5px solid black;
+    font-size: 30px;
+    gap: 10px;
+}
+
+@keyframes rainbow {
+    0% { color: red; }
+    14% { color: orange; }
+    28% { color: yellow; }
+    42% { color: green; }
+    57% { color: blue; }
+    71% { color: indigo; }
+    85% { color: violet; }
+    100% { color: red; }
+}
+
+
+
+.finalButton {
+    grid-column: 2/3;
+    grid-row: 4/5;
+}
+
+
+#gameWinner {
+    grid-column: 1/4;
+    grid-row: 2/3;
+    font-size: 60px;
+    font-weight: bold;
+    animation: rainbow 8s linear infinite;
+
+}
+
+.pop2{
+    z-index: 15;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: absolute;
+    padding-top: 70px;
+    width: 500px;
+    height: 600px;
+    background-color: white;
+    border-radius: 5px;
+    border: 5px solid black;
+    font-size: 30px;
+    gap: 10px;
+}
+
+.centerSqareText {
+    grid-column: 1/3;
+    grid-row: 1;
+    margin-top: 30px;
+}
+
+.pop2 .catq1{
+    grid-column: 1;
+    grid-row: 2;
+    background-color: yellow;
+    color: black;
+}
+
+.pop2 .catq2 {
+    grid-column: 2;
+    grid-row: 2;
+    background-color: red;
+}
+.pop2 .catq3{
+    grid-column: 1;
+    grid-row: 3;
+    background-color: blue;
+}
+.pop2 .catq4 {
+    grid-column: 2;
+    grid-row: 3;
+    background-color: green;
+}
+
+
+.pop {
+    z-index: 15;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 2fr 1fr 1fr;
+    padding-left: 40px;
+    padding-right: 40px;
+    position: absolute;
+    padding-top: 70px;
+    width: 650px;
+    height: 650px;
+    background-color: white;
+    border-radius: 5px;
+    border: 5px solid black;
+    font-size: 30px;
+}
+.questionDisplay {
+    grid-column: 1/3;
+    grid-row: 2/3;
+}
+
+.compareAnswer {
+    grid-column: 1/3;
+    grid-row: 4/5;
+}
+.realAnswer{
+    grid-column: 1/3;
+    grid-row:5/6;
+}
+
+.correctButton{
+    grid-column: 1;
+    grid-row: 6/7;
+}
+.incorrectButton{
+    grid-column: 2;
+    grid-row: 6/7;
+
+}
+
+.questionAnswer{
+    grid-column: 1/3;
+    grid-row: 3/4;
+}
+.revealButton{
+    grid-column: 1/3;
+    grid-row: 5/6;
+}
+
+
+button:disabled {
+    background-color: #44a028;
+    cursor: not-allowed;
+    color: #44a028;
+}
+
+.hidden {
+    display: none;
+}
+
+
 .game-container {
     text-align: center;
     background-color: white;
@@ -19,7 +186,6 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Game layout styles */
 .game-layout {
     display: flex;
     justify-content: center;
@@ -27,7 +193,6 @@ body {
     gap: 50px;
 }
 
-/* Game board styles */
 .game-board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -38,36 +203,62 @@ body {
     height: 600px;
 }
 
-/* Score styles */
-.scoreYellow { background-color: #ffff00; }
-.scoreBlue { background-color: #00ffff; }
-.scoreRed { background-color: #ff3333; }
-.scoreGreen { background-color: #33ff33; }
 
-/* Game square styles */
-.YELLOW, .BLUE, .RED, .GREEN {
+.scoreYellow {
+    background-color: #ffff00;
+}
+
+.scoreBlue {
+    background-color: #00ffff;
+}
+
+.scoreRed {
+    background-color: #ff3333;
+}
+
+.scoreGreen {
+    background-color: #33ff33;
+}
+
+.YELLOW {
+    background-color: #ffff00;
     border: 3px solid black;
     position: relative;
 }
 
-.YELLOW { background-color: #ffff00; }
-.BLUE { background-color: #00ffff; }
-.RED { background-color: #ff3333; }
-.GREEN { background-color: #33ff33; }
+.BLUE {
+    background-color: #00ffff;
+    border: 3px solid black;
+    position: relative;
+}
+
+.RED {
+    background-color: #ff3333; /* Even brighter red */
+    border: 3px solid black;
+    position: relative;
+}
+
+.GREEN {
+    background-color: #33ff33; /* Even brighter green */
+    border: 3px solid black;
+    position: relative;
+}
+
 
 .WHITE {
-    background-color: transparent;
+    background-color: transparent; /* 100% transparent */
     border: 1px solid transparent;
     position: relative;
 }
 
 .ROLL_AGAIN {
-    background-color: #d3d3d3;
+    background-color: #d3d3d3; /* Grey color */
     border: 3px solid black;
     display: flex;
     justify-content: center;
     text-align: center;
     align-items: center;
+
 }
 
 .direction {
@@ -76,20 +267,23 @@ body {
     color: white;
 }
 
+
 .HQ {
     display: flex;
     justify-content: center;
     text-align: center;
     align-items: center;
+    
 }
 
+
 .CENTER {
-    background-color: #d3d3d3;
+    background-color: #d3d3d3; /* Grey color */
     border: 3px solid black;
     position: relative;
 }
 
-/* Player piece styles */
+
 .player-piece {
     z-index: 12;
     border-radius: 50%;
@@ -129,7 +323,6 @@ body {
     border: 3px solid white;
 }
 
-/* Game info styles */
 .game-info {
     text-align: left;
     width: 250px;
@@ -146,6 +339,7 @@ body {
 #dice {
     width: 62px;
     height: 60px;
+  
 }
 
 button {
@@ -156,189 +350,125 @@ button {
     width: 100%;
 }
 
-/* Category box styles */
+
 .categoryBox {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 1px;
     border: 2px solid white;
+    width: 70px;
     width: 100%;
     height: 70px;
+
 }
 
 .categoryBox > div {
-    border: 2px solid black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    box-sizing: border-box;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+    border: 2px solid black; /* Border for individual cells */
+    display: flex; /* Use flexbox to center content */
+    align-items: center; /* Vertically center content */
+    justify-content: center; /* Horizontally center content */
+    text-align: center; /* Center text inside each cell */
+    box-sizing: border-box; /* Include padding and border in the element’s total width and height */
+    overflow-wrap: break-word; /* Allow long words to wrap */
+    word-wrap: break-word; /* Older syntax for text wrapping */
     font-size: 12px;
     height: 50px;
 }
 
-/* Player score styles */
-.player1_score, .player2_score, .player3_score, .player4_score {
-    background-color: white;
+
+.player1_score {
+    background-color: white; /* Grey color */
     border: 2px solid black;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    position: relative;
+
+    position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
-.player1_score:before, .player2_score:before, .player3_score:before, .player4_score:before {
+.player1_score:before {
     content: "";
-    position: absolute;
-    top: -30px;
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
     right: -30px;
     bottom: -30px;
     left: -30px;
+    border: 5px solid red; /* Border styling */
     background-color: transparent; 
     z-index: 1;
     box-sizing: border-box; 
 }
 
-.player1_score:before { border: 5px solid red; }
-.player2_score:before { border: 5px solid yellow; }
-.player3_score:before { border: 5px solid green; }
-.player4_score:before { border: 5px solid blue; }
-
-.scoreDisplay {
-    border: 1px solid black;
-}
-
-/* Custom font for headers */
-@font-face {
-    font-family: 'Bangers';
-    src: url('../fonts/Bangers-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Header styles */
-h1 {
-    font-size: clamp(2rem, 5vw, 3rem);
-    margin-bottom: 2rem;
-    font-weight: bold;
-    font-family: 'Bangers', cursive, Arial, sans-serif;
-    color: #333;
-}
-
-/* Animated background */
-body {
-    background: linear-gradient(-45deg, #f83b01, #d4dd2c, #2370d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
-    height: 100vh;
-}
-
-@keyframes gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-/* Pop-up styles */
-.pop, .pop2, .pop3 {
-    z-index: 15;
+.player2_score {
+    background-color: white; /* Grey color */
+    border: 2px solid black;
     display: grid;
-    position: absolute;
-    background-color: white;
-    border-radius: 5px;
-    border: 5px solid black;
-    font-size: 30px;
-    gap: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 70px;
-}
-
-.pop {
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 2fr 1fr 1fr;
-    width: 650px;
-    height: 650px;
+    grid-template-rows: 1fr 1fr;
+
+    position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
-.pop2 {
+.player2_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 5px solid yellow; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
+}
+
+.player3_score {
+    background-color: white; /* Grey color */
+    border: 2px solid black;
+    display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    width: 500px;
-    height: 600px;
+    grid-template-rows: 1fr 1fr;
+
+    position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
-.pop3 {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    width: 900px;
-    height: 600px;
+.player3_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 5px solid green; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
 }
 
-/* Pop-up content styles */
-.questionDisplay, .compareAnswer, .realAnswer, .questionAnswer, .revealButton {
-    grid-column: 1/3;
+.player4_score {
+    background-color: white; /* Grey color */
+    border: 2px solid black;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+
+    position: relative; /* Establishes a positioning context for the pseudo-element */
 }
 
-.questionDisplay { grid-row: 2/3; }
-.compareAnswer { grid-row: 4/5; }
-.realAnswer { grid-row: 5/6; }
-.questionAnswer { grid-row: 3/4; }
-.revealButton { grid-row: 5/6; }
-
-.correctButton { grid-column: 1; grid-row: 6/7; }
-.incorrectButton { grid-column: 2; grid-row: 6/7; }
-
-.centerSqareText {
-    grid-column: 1/3;
-    grid-row: 1;
-    margin-top: 30px;
+.player4_score:before {
+    content: "";
+    position: absolute; /* Absolute positioning relative to .player1_score */
+    top: -30px; /* Adjust these values to position the border */
+    right: -30px;
+    bottom: -30px;
+    left: -30px;
+    border: 5px solid blue; /* Border styling */
+    background-color: transparent; 
+    z-index: 1;
+    box-sizing: border-box; 
 }
 
-.pop2 .catq1, .pop2 .catq2 { grid-row: 2; }
-.pop2 .catq3, .pop2 .catq4 { grid-row: 3; }
-
-.pop2 .catq1 { grid-column: 1; background-color: yellow; color: black; }
-.pop2 .catq2 { grid-column: 2; background-color: red; }
-.pop2 .catq3 { grid-column: 1; background-color: blue; }
-.pop2 .catq4 { grid-column: 2; background-color: green; }
-
-#gameWinner {
-    grid-column: 1/4;
-    grid-row: 2/3;
-    font-size: 60px;
-    font-weight: bold;
-    animation: rainbow 8s linear infinite;
-}
-
-.finalButton {
-    grid-column: 2/3;
-    grid-row: 4/5;
-}
-
-/* Rainbow animation for game winner */
-@keyframes rainbow {
-    0% { color: red; }
-    14% { color: orange; }
-    28% { color: yellow; }
-    42% { color: green; }
-    57% { color: blue; }
-    71% { color: indigo; }
-    85% { color: violet; }
-    100% { color: red; }
-}
-
-/* Utility classes */
-button:disabled {
-    background-color: #44a028;
-    cursor: not-allowed;
-    color: #44a028;
-}
-
-.hidden {
-    display: none;
+.scoreDisplay{
+    border: 1px solid black;
 }

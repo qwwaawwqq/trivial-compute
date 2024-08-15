@@ -1,9 +1,6 @@
-// Event listener for when the DOM content is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Get the roll dice button element
     const rollButton = document.getElementById('roll-dice');
     
-    // Function to get player names and category information
     function getNamesGui() {
         let gameID = localStorage.getItem('gameSessionID');
         $.ajax({
@@ -18,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 gameCategories = response.categoryNames;
                 console.log(gameCategories);
                 let i = 1;
-                // Iterate through categories to set up the board
                 Object.keys(gameCategories).forEach((key)=> {
                     let cName = `.cat${i}`;
                     console.log(gameCategories[key]);
@@ -26,22 +22,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     $(cName).text(gameCategories[key]);
                     $(cName).addClass(key);
             
-                    // Create player tokens
+                    i +=1;
+
+                })
+
+                for (i = 1; i <= players.length; i++) {
                     const token = document.createElement('div');
                     token.id = `player${i}_token`;
                     token.classList.add('player-piece');
                     token.textContent =`${i}`;
                     $('#44').append(token);
-                    i +=1;
-                })
+                }
 
-                // Set up category questions
                 for (let o=1; o<5; o++){
                     let catKey = $(`.catq${o}`).attr('id');
+                    // console.log(catKey);
+                    // console.log(gameCategories[catKey]);
                     $(`.catq${o}`).text(`${gameCategories[catKey]}`)
                 }
 
-                // Set current player and player names on the board
                 $('#current-player').text(`It's currently ${players[0]}'s turn!`);
                 let playerBlocks = [12, 16, 52, 56];
                 for (let j=0; j<4; j++){
@@ -55,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     
-    // Function to create the game board GUI
     function createBoardGui() {
         $('.pop').toggle(); //hide pop up right away
         $('.pop2').toggle();
@@ -65,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.moveDir').prop('disabled', true); //turn move buttons off;
         const gameBoard = $('.game-board'); //Grabs HTML element to append the squares.
         
-        // Iterate through each square on the board
         Object.keys(currentBoard).forEach(key => {
             let currentSquare = currentBoard[key];
             const square = document.createElement('div');
@@ -81,10 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 square.textContent = ('Trivial Compute');
             }
             
-            // Add score display for player squares
             if (key == 22) {
                 square.classList.add("player1_score");
-                // Create score display divs for player 1
                 const div_score_1 = document.createElement('div');
                 div_score_1.id = 'score1-1';
                 div_score_1.classList.add('scoreDisplay');
@@ -170,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-    // Event listener for roll button
+
     rollButton.addEventListener('click', () => {
         let gameID = localStorage.getItem('gameSessionID');
         console.log(gameID);
@@ -193,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
  
-    // Function to update direction buttons based on available moves
     function updateDirectionButtonsGui(availableDirections){
         let fixed_directions = ["LEFT", "RIGHT", "UP", "DOWN"];
         fixed_directions.forEach(direction => {
@@ -208,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Event listener for move direction buttons
     $('.moveDir').click(function() {
         let direction = $(this).attr("id");
         console.log(direction);
@@ -216,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    // Event listener for reveal answer button
+
     $('#reveal').click(function() {
         
         // Log the value to the console
@@ -244,8 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    // Event listener for judging answer (correct/incorrect)
+
     $('.judge').click(function() {
+        // $('.realAnswer').toggle();
+        // $('.compareAnswer').toggle();
+        // $('.compareAnswer').text("");
         $('.pop').fadeToggle(); 
         $('#roll-dice').prop('disabled', false);
         $('.revealButton').toggle();
@@ -282,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    // Function to update player score display
+
     function updateScore(index, score){
         if (score.RED){
             $(`#score${index}-1`).addClass("scoreRed");
@@ -298,7 +294,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to send movement direction to server
+
+
+    // "RED": true,
+    // "BLUE": false,
+    // "GREEN": false,
+    // "YELLOW": true
+
+
     function sendMovement(directionClick) {
         let gameID = localStorage.getItem('gameSessionID');
         console.log(gameID);
@@ -319,6 +322,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
                     console.log(response.question.questionTitle);
+
+                    // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
+                    const typeOfQuestion = response.question.typeOfQuestion;
+                    const fileLocation = response.question.fileLocation;
+                    switch (typeOfQuestion) {
+                        case "FREE_TEXT":
+                            {}
+                        case "AUDIO":
+                            {}
+                        case "IMAGE":
+                            {}
+                        case "VIDEO":
+                            {}
+                        default:
+                            {}
+                    }
+
                     $('.questionDisplay').text(response.question.questionTitle);
                     $('.pop').fadeToggle(300);
                     $('.realAnswer').toggle();
@@ -341,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Function to move player token on the board
+
     function movePlayerToken(playerIndex, destination) {
         let token = $(`#player${playerIndex+1}_token`);
         console.log(token);
@@ -349,14 +369,14 @@ document.addEventListener('DOMContentLoaded', () => {
         $(`#${destination}`).append(token);
     }
 
-    // Event listener for end turn button
+
+
     $('#end-turn').click(function() {
         $('#end-turn').toggle();
         $('#roll-dice').toggle();
         clearDie();
     });
 
-    // Event listener for return to home button
     $("#return-button").click(function() {
         let consent = confirm("Return to Home?");
         if (consent) {
@@ -365,9 +385,9 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
             console.log("Somebody tried to quit");
         }
+        // Add functionality to return to the previous page
     })
 
-    // Event listener for second return to home button
     $("#return-button2").click(function() {
         let consent = confirm("Return to Home?");
         if (consent) {
@@ -376,9 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else {
             console.log("Somebody tried to quit");
         }
+        // Add functionality to return to the previous page
     })
 
-    // Event listener for category selection buttons
+
     $('.textq').click(function() {
         let direction = $(this).attr("id");
         $('.pop2').toggle();
@@ -386,7 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
-    // Function to get a question for the selected category
     function getCategoryQuestion(colorID) {
         let gameID = localStorage.getItem('gameSessionID');
         $.ajax({
@@ -396,6 +416,23 @@ document.addEventListener('DOMContentLoaded', () => {
             contentType: 'application/json',
             data: JSON.stringify({ gameSessionID : gameID, color: colorID}),
             success: function (response) {
+
+                // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
+                const typeOfQuestion = response.typeOfQuestion;
+                const fileLocation = response.fileLocation;
+                switch (typeOfQuestion) {
+                    case "FREE_TEXT":
+                        {}
+                    case "AUDIO":
+                        {}
+                    case "IMAGE":
+                        {}
+                    case "VIDEO":
+                        {}
+                    default:
+                        {}
+                }
+
                 $('.questionDisplay').text(response.questionTitle);
                 $('.pop').fadeToggle();
                 $('.realAnswer').toggle();
@@ -409,19 +446,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Initialize the game board and player names
     createBoardGui();
     getNamesGui();
 
 });
 
-// Variables for dice animation
+
+
 const animationDelay = 150;
 let elapsedDrawTime = 0;
 let lastDrawTime = 0;
 let frameIndex = 0;
 
-// Dice animation setup
+
+// Dice animation 
 let diceImage = new Image();
 let diceRolling = new Image();
 diceImage.src = "./assets/dice.png"; //Dice image relative to html.
@@ -433,24 +471,20 @@ let context = board.getContext("2d");
 context.fillStyle ='black';
 context.clearRect(0, 0, 60, 60);
 
-// Frame coordinates for dice animation
+
 let xFrames = [37, 37, 451, 451, 37, 37, 451, 451];
 let yFrames = [15, 221, 15, 221, 15, 221, 15, 221];
 let xFrame = [32, 509, 996, 32, 509, 996];
 let yFrame = [29, 29, 29, 579, 579, 579];
 
-// Function to clear the dice display
 function clearDie(){
     context.clearRect(0, 0, 60, 60);
     context.drawImage(diceRolling, xFrames[frameIndex], yFrames[frameIndex], 180, 180, 2, 2, 60, 60 );
 }
-
-// Load initial dice image
 diceRolling.onload = function() {
     context.drawImage(diceRolling, xFrames[frameIndex], yFrames[frameIndex], 180, 180, 2, 2, 60, 60 );
 };
 
-// Function to animate the dice roll
 function animateRoll(timestamp, roll) {
     if (!lastDrawTime) {
         lastDrawTime = timestamp;

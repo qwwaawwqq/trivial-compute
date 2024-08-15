@@ -1,21 +1,15 @@
-// Global variables to store categories and current question data
-let categories = [];
-let currentQuestion = null;
-
-// Initialize the page when the document is ready
 $(document).ready(function () {
     bindControlButtons();
     loadCategories()
     $("#question-type-options").empty()
 });
 
-// Bind event listeners to control buttons
+
 function bindControlButtons() {
     // $('#previewQuestionButton').on('click', previewQuestion);
     $('#question-type-dropdown').on('change', updateQuestionsPerType)
 }
 
-// Load categories from the server
 function loadCategories() {
     $.ajax({
         url: '/api/readAllCategories',
@@ -30,7 +24,6 @@ function loadCategories() {
                 categories = response.data;
             }
 
-            // Populate the category dropdown if valid data is received
             if (Array.isArray(categories)) {
                 $('#question-category-dropdown').empty();
                 $('#question-category-dropdown').append(`<option value="" disabled selected>Select Category</option>`);
@@ -55,7 +48,6 @@ function loadCategories() {
     });
 }
 
-// Update the question form based on the selected question type
 function updateQuestionsPerType() {
     $("#question-type-options").empty()
     $("#question-type-dropdown").val()
@@ -128,7 +120,7 @@ function updateQuestionsPerType() {
     }
 }
 
-// Add a new multiple choice question
+
 function addMultipleChoiceQuestion() {
     let categoryName = $('#question-category-dropdown').val();
     let difficultyLevel = $('#question-difficulty-dropdown').val();
@@ -156,7 +148,6 @@ function addMultipleChoiceQuestion() {
     });
 }
 
-// Add a new open-ended question
 function addOpenEndedQuestion() {
     let categoryName = $('#question-category-dropdown').val();
     let difficultyLevel = $('#question-difficulty-dropdown').val();
@@ -178,7 +169,6 @@ function addOpenEndedQuestion() {
     });
 }
 
-// Add a new media question (video, audio, or image)
 function addMediaQuestion() {
     let type = $("#question-type-dropdown").val()
     let categoryName = $('#question-category-dropdown').val();
@@ -216,12 +206,14 @@ function addMediaQuestion() {
     });
 }
 
-// Exit the preview mode and return to the question management page
+
 function exitPreview() {
     window.location.href = 'manageQuestion.html'; // Adjust the path if necessary
 }
 
-// Placeholder functions for future implementation
+
+
+
 function addImage() {
     alert("Adding an image.");
     // Implement the functionality to add an image

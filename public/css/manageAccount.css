@@ -1,54 +1,111 @@
+/* CSS variables for consistent theming */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --background-start: #f83b01;
+    --background-mid1: #d4dd2c;
+    --background-mid2: #2370d5;
+    --background-end: #23d5ab;
+    --text-color: #333;
+    --border-color: #ccc;
+}
+
+/* Global styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    min-height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh;
-
+    justify-content: center;
+    background: linear-gradient(-45deg, 
+        var(--background-start), 
+        var(--background-mid1), 
+        var(--background-mid2), 
+        var(--background-end));
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
 }
 
-body {
-	background: linear-gradient(-45deg, #f83b01, #d4dd2c, #2370d5, #23d5ab);
-	background-size: 400% 400%;
-	animation: gradient 15s ease infinite;
-	height: 100vh;
-}
-
-@keyframes gradient {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
-}
+/* Container styles */
 .container {
-    text-align: center;
     background-color: white;
-    padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    max-width: 90%;
+    width: 100%;
+    margin: 20px auto;
 }
 
-.container-fluid {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Header styles */
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+    font-weight: bold;
+    font-family: 'Bangers', cursive, Arial, sans-serif;
+    color: var(--text-color);
+}
+
+/* Table styles */
+.table-responsive {
+    margin-bottom: 1.5rem;
 }
 
 .table {
     margin-bottom: 0;
 }
 
-.table-warning {
-    background-color: #fff3cd;
-}
-
+/* Button styles */
 .btn {
     margin: 5px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.btn:hover, .btn:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Button group styles */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Background gradient animation */
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Accessibility: Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+    body {
+        animation: none;
+    }
+    .btn {
+        transition: none;
+    }
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+/* Custom font declaration */
+@font-face {
+    font-family: 'Bangers';
+    src: url('../fonts/Bangers-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }

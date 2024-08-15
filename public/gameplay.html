@@ -4,70 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trivial Compute</title>
-    <!-- External CSS files -->
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/gameplay.css">
-    <!-- jQuery library -->
     <script src="lib/jquery-3.7.1.js"></script>
 </head>
 <body>
-    <!-- Main game container -->
     <div class="game-container">
-        <!-- Game title -->
         <h1 class="mb-3">Trivial Compute</h1>
-        <!-- Game layout -->
         <div class="game-layout">
-            <!-- Game board -->
             <div class="game-board"></div>
 
-            <!-- Question pop-up -->
             <div class="pop">
-                <!-- Question display area -->
                 <div class="questionDisplay"></div>
-                <!-- Reveal answer button -->
                 <div class="revealButton">
                     <button class="btn btn-lg btn-primary" id="reveal">Show Correct Answer</button>
                 </div>
-                <!-- Answer comparison area -->
                 <div class="compareAnswer"><h3></h3></div>
-                <!-- Correct answer display area -->
                 <div class="realAnswer">
 
                 </div>
-                <!-- Correct answer button -->
                 <div class="correctButton">
                     <button class="btn btn-lg btn-success judge" id="correct">Correct!</button>
                 </div>
-                <!-- Incorrect answer button -->
                 <div class="incorrectButton">
                     <button class="btn btn-lg btn-danger judge" id="incorrect">Incorrect...</button>
                 </div>
             </div>
-            <!-- Center square pop-up -->
             <div class="pop2">
                 <div class="centerSqareText">You landed on the center square! Choose a category below.</div>
-                <!-- Category selection buttons -->
                 <button class="btn btn-lg btn-primary catq1 textq" id="YELLOW"></button>
                 <button class="btn btn-lg btn-primary catq2 textq" id="RED"></button>
                 <button class="btn btn-lg btn-primary catq3 textq" id="BLUE"></button>
                 <button class="btn btn-lg btn-primary catq4 textq" id="GREEN"></button>
             </div>
-            <!-- End game pop-up -->
             <div class="pop3 endGame">
                 <div id="gameWinner">dasdsa</div>
                 <div class="finalButton">
                 <button id="return-button" class="btn btn-dark p-2 my-5">Return Home</button>
             </div>
             </div>
-            <!-- Game information panel -->
             <div class="game-info">
-                <!-- Current player display -->
                 <div class = "mt-3" id="current-player"></div>
-                <!-- Dice canvas -->
                 <canvas id="dice"></canvas>
-                <!-- Roll dice button -->
                 <button id="roll-dice" class="btn btn-primary p-3 mt-2">Roll the Die!</button>
-                <!-- Move direction buttons -->
+                <!-- <button id="end-turn" class="hidden btn btn-danger">End Turn</button> -->
                 <div class="mb-2 py-2 container text-center direction">Move Direction
                 <div class="row mb-1">
                     <div class="col">
@@ -85,7 +65,8 @@
                 </div>
                 </div>
 
-                <!-- Category display boxes -->
+ 
+
                 <div class="categoryBox">
                     <div class="cat1"></div>
                     <div class="cat2"></div>
@@ -93,12 +74,10 @@
                     <div class="cat4"></div>
                 </div>
 
-                <!-- Return home button -->
                 <button id="return-button2" class="btn btn-dark p-2 my-5">Return Home</button>
             </div>
         </div>
     </div>
-    <!-- Custom JavaScript file -->
     <script src="js/gameplay.js"></script>
 </body>
 </html>

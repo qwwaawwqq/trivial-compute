@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Manage questions for Trivial Compute - Add, edit, and delete quiz questions">
     <title>Trivial Compute - Question Manager</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom styles -->
     <link rel="stylesheet" href="./css/manageQuestion.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="./js/manageQuestion.js"></script>
 </head>
 <body>
     <div class="container">
-        <main class="main-content">
-            <h1 class="text-center">Trivial Compute Question Manager</h1>
-            
-            <div class="text-right mb-3">
-                <a class="btn btn-primary" href="../index.html" role="button" aria-label="Return to Home Screen">Return to Home Screen</a>
-            </div>
-            
-            <div class="table-responsive">
+        <h1 class="display-4 text-center">Trivial Compute Question Manager</h1>
+        <div class="text-right">
+            <a class="btn btn-primary mb-3" href="../index.html" role="button">Return to Home Screen</a>
+        </div>
+        <div class="row">
+            <div class="col-12">
                 <table class="table table-bordered">
-                    <caption>List of Questions</caption>
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col">Category</th>
@@ -33,19 +29,11 @@
                         <!-- Questions will be dynamically inserted here -->
                     </tbody>
                 </table>
+                <button class="btn btn-danger" id="deleteQuestionButton">Delete Selected Question</button>
+                <button class="btn btn-info" id="previewQuestionButton">Preview or Modify Selected Question</button>
+                <button class="btn btn-success" id="addQuestionButton">Add New Question</button>
             </div>
-            
-            <div class="button-group">
-                <button class="btn btn-danger" id="deleteQuestionButton" aria-label="Delete Selected Question">Delete Selected Question</button>
-                <button class="btn btn-info" id="previewQuestionButton" aria-label="Preview or Modify Selected Question">Preview or Modify Selected Question</button>
-                <button class="btn btn-success" id="addQuestionButton" aria-label="Add New Question">Add New Question</button>
-            </div>
-        </main>
+        </div>
     </div>
-
-    <!-- jQuery library -->
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <!-- Custom JavaScript -->
-    <script src="./js/manageQuestion.js"></script>
 </body>
 </html>

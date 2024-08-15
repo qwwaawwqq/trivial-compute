@@ -1,141 +1,83 @@
-// Wait for the DOM to be fully loaded before executing the script
-document.addEventListener('DOMContentLoaded', function () {
+$(document).ready(function () {
     loadQuestions();
     bindControlButtons();
 });
 
-/**
- * Bind click event listeners to control buttons
- */
 function bindControlButtons() {
-    document.getElementById('deleteQuestionButton').addEventListener('click', deleteQuestion);
-    document.getElementById('previewQuestionButton').addEventListener('click', previewQuestion);
-    document.getElementById('addQuestionButton').addEventListener('click', addQuestion);
+    $('#deleteQuestionButton').on('click', deleteQuestion);
+    $('#previewQuestionButton').on('click', previewQuestion);
+    $('#addQuestionButton').on('click', addQuestion);
 }
 
-/**
- * Load questions from the server and populate the table
- */
-async function loadQuestions() {
-    try {
-        // Fetch questions from the server
-        const response = await fetch('/api/readAllQuestions');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const questions = await response.json();
-
-        // Get the table body element
-        const tableBody = document.getElementById('question-table-body');
-        tableBody.innerHTML = '';
-
-        // Populate the table with questions
-        questions.forEach(question => {
-            const row = tableBody.insertRow();
-            row.id = question.uuid;
-            row.innerHTML = `
-                <td>${escapeHtml(question.category)}</td>
-                <td>${escapeHtml(question.questionType)}</td>
-                <td>${escapeHtml(question.question)}</td>
-            `;
-        });
-
-        // Bind click event to table rows
-        bindRowClickEvent();
-    } catch (error) {
-        console.error('Error loading questions:', error);
-        alert('Error loading questions. Please try again later.');
-    }
-}
-
-/**
- * Bind click event to table rows for selection
- */
-function bindRowClickEvent() {
-    const tableBody = document.getElementById('question-table-body');
-    tableBody.addEventListener('click', function(e) {
-        if (e.target.tagName === 'TD') {
-            const selectedRow = e.target.parentElement;
-            // Remove 'table-warning' class from all rows
-            document.querySelectorAll('tr').forEach(row => row.classList.remove('table-warning'));
-            // Add 'table-warning' class to the clicked row
-            selectedRow.classList.add('table-warning');
+function loadQuestions() {
+    $.ajax({
+        url: '/api/readAllQuestions',
+        method: 'GET',
+        dataType: 'json',
+        success: function (result) {
+            let questions = result;
+            console.log(questions)
+            $('#question-table-body').empty();
+            questions.forEach(function (question) {
+                $('#question-table-body').append(`<tr id=${question.uuid}><td>${question.category}</td><td>${question.questionType}</td><td>${question.question}</td></tr>`);
+            });
+            bindRowClickEvent();
+        },
+        error: function (xhr, status, error) {
+            alert("Error loading questions: " + error);
         }
     });
 }
 
-/**
- * Delete the selected question
- */
-async function deleteQuestion() {
-    const selectedRow = document.querySelector('tr.table-warning');
-    if (!selectedRow) {
-        alert('Please select a question to delete.');
-        return;
-    }
+function bindRowClickEvent() {
+    $(document).off('click', 'table tbody tr').on('click', 'table tbody tr', function () {
+        $('table tbody tr').removeClass('table-warning');
+        $(this).addClass('table-warning');
+    });
+}
 
-    const category = selectedRow.cells[0].textContent;
-    const questionId = selectedRow.id;
+function deleteQuestion() {
+    let selectedRow = $('tr.table-warning');
+    if (selectedRow.length) {
+        let category = selectedRow.find('td:first').text();
+        let questionId = selectedRow.attr('id');
+        console.log(category, questionId)
 
-    try {
-        // Send delete request to the server
-        const response = await fetch('/api/deleteQuestion', {
+        $.ajax({
+            url: '/api/deleteQuestion',
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+            data: JSON.stringify({ category: category, questionId: questionId }),
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (result) {
+                if (result.success) {
+                    loadQuestions();
+                } else {
+                    alert("Error deleting question: " + result.error);
+                }
             },
-            body: JSON.stringify({ category, questionId }),
+            error: function (xhr, status, error) {
+                alert("Error deleting question: " + error);
+            }
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const result = await response.json();
-        if (result.success) {
-            // Reload questions after successful deletion
-            loadQuestions();
-        } else {
-            throw new Error(result.error);
-        }
-    } catch (error) {
-        console.error('Error deleting question:', error);
-        alert('Error deleting question. Please try again later.');
+    } else {
+        alert("Please select a question to delete.");
     }
 }
 
-/**
- * Preview or modify the selected question
- */
 function previewQuestion() {
-    const selectedRow = document.querySelector('tr.table-warning');
-    if (!selectedRow) {
-        alert('Please select a question to preview or modify.');
-        return;
+    let selectedRow = $('tr.table-warning');
+    if (selectedRow.length) {
+        let questionText = selectedRow.find('td:last').text();
+        alert("Previewing or Modifying Question: " + questionText);
+        // Implement preview or modify functionality here
+    } else {
+        alert("Please select a question to preview or modify.");
     }
-
-    const questionText = selectedRow.cells[2].textContent;
-    alert(`Previewing or Modifying Question: ${questionText}`);
-    // TODO: Implement preview or modify functionality
 }
 
-/**
- * Navigate to the question creation page
- */
 function addQuestion() {
-    window.location.href = 'questioncreation.html';
-}
+    window.location.href = 'questioncreation.html'; // Adjust the path if necessary
 
-/**
- * Escape HTML special characters to prevent XSS attacks
- * @param {string} unsafe - The unsafe string to be escaped
- * @return {string} The escaped safe string
- */
-function escapeHtml(unsafe) {
-    return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+    // Implement add new question functionality here
 }

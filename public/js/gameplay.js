@@ -22,15 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     $(cName).text(gameCategories[key]);
                     $(cName).addClass(key);
             
-                    //make player tokens at the same time.
+                    i +=1;
+
+                })
+
+                for (i = 1; i <= players.length; i++) {
                     const token = document.createElement('div');
                     token.id = `player${i}_token`;
                     token.classList.add('player-piece');
                     token.textContent =`${i}`;
                     $('#44').append(token);
-                    i +=1;
-
-                })
+                }
 
                 for (let o=1; o<5; o++){
                     let catKey = $(`.catq${o}`).attr('id');

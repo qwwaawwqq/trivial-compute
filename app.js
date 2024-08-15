@@ -111,16 +111,17 @@ app.post('/api/startGame', (req, res) => {
         const { categoryNames, playerNames } = req.body;
         GameSession.create(categoryNames, playerNames).then(newGame => {
             app.locals.activeGameSession[newGame.GameSessionID] = newGame;
+
+            const initialScores = [];
+            for (let i = 0; i < newGame.players.length; i++) {
+                initialScores.push(newGame.players[i].score);
+            }
+
             const gameStartData = {
                 gameSessionID: newGame.GameSessionID,
                 board: newGame.gameboard.toJSON(),
                 currentPlayer: newGame.currentPlayer.name,
-                initialScores: [
-                    newGame.players[0].score,
-                    newGame.players[1].score,
-                    newGame.players[2].score,
-                    newGame.players[3].score,
-                ]
+                initialScores: initialScores
             }
             res.status(200).send(gameStartData);
         });

@@ -1,3 +1,4 @@
+/* Global styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,9 +7,9 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-
 }
 
+/* Animated gradient background */
 body {
 	background: linear-gradient(-45deg, #f83b01, #d4dd2c, #2370d5, #23d5ab);
 	background-size: 400% 400%;
@@ -16,6 +17,7 @@ body {
 	height: 100vh;
 }
 
+/* Keyframes for gradient animation */
 @keyframes gradient {
 	0% {
 		background-position: 0% 50%;
@@ -28,11 +30,7 @@ body {
 	}
 }
 
-
-
-
-
-
+/* Main container styles */
 .container {
     text-align: center;
     background-color: white;
@@ -40,32 +38,44 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
+/* Header styles */
 h1 {
     font-size: 48px;
     margin-bottom: 20px;
 }
+
 h2 {
     font-size: 36px;
     margin-bottom: 20px;
 }
+
 h3 {
     font-size: 24px;
     margin-bottom: 15px;
 }
+
+/* Form group styles */
 .form-group {
     margin-bottom: 15px;
     text-align: left;
 }
+
+/* Label styles */
 label {
     display: inline-block;
     width: 120px;
     text-align: right;
     margin-right: 10px;
 }
+
+/* Input field styles */
 input {
     width: 200px;
     padding: 5px;
 }
+
+/* Button styles */
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -76,23 +86,32 @@ button {
     border-radius: 5px;
     margin: 5px;
 }
+
+/* Home button styles */
 #homeBtn {
     margin-top: 20px;
     background-color: #f0f0f0;
     color: black;
     border: 1px solid #ccc;
 }
+
+/* Hide elements with this class */
 .hidden {
     display: none;
 }
+
+/* User list styles */
 #user-list {
     list-style-type: none;
     padding: 0;
     text-align: left;
 }
+
 #user-list li {
     margin-bottom: 5px;
 }
+
+/* Login and register form styles */
 #login-form, #register-form {
     margin-bottom: 20px;
 }

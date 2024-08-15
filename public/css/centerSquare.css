@@ -1,3 +1,4 @@
+/* Global styles for the body */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -11,6 +12,7 @@ body {
     animation: gradient 15s ease infinite;
 }
 
+/* Animation for the background gradient */
 @keyframes gradient {
     0% {
         background-position: 0% 50%;
@@ -23,6 +25,7 @@ body {
     }
 }
 
+/* Styles for the main container */
 .center-square-container {
     background-color: white;
     padding: 20px;
@@ -34,10 +37,12 @@ body {
     border: 3px solid black
 }
 
+/* Styles for the message displayed in the center square */
 .center-square-message {
     margin-bottom: 20px;
 }
 
+/* Container for category buttons */
 .category-buttons {
     display: flex;
     justify-content: space-around;
@@ -45,8 +50,8 @@ body {
     gap: 10px;
 }
 
+/* Styles for individual category buttons */
 .category-button {
-
     padding: 15px 30px;
     font-size: 18px;
     border: none;
@@ -55,6 +60,7 @@ body {
     flex: 1 1 calc(50% - 20px); /* Responsive layout */
 }
 
+/* Color styles for each category button */
 .yellow {
     background-color: #ffff00;
     color: black;

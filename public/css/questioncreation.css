@@ -1,3 +1,4 @@
+/* Global styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -23,6 +24,7 @@ body {
     }
 }
 
+/* Container styles */
 .container {
     background-color: white;
     padding: 2rem;
@@ -30,33 +32,50 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-    margin-bottom: 1rem;
-}
-
-.text-right {
-    text-align: right;
-}
-
+/* Question container styles */
 .question-container {
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 5px;
+    overflow: hidden;
+    margin-top: 20px;
 }
 
+/* Question header styles */
 .question-header {
-    border-bottom: 1px solid #ccc;
-    text-align: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
 }
 
+/* Question body styles */
 .question-body {
-    text-align: center;
+    padding: 20px;
 }
 
+/* Form control styles */
 .form-control {
-    margin: 10px auto;
-    width: 80%;
+    margin-bottom: 15px;
 }
 
+/* Button styles */
 .btn {
-    margin: 5px;
+    margin-top: 10px;
+}
+
+/* Custom font for headers */
+@font-face {
+    font-family: 'Bangers';
+    src: url('../fonts/Bangers-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Header styles */
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+    font-weight: bold;
+    font-family: 'Bangers', cursive, Arial, sans-serif;
+    color: #333;
 }

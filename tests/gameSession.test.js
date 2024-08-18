@@ -4,7 +4,8 @@ import { GameSession } from '../src/gamelogic/gameSession.js';
 import { firebaseConfig } from '../src/firebase/firebaseConfig.js';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from "firebase/firestore";
-
+import { Color } from '../src/gamelogic/color.js';
+import { Question } from '../src/gamelogic/question.js'
 let firebaseApp;
 
 beforeAll(() => {
@@ -14,7 +15,11 @@ beforeAll(() => {
 test('Create gameSession with 4 players and 4 categories by name', async () => {
     firebaseApp = initializeApp(firebaseConfig);
     const playerNames = ["Abel", "Cain", "Abel2", "Cain2"];
-    const categoryNames = ["Art & Literature", "Geography", "History", "Sports & Leisure"];
+    const categoryNames = {
+        [Color.RED]: "Art & Literature", 
+        [Color.GREEN]: "Geography", 
+        [Color.YELLOW]: "History", 
+        [Color.BLUE]: "Sports & Leisure"};
 
     const firebase_db = getFirestore();
     
@@ -36,11 +41,11 @@ test('Create gameSession with 4 players and 4 categories by name', async () => {
     }
     testgetNeighbors();
 
+    
     // Test squares and their functions from gameboard.
     function testSquares(){
         
-        Object.keys(game.gameboard.squares).forEach( key => {
-
+            Object.keys(game.gameboard.squares).forEach( key => {
             let currentSquare = game.gameboard.getSquare(key)
             expect(currentSquare).toBeInstanceOf(Square); // Its a square.
             expect(currentSquare.position).toBe(key); // Retrieved square has matching position with key from gameBoard.
@@ -60,20 +65,43 @@ test('Create gameSession with 4 players and 4 categories by name', async () => {
 
         })
     }
+
     testSquares();
 
 
+    // Simulate playing the game.
+    function simulateGame() {
 
-    const r = game.rollDie()
-    let directionChoices = r.availableDirections;
-    while(directionChoices.length != 0) {
-        let tempResult = game.pickDirection(directionChoices[0]);
-        directionChoices = tempResult.availableDirections;
+        const r = game.rollDie()
+        let currentQuestion;
+        let directionChoices = r.availableDirections;
+        while(directionChoices.length != 0) {
+            let tempResult = game.pickDirection(directionChoices[0]);  // Move until no more directions are available.
+            directionChoices = tempResult.availableDirections;
+            currentQuestion = tempResult.question;
+
+        }
+        expect(currentQuestion).toBeInstanceOf(Question); // Expect question to return after choosing directions
+
+        const currentAnswer = game.showAnswer();
+        expect(currentAnswer).toBeDefined(); //Expect question to have a defined answer.
+        let turnInformation = game.judgeAnswer(true); // Judge answer to be true. 
+        expect(turnInformation.nextPlayerName).toBe(playerNames[0]); //Expect to still be first player name because TRUE.
+
+        let nextTurnInformation = game.judgeAnswer(false); // Judge answer to be false. 
+        expect(nextTurnInformation.nextPlayerName).toBe(playerNames[1]); // Next player's turn expected
+
+        //End Game
+        let endResult = game.endGame();
+        expect(endResult.winner).toBe(playerNames[1]) //End game should return current player.
+
+        expect(game.toJSON).toBeDefined(); //Check if toJSON function works.
+
+        expect(game.names).toHaveProperty('categoryNames');
+        expect(game.names).toHaveProperty('playerNames');
 
     }
-
-
-    game.pickDirection(r.availableDirections[0]);
+    simulateGame();
     
     
 
@@ -98,7 +126,3 @@ test('Create gameSession with 4 players and 4 categories by name', async () => {
 
 
 })
-
-// afterAll(async () => {
-//     await firebaseApp.delete();
-// });

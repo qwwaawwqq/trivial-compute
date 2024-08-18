@@ -44,7 +44,7 @@ export class Category {
                     questions.push(question);
                 }
 
-                console.log("HERE");
+                // console.log("HERE");
                 
                 category.questions = questions;
 

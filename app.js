@@ -314,6 +314,16 @@ app.get('/api/activeGameSessions', (req, res) => {
 // Firebase Auth
 /// ///////////////
 
+
+
+app.post('/api/checkAuth', (req, res) => {
+    const sessionUID = req.headers.uid
+    sessionAuth(sessionUID, (result) => {
+        res.status(200).send(result.isLogedIn)
+    })
+})
+
+
 // Route to create a new user account
 app.post('/api/createNewAccount', (req, res) => {
     try {
@@ -366,8 +376,8 @@ app.post('/api/signOut', (req, res) => {
         console.log(error)
         res.status(400).send(error.message)
     }
-
 });
+
 
 
 

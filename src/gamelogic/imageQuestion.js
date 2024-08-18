@@ -7,7 +7,7 @@ import { QuestionType } from './questionType.js'
  */
 export class ImageQuestion extends Question {
     /**
-     * @param {string} imageURL - The path or URL to the image file.
+     * @param {string} fileLocation - The path or URL to the image file.
      * @param {string} questionTitle - The title or text of the question.
      * @param {QuestionStats} questionStats - Statistics related to the question.
      * @param {string} dateCreated - The date when the question was created.
@@ -15,8 +15,8 @@ export class ImageQuestion extends Question {
      * @param {string} creator - The name or identifier of the creator.
      * @param {string} answer - The correct answer to the question.
      */
-    constructor(imageURL, questionTitle, questionStats, dateCreated, difficultyLevel, creator, answer) {
+    constructor(fileLocation, questionTitle, questionStats, dateCreated, difficultyLevel, creator, answer) {
         super(QuestionType.IMAGE, questionTitle, questionStats, dateCreated, difficultyLevel, creator, answer);
-        this.imageURL = imageURL;
+        this.fileLocation = fileLocation;
     }
 }

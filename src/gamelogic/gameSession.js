@@ -7,6 +7,9 @@ import { Question } from './question.js';
 import { Color } from './color.js';
 import { SquareType } from './squareType.js';
 
+import { firebase_db, firebase_storage } from '../../app.js'
+import { doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
+
 import { v4 } from "uuid";
 
 class InvalidPlayerCountError extends Error {
@@ -157,7 +160,7 @@ export class GameSession {
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     evaluateAnswer(answer) {
-        const correctAnswer = this.currentQuestion.getAnswer();
+        const correctAnswer = this.currentQuestion.answer;
         const isCorrect = correctAnswer === answer;
         this.recentlyAnsweredCorrectly = isCorrect;
         return {
@@ -213,7 +216,7 @@ export class GameSession {
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     showAnswer() {
-        const correctAnswer = this.currentQuestion.getAnswer();
+        const correctAnswer = this.currentQuestion.answer;
         return {
             "correctAnswer": correctAnswer
         };
@@ -269,6 +272,7 @@ export class GameSession {
     selectCategory(color) {
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
+        console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -294,6 +298,21 @@ export class GameSession {
             categoryNames: categoryNames,
             playerNames: playerNames
         };
+    }
+
+    /**
+     * Saves this game session as a JSON to Firestore.
+     */
+    saveJSON() {
+        const json = this.toJSON();
+        const docRef = doc(firebase_db, 'gameSessions', this.GameSessionID);
+        console.log(json);
+        setDoc(docRef, json).then(() => {
+            console.log('Game session successfully saved!');
+        }).catch((error) => {
+            console.error('Error saving game session:', error);
+        });
+
     }
 
     // Private methods
@@ -429,6 +448,7 @@ export class GameSession {
         const color = this.getCurrentSquare().color;
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
+        console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -461,7 +481,32 @@ export class GameSession {
         };
     }
 
+    toJSON() {
+        const playerJSONs = [];
+        for (const player of this.players) {
+            playerJSONs.push(player.toJSON());
+        }
 
+        const categoryJSONs = {};
+        for (const color in this.categories) {
+            categoryJSONs[color] = this.categories[color].toJSON();
+        }
+
+        let currentQuestion = null;
+        if (!(this.currentQuestion === null)) {
+            currentQuestion = this.currentQuestion.toJSON();
+        }
+
+        return {
+            gameboard: this.gameboard.toJSON(),
+            categories: categoryJSONs,
+            players: playerJSONs,
+            currentPlayerIndex: this.currentPlayerIndex,
+            recentlyAnsweredCorrectly: this.recentlyAnsweredCorrectly,
+            currentQuestion: currentQuestion,
+            GameSessionID: this.GameSessionID
+        }
+    }
 
     tempDebug(id) {
         console.log(id);

@@ -15,6 +15,8 @@ async function readAllCategories() {
         const q = query(collection(firebase_db, "categories"));
         const querySnapshot = await getDocs(q);
         let categories = []
+        console.log("HELLO");
+        console.log(categories);
         querySnapshot.forEach((doc) => {
             categories.push(doc.id)
         });

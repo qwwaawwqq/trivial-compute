@@ -22,15 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     $(cName).text(gameCategories[key]);
                     $(cName).addClass(key);
             
-                    //make player tokens at the same time.
+                    i +=1;
+
+                })
+
+                for (i = 1; i <= players.length; i++) {
                     const token = document.createElement('div');
                     token.id = `player${i}_token`;
                     token.classList.add('player-piece');
                     token.textContent =`${i}`;
                     $('#44').append(token);
-                    i +=1;
-
-                })
+                }
 
                 for (let o=1; o<5; o++){
                     let catKey = $(`.catq${o}`).attr('id');
@@ -320,6 +322,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
                     console.log(response.question.questionTitle);
+
+                    // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
+                    const typeOfQuestion = response.question.typeOfQuestion;
+                    const fileLocation = response.question.fileLocation;
+                    switch (typeOfQuestion) {
+                        case "FREE_TEXT":
+                            {}
+                        case "AUDIO":
+                            {}
+                        case "IMAGE":
+                            {}
+                        case "VIDEO":
+                            {}
+                        default:
+                            {}
+                    }
+
                     $('.questionDisplay').text(response.question.questionTitle);
                     $('.pop').fadeToggle(300);
                     $('.realAnswer').toggle();
@@ -397,6 +416,23 @@ document.addEventListener('DOMContentLoaded', () => {
             contentType: 'application/json',
             data: JSON.stringify({ gameSessionID : gameID, color: colorID}),
             success: function (response) {
+
+                // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
+                const typeOfQuestion = response.typeOfQuestion;
+                const fileLocation = response.fileLocation;
+                switch (typeOfQuestion) {
+                    case "FREE_TEXT":
+                        {}
+                    case "AUDIO":
+                        {}
+                    case "IMAGE":
+                        {}
+                    case "VIDEO":
+                        {}
+                    default:
+                        {}
+                }
+
                 $('.questionDisplay').text(response.questionTitle);
                 $('.pop').fadeToggle();
                 $('.realAnswer').toggle();

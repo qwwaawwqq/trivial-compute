@@ -111,16 +111,17 @@ app.post('/api/startGame', (req, res) => {
         const { categoryNames, playerNames } = req.body;
         GameSession.create(categoryNames, playerNames).then(newGame => {
             app.locals.activeGameSession[newGame.GameSessionID] = newGame;
+
+            const initialScores = [];
+            for (let i = 0; i < newGame.players.length; i++) {
+                initialScores.push(newGame.players[i].score);
+            }
+
             const gameStartData = {
                 gameSessionID: newGame.GameSessionID,
                 board: newGame.gameboard.toJSON(),
                 currentPlayer: newGame.currentPlayer.name,
-                initialScores: [
-                    newGame.players[0].score,
-                    newGame.players[1].score,
-                    newGame.players[2].score,
-                    newGame.players[3].score,
-                ]
+                initialScores: initialScores
             }
             res.status(200).send(gameStartData);
         });
@@ -292,6 +293,19 @@ app.get('/api/game/names', (req, res) => {
     const gameSession = app.locals.activeGameSession[gameSessionID];
     const namesData = gameSession.names;
     res.status(200).send(namesData);
+});
+
+/**
+ * Save this game session to the Firestore under gameSessions.
+ * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
+ */
+app.post('/api/game/save', (req, res) => {
+    const { gameSessionID } = req.body;
+    const gameSession = app.locals.activeGameSession[gameSessionID];
+    console.log("HEY");
+    console.log(gameSessionID);
+    gameSession.saveJSON();
+    res.status(200).send();
 });
 
 // TODO THIS IS HOW WE WILL MAKE FUNCTIONS CALL TO OUR GAMESESSION ONJ app.locals.activeGameSesson[GameSessionID].startTurn()

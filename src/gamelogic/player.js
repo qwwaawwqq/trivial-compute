@@ -107,4 +107,17 @@ export class Player {
         }
         return points >= points_to_win;
     }
+
+    toJSON() {
+        return {
+            name: this.name,
+            tokenColor: this.tokenColor,
+            grade: this.grade,
+            email: this.email,
+            position: this.position,
+            score: this.score,
+            previousSquareDirection: this.previousSquareDirection,
+            movesLeft: this.movesLeft
+        }
+    }
 }

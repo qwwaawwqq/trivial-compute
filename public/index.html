@@ -3,25 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Trivial Compute - A fun and educational game to test your knowledge across various subjects">
     <title>Trivial Compute</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <!-- Custom styles -->
     <link rel="stylesheet" href="css/index.css">
-    <script src="lib/jquery-3.7.1.js"></script>
+    <!-- Preload main font -->
+    <link rel="preload" href="fonts/Bangers-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
-    <div class="container border border-dark border-3">
-        <h1 class="mb-3">Trivial Compute</h1>
-        <button type="button" class="play-button btn btn-lg btn-primary mb-3">Play Game</button>
-        
-        <div class="teacher-section">
-            <h2 class = "my-3">Settings</h2>
-            <div class="teacher-buttons">
-                <button type="button" class="btn btn-secondary mb-2" id="manage-accounts">Manage Accounts</button>
-                <button type="button" class="btn btn-secondary mb-2" id="manage-questions">Manage Questions</button>
-                <button type="button" class="btn btn-secondary mb-2" id="manage-categories">Manage Categories</button>
-            </div>
-        </div>
+    <!-- Main container -->
+    <div class="container border border-dark border-3 py-4">
+        <!-- Header section -->
+        <header class="text-center mb-4">
+            <h1>Trivial Compute</h1>
+        </header>
+
+        <!-- Main content area -->
+        <main>
+            <!-- Play game section -->
+            <section class="text-center mb-5">
+                <button type="button" class="play-button btn btn-lg btn-primary" aria-label="Play Game">
+                    Play Game
+                </button>
+            </section>
+
+            <!-- Teacher settings section -->
+            <nav class="teacher-section">
+                <h2 class="text-center mb-4">Settings</h2>
+                <!-- Button group for management options -->
+                <div class="d-flex justify-content-center flex-wrap">
+                    <button type="button" class="btn btn-secondary mx-2 my-2" id="manage-accounts" aria-label="Manage Accounts">
+                        Manage Accounts
+                    </button>
+                    <button type="button" class="btn btn-secondary mx-2 my-2" id="manage-questions" aria-label="Manage Questions">
+                        Manage Questions
+                    </button>
+                    <button type="button" class="btn btn-secondary mx-2 my-2" id="manage-categories" aria-label="Manage Categories">
+                        Manage Categories
+                    </button>
+                </div>
+            </nav>
+        </main>
     </div>
-    <script src="js/index.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script src="js/index.js" type="module"></script>
 </body>
 </html>

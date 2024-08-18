@@ -40,9 +40,13 @@ $(document).ready(function() {
         for (let i = 1; i <= playerCount; i++) {
             let name = $(`#player-${i}-name`).val();
             players.push(name);
-            let category = $(`#player-${i}-config select`).val();
-            let testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
-            categoryNames[testColors[i-1]] = category;      
+        }
+
+        const testColors = ["RED", "YELLOW", "GREEN", "BLUE"]
+        for (testColor of testColors) {
+            let category = $(`#category-${testColor}-config select`).val();
+            
+            categoryNames[testColor] = category;      
         }
 
         console.log('Starting game with players:', players);

@@ -7,7 +7,6 @@ import { Question } from './question.js';
 import { Color } from './color.js';
 import { SquareType } from './squareType.js';
 
-import { firebase_db, firebase_storage } from '../../app.js'
 import { doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
 
 import { v4 } from "uuid";
@@ -37,9 +36,10 @@ export class GameSession {
      * Factory method to generate a new GameSession instance.
      * @param {Object<Color, string>} categoryNames - The names of the categories.
      * @param {Array<string>} playerNames - The names of the players.
+     * @param {Firestore} firestore - A reference to a Firestore database.
      * @returns {Promise<GameSession>} A promise that resolves to a new GameSession instance.
      */
-    static create(categoryNames, playerNames) {
+    static create(categoryNames, playerNames, firestore) {
         // Ensure input lengths are valid. Throw specific exception if not.
         this.validateInputs(categoryNames, playerNames);
 
@@ -53,11 +53,11 @@ export class GameSession {
         // Create promises for each of the 4 Category instances,
         // where each Category is generated from a provided categoryName.
         const categoryPromises = Object.entries(categoryNames).map(([color, categoryName]) =>
-            Category.create(categoryName).then(category => [color, category])
+            Category.create(categoryName, firestore).then(category => [color, category])
         );
 
         return Promise.all([
-            Board.create(),
+            Board.create(firestore),
             Promise.all(categoryPromises).then(entries => Object.fromEntries(entries))
         ])
         .then(([board, categories]) => {

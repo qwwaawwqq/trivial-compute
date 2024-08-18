@@ -1,4 +1,4 @@
-import { firebase_db, firebase_storage } from '../../../app.js'
+// import { firebase_db, firebase_storage } from '../../../app.js'
 import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore'
 
 
@@ -10,7 +10,7 @@ import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'fir
 /**
  * Reads all categories from a Firestore database.
  */
-async function readAllCategories() {
+async function readAllCategories(firebase_db) {
     try {
         const q = query(collection(firebase_db, "categories"));
         const querySnapshot = await getDocs(q);
@@ -32,7 +32,7 @@ async function readAllCategories() {
  * Reads questions from a specified category in a Firestore database.
  * @param {string} categoryName - The name of the category to retrieve questions from.
  */
-async function readQuestionsFromCategory(categoryName) {
+async function readQuestionsFromCategory(firebase_db, categoryName) {
     try {
         const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
         const querySnap = await getDocs(collectionRef);
@@ -48,12 +48,12 @@ async function readQuestionsFromCategory(categoryName) {
     }
 }
 
-async function readAllQuestions() {
+async function readAllQuestions(firebase_db) {
     try {
-        const categories = await readAllCategories()
+        const categories = await readAllCategories(firebase_db)
         let allQuestions = []
         for (const category of categories.data) {
-            const questionPerCategory = await readQuestionsFromCategory(category)
+            const questionPerCategory = await readQuestionsFromCategory(firebase_db, category)
             for (const question in questionPerCategory.data) {
                 const questionDetailsFull = questionPerCategory.data[question]
                 questionDetailsFull["category"] = category
@@ -70,7 +70,7 @@ async function readAllQuestions() {
  * Reads questions from a specified category in a Firestore database without subscribing.
  * @param {string} categoryName - The name of the category to retrieve questions from.
  */
-async function readQuestionsFromCategoryOnce(categoryName) {
+async function readQuestionsFromCategoryOnce(firebase_db, categoryName) {
     try {
         const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
         const querySnap = await getDocs(collectionRef);

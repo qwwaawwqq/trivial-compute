@@ -30,10 +30,11 @@ export class Category {
     /**
      * Factory method to create a new Category instance.
      * @param {string} name - The name of the category.
+     * @param {Firestore} firestore - A reference to a Firestore instance
      * @return {Promise<Category>} A promise that resolves to a Category instance.
      */
-    static create(name) {
-        return readQuestionsFromCategoryOnce(name)
+    static create(name, firestore) {
+        return readQuestionsFromCategoryOnce(firestore, name)
             .then(questionsData => {
                 let category = new Category(name);
                 
@@ -43,7 +44,7 @@ export class Category {
                     questions.push(question);
                 }
 
-                console.log("HERE");
+                // console.log("HERE");
                 
                 category.questions = questions;
 

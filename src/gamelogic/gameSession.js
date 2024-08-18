@@ -179,6 +179,7 @@ export class GameSession {
     judgeAnswer(isCorrect) {
         let scoreboardToUpdate = null;
         let score = null;
+        this.currentPlayer.stats.updateStats(isCorrect);
         if (isCorrect) {
             if (this.getCurrentSquare().isHQ) {
                 this.awardPoint();
@@ -186,6 +187,8 @@ export class GameSession {
                 score = this.currentPlayer.score;
             }
             if (this.getCurrentSquare().isCenter && this.checkForWinner()) {
+                // TODO add API call to post new stats to database
+                // TODO populate end game screen with win stats
                 return {
                     endGameData: this.endGame(), // End use case 4 if player has won
                     nextPlayerName: null,
@@ -419,8 +422,15 @@ export class GameSession {
      * @private
      */
     endGame() {
+
+        const stats = [];
+        for (const player of this.players) {
+            stats.push(player.stats.toJSON());
+        }
+
         return {
-            "winner": this.currentPlayer.name
+            "winner": this.currentPlayer.name,
+            "stats": stats
         };
     }
 

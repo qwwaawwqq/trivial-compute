@@ -1,6 +1,7 @@
 import { Board } from './board.js';
 import { Color } from './color.js';
 import { Direction } from './direction.js';
+import { QuestionStats } from './questionStats.js';
 
 /**
  * Custom error for invalid directions.
@@ -42,6 +43,7 @@ export class Player {
         this.email = email;
         this.position = position;
         this._score = {...Player.DEFAULT_SCORE};
+        this.stats = new QuestionStats();
         /**
          * Compared to my current position, which direction was this player's previous square in?
          * @type {string|null}

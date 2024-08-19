@@ -359,7 +359,7 @@ app.get("/api/getMediaUrl", async (req, res) => {
     }
 
     try {
-        const url = await getMediaUrl(filePath);
+        const url = await getMediaUrl(firebase_storage, filePath);
         res.status(200).json({ success: true, url });
     } catch (error) {
         console.error('Error fetching media URL:', error);
@@ -377,7 +377,7 @@ app.get("/api/fetchMediaContent", async (req, res) => {
 
     try {
         // Use the fetchMediaContent function
-        const { data, contentType, contentLength } = await fetchMediaContent(filePath);
+        const { data, contentType, contentLength } = await fetchMediaContent(firebase_storage, filePath);
 
         // Debug log
         console.log('Content-Type:', contentType);

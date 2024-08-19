@@ -1,4 +1,3 @@
-// import { firebase_db, firebase_storage } from '../../../app.js'
 import { doc, deleteDoc } from "firebase/firestore";
 
 ///////////////////

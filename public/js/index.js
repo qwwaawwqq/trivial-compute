@@ -1,4 +1,33 @@
 $(document).ready(function () {
+    $.ajax({
+        url: '/api/checkAuth',
+        method: 'POST',
+        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+        contentType: 'application/json',
+        success: function (result) {
+            if (result) {
+                // Bind click event to manage accounts button
+                $('#manage-accounts').removeClass("btn-secondary")
+                $('#manage-questions').removeClass("btn-secondary")
+                $('#manage-categories').removeClass("btn-secondary")
+
+                $('#manage-accounts').addClass("btn-primary")
+                $('#manage-categories').addClass("btn-primary")
+                $('#manage-questions').addClass("btn-primary")
+
+            } else {
+                $('#manage-accounts').removeClass("btn-primary")
+                $('#manage-questions').removeClass("btn-primaryy")
+                $('#manage-categories').removeClass("btn-primary")
+                $('#manage-accounts').addClass("btn-secondary")
+                $('#manage-categories').addClass("btn-secondary")
+                $('#manage-questions').addClass("btn-secondary")
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error details:", xhr.responseText);
+        }
+    });
     // Bind event listeners to control buttons
     bindToControlButtons();
 });
@@ -64,9 +93,8 @@ function authenticatedNav(destination) {
     $.ajax({
         url: '/api/checkAuth',
         method: 'POST',
-        headers: {
-            uid: sessionStorage.getItem('uid')
-        },
+        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+        contentType: 'application/json',
         success: function (result) {
             if (result) {
                 setTimeout(() => {

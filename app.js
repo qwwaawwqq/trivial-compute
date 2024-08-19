@@ -279,8 +279,8 @@ app.get('/api/activeGameSessions', (req, res) => {
 
 
 app.post('/api/checkAuth', (req, res) => {
-    const sessionUID = req.headers.uid
-    sessionAuth(sessionUID, (result) => {
+    const { uid } = req.body;
+    sessionAuth(uid, (result) => {
         res.status(200).send(result.isLogedIn)
     })
 })
@@ -309,6 +309,7 @@ app.post('/api/createNewAccount', (req, res) => {
 app.post('/api/login', (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(email, password)
         signInUser(email, password, (result) => {
             if (result.success) {
                 res.status(200).json({ success: true, userId: result.userId });

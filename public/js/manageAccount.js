@@ -1,6 +1,16 @@
 // Wait for the DOM to be fully loaded before executing the script
 document.addEventListener('DOMContentLoaded', function () {
-
+    $.ajax({
+        url: '/api/checkAuth',
+        method: 'POST',
+        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+        contentType: 'application/json',
+        success: function (result) {
+            if (!result) {
+                window.location.href = "./index.html";
+            }
+        }
+    })
     // Initialize the page
     initializeAccountManager();
 });

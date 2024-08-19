@@ -125,9 +125,9 @@ body {
     padding-left: 40px;
     padding-right: 40px;
     position: absolute;
-    padding-top: 70px;
-    width: 650px;
-    height: 650px;
+    padding-top: 30px;
+    width: 700px;
+    height: 700px;
     background-color: white;
     border-radius: 5px;
     border: 5px solid black;

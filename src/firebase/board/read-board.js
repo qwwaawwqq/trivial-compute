@@ -1,4 +1,3 @@
-import { firebase_db, firebase_storage } from '../../../app.js'
 import { getFirestore, doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
 
 class MissingBoardDataError extends Error {
@@ -15,8 +14,8 @@ class MissingBoardDataError extends Error {
  * Reads board from the Firestore database. 
  * Returns a promise.
  */
-function readBoard() {
-    const docRef = doc(firebase_db, 'board', 'board');
+function readBoard(firestore) {
+    const docRef = doc(firestore, 'board', 'board');
     return getDoc(docRef)
     .then(docSnap => {
         if (docSnap.exists()) {

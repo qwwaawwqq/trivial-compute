@@ -4,8 +4,6 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
-import axios from 'axios';
-
 
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
@@ -18,7 +16,7 @@ import { getFirestore } from "firebase/firestore"
 import { GameSession } from './src/gamelogic/gameSession.js'
 import { createNewGameSession } from './src/firebase/gameSessions/create-game-session.js'
 
-
+import { firebaseConfig } from './src/firebase/firebaseConfig.js';
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage: storage })
@@ -32,18 +30,6 @@ const port = 8080;
 const filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(filename);
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAK9l1ryus6gxNmgsNQU0XZxpwNrBI456Q",
-    authDomain: "caffeinecoders-e8219.firebaseapp.com",
-    databaseURL: "https://caffeinecoders-e8219-default-rtdb.firebaseio.com",
-    projectId: "caffeinecoders-e8219",
-    storageBucket: "caffeinecoders-e8219.appspot.com",
-    messagingSenderId: "406914685671",
-    appId: "1:406914685671:web:bb55c156d2dbea6a18a042",
-    measurementId: "G-Z0ZWEKEMTB"
-};
-
-
 // Endpoint to get Firebase config
 app.get('/firebase-config', (req, res) => {
     res.json(firebaseConfig);
@@ -51,8 +37,8 @@ app.get('/firebase-config', (req, res) => {
 
 // Initialize Firebase with the given configuration
 const firebase = initializeApp(firebaseConfig);
-export const firebase_db = getFirestore()
-export const firebase_storage = getStorage()
+const firebase_db = getFirestore()
+const firebase_storage = getStorage()
 
 // Use body-parser middleware to parse JSON and URL-encoded request bodies
 app.use(bodyParser.json());
@@ -110,7 +96,7 @@ app.locals.activeGameSession = {};
 app.post('/api/startGame', (req, res) => {
     try {
         const { categoryNames, playerNames } = req.body;
-        GameSession.create(categoryNames, playerNames).then(newGame => {
+        GameSession.create(categoryNames, playerNames, firebase_db).then(newGame => {
             app.locals.activeGameSession[newGame.GameSessionID] = newGame;
 
             const initialScores = [];
@@ -187,45 +173,6 @@ app.put('/api/game/pickDirection', (req, res) => {
 });
 
 /**
- * Check if the player's choice is correct, and send back what the correct answer is.
- * Responds to the buttons indicating player's choice of answer when presented with a question.
- * This is part of use cases 3 and 4.
- * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
- * @param {string} answer - The player's answer.
- * @return {Object} An object with the correct answer and whether the player's answer is correct.
- *      @property {string} correctAnswer - The correct answer to the question.
- *      @property {boolean} isCorrect - Whether or not the player answered correctly.
- */
-app.put('/api/game/evaluateAnswer', (req, res) => {
-    const { gameSessionID, answer } = req.body;
-    const gameSession = app.locals.activeGameSession[gameSessionID];
-    const correctAnswerData = gameSession.evaluateAnswer(answer);
-    res.status(200).send(correctAnswerData);
-});
-
-/**
- * Triggers actions that should happen after the player has viewed the correct answer.
- * This is part of use cases 3 and 4, towards the end.
- * Responds to the acknowledgement button that should display when the game is displaying the correct answer feedback.
- * This output format depends on whether or not the player has now won the game:
- *      If endGameData is not null, then the current player won, so display the endgame screen with the provided information in endGameData.
- *      Otherwise, if score is not null, then the current player scored a point, so update the scoreboard identified by scoreboardToUpdate with the score, and then prompt the player named nextPlayerName to roll a die.
- *      Otherwise, the current player did not score a point, so just prompt the player named nextPlayerName to roll a die.
- * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
- * @return {Object} An object containing the following:
- *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
- *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
- *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
- *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
- */
-app.put('/api/game/acknowledgeAnswer', (req, res) => {
-    const { gameSessionID } = req.body;
-    const gameSession = app.locals.activeGameSession[gameSessionID];
-    const scoreOrEndData = gameSession.acknowledgeAnswer();
-    res.status(200).send(scoreOrEndData);
-});
-
-/**
  * Respond to the buttons indicating player's choice of category at the center square.
  * This is part of use case 4.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
@@ -241,7 +188,7 @@ app.put('/api/game/selectCategory', (req, res) => {
 
 
 /**
- * Check if the player's choice is correct, and send back what the correct answer is.
+ * Send back what the correct answer is.
  * Responds to the buttons indicating player's choice of answer when presented with a question.
  * This is part of use cases 3 and 4.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
@@ -329,6 +276,16 @@ app.get('/api/activeGameSessions', (req, res) => {
 // Firebase Auth
 /// ///////////////
 
+
+
+app.post('/api/checkAuth', (req, res) => {
+    const sessionUID = req.headers.uid
+    sessionAuth(sessionUID, (result) => {
+        res.status(200).send(result.isLogedIn)
+    })
+})
+
+
 // Route to create a new user account
 app.post('/api/createNewAccount', (req, res) => {
     try {
@@ -381,8 +338,8 @@ app.post('/api/signOut', (req, res) => {
         console.log(error)
         res.status(400).send(error.message)
     }
-
 });
+
 
 
 
@@ -390,7 +347,9 @@ app.post('/api/signOut', (req, res) => {
 // /// ////////////////////
 // // Firebase Fire Store
 // /// ///////////////////
-// Get Media URL Endpoint
+
+// Read Endpoints
+
 app.get("/api/getMediaUrl", async (req, res) => {
     const { filePath } = req.query;
 
@@ -416,28 +375,28 @@ app.get("/api/fetchMediaContent", async (req, res) => {
     }
 
     try {
-        // Get the download URL for the file
-        const downloadURL = await getMediaUrl(filePath);
+        // Use the fetchMediaContent function
+        const { data, contentType, contentLength } = await fetchMediaContent(filePath);
 
-        // Fetch the media file as a stream
-        const response = await axios.get(downloadURL, { responseType: 'stream' });
+        // Debug log
+        console.log('Content-Type:', contentType);
+        console.log('Content-Length:', contentLength);
 
         // Set appropriate headers
-        res.setHeader('Content-Type', response.headers['content-type']);
-        res.setHeader('Content-Length', response.headers['content-length']);
+        res.setHeader('Content-Type', contentType || 'application/octet-stream');
+        res.setHeader('Content-Length', contentLength);
 
-        // Pipe the stream directly to the response
-        response.data.pipe(res);
+        // Send the data
+        res.send(data);
     } catch (error) {
         console.error('Error fetching media content:', error);
         res.status(500).json({ success: false, message: 'Failed to fetch media content' });
     }
 });
 
-// Read Endpoints
 app.get("/api/readAllQuestions", async (req, res) => {
     try {
-        const result = await readAllQuestions()
+        const result = await readAllQuestions(firebase_db)
         if (result.success) {
             res.status(200).send(result.data);
         } else {
@@ -452,7 +411,7 @@ app.get("/api/readAllQuestions", async (req, res) => {
 
 app.get("/api/readAllCategories", async (req, res) => {
     try {
-        const result = await readAllCategories()
+        const result = await readAllCategories(firebase_db)
         if (result.success) {
             res.status(200).send(result.data);
         } else {
@@ -468,7 +427,7 @@ app.get("/api/readAllCategories", async (req, res) => {
 app.post("/api/readQuestionsFromCategory", async (req, res) => {
     try {
         const { categoryName } = req.body;
-        const result = await readQuestionsFromCategory(categoryName)
+        const result = await readQuestionsFromCategory(firebase_db, categoryName)
         if (result.success) {
             res.status(200).send(result.data);
         } else {
@@ -488,7 +447,7 @@ app.put('/api/createNewCategory', async (req, res) => {
     const { categoryName, creatorName } = req.body;
 
     try {
-        const result = await createNewCategory(categoryName, creatorName);
+        const result = await createNewCategory(firebase_db, categoryName, creatorName);
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -503,7 +462,7 @@ app.put('/api/createNewCategory', async (req, res) => {
 app.put('/api/addTextOpenEndedQuestionToCategory', async (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-        const result = await addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, choices)
+        const result = await addTextOpenEndedQuestionToCategory(firebase_db, categoryName, difficultyLevel, creator, answer, question, choices)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -517,7 +476,7 @@ app.put('/api/addTextOpenEndedQuestionToCategory', async (req, res) => {
 app.put('/api/addTextMultipleChoiceQuestionToCategory', async (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, choices } = req.body;
-        const result = await addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices)
+        const result = await addTextMultipleChoiceQuestionToCategory(firebase_db, categoryName, difficultyLevel, creator, question, answer, choices)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -533,7 +492,7 @@ app.put('/api/addTextMultipleChoiceQuestionToCategory', async (req, res) => {
 app.put('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => {
     try {
         const { categoryName, difficultyLevel, creator, answer, question, type } = req.body;
-        addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
+        addMediaQuestionToCategory(firebase_db, firebase_storage, categoryName, difficultyLevel, creator, answer, req.file, question, type, (result) => {
             if (result.success) {
                 res.status(200).send(result.message);
             } else {
@@ -552,7 +511,7 @@ app.put('/api/addMediaQuestionToCategory', upload.single("file"), (req, res) => 
 app.put('/updateQuestion', (req, res) => {
     try {
         const { categoryName, questionId, updateDetails } = req.body;
-        updateQuestion(categoryName, questionId, updateDetails, (result) => {
+        updateQuestion(firebase_db, categoryName, questionId, updateDetails, (result) => {
             if (result.success) {
                 res.status(200).send(result.message);
             } else {
@@ -570,7 +529,7 @@ app.put('/updateQuestion', (req, res) => {
 app.put('/api/updateCategory', async (req, res) => {
     try {
         const { oldName, newName } = req.body;
-        const result = await updateCategory(oldName, newName)
+        const result = await updateCategory(firebase_db, oldName, newName)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -589,7 +548,7 @@ app.put('/api/updateCategory', async (req, res) => {
 app.delete('/api/deleteQuestions', async (req, res) => {
     try {
         const { categoryName, questionID } = req.body;
-        const result = await deleteQuestion(categoryName, questionID)
+        const result = await deleteQuestion(firebase_db, categoryName, questionID)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -603,7 +562,7 @@ app.delete('/api/deleteQuestions', async (req, res) => {
 app.delete('/api/deleteCategory', async (req, res) => {
     try {
         const { categoryName } = req.body;
-        const result = await deleteCategory(categoryName)
+        const result = await deleteCategory(firebase_db, categoryName)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -617,7 +576,7 @@ app.delete('/api/deleteCategory', async (req, res) => {
 app.post('/api/deleteQuestion', async (req, res) => {
     try {
         const { category, questionId } = req.body;
-        const result = await deleteQuestion(category, questionId)
+        const result = await deleteQuestion(firebase_db, category, questionId)
         if (result.success) {
             res.status(200).json(result);
         } else {
@@ -631,3 +590,4 @@ app.post('/api/deleteQuestion', async (req, res) => {
 });
 
 
+export { firebase_db, firebase_storage };

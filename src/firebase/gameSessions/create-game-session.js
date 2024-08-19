@@ -6,7 +6,7 @@ import { readFile } from "fs"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import { firebase_db, firebase_storage } from '../../../app.js'
+// import { firebase_db, firebase_storage } from '../../../app.js'
 
 ///////////////////
 // Create Functions 

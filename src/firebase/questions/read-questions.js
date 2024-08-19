@@ -1,7 +1,10 @@
-import { firebase_db, firebase_storage } from '../../../app.js'
-import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore'
+// import { firebase_db, firebase_storage } from '../../../app.js'
+import { firebase_db, firebase_storage } from '../../../app.js';
+import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore';
 import { ref, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
+
+
 /////////////////
 // Read Functions 
 //////////////////
@@ -10,7 +13,7 @@ import axios from 'axios';
 /**
  * Reads all categories from a Firestore database.
  */
-async function readAllCategories() {
+async function readAllCategories(firebase_db) {
     try {
         const q = query(collection(firebase_db, "categories"));
         const querySnapshot = await getDocs(q);
@@ -32,28 +35,36 @@ async function readAllCategories() {
  * Reads questions from a specified category in a Firestore database.
  * @param {string} categoryName - The name of the category to retrieve questions from.
  */
-async function readQuestionsFromCategory(categoryName) {
+async function readQuestionsFromCategory(db, categoryName) {
     try {
-        const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
-        const querySnap = await getDocs(collectionRef);
-        let questions = [];
-        querySnap.forEach((doc) => {
-            let question = doc.data()
-            question["uuid"] = doc.id
-            questions.push(question);
+        const categoryRef = doc(db, 'categories', categoryName);
+        const categoryDoc = await getDoc(categoryRef);
+
+        if (!categoryDoc.exists()) {
+            return { success: false, error: 'Category not found' };
+        }
+
+        const questionsRef = collection(db, 'categories', categoryName, 'questions');
+        const questionsSnapshot = await getDocs(questionsRef);
+
+        const questions = [];
+        questionsSnapshot.forEach((doc) => {
+            questions.push({ id: doc.id, ...doc.data() });
         });
+
         return { success: true, data: questions };
     } catch (error) {
+        console.error('Error reading questions:', error);
         return { success: false, error: error.message };
     }
 }
 
-async function readAllQuestions() {
+async function readAllQuestions(firebase_db) {
     try {
-        const categories = await readAllCategories()
+        const categories = await readAllCategories(firebase_db)
         let allQuestions = []
         for (const category of categories.data) {
-            const questionPerCategory = await readQuestionsFromCategory(category)
+            const questionPerCategory = await readQuestionsFromCategory(firebase_db, category)
             for (const question in questionPerCategory.data) {
                 const questionDetailsFull = questionPerCategory.data[question]
                 questionDetailsFull["category"] = category
@@ -70,7 +81,7 @@ async function readAllQuestions() {
  * Reads questions from a specified category in a Firestore database without subscribing.
  * @param {string} categoryName - The name of the category to retrieve questions from.
  */
-async function readQuestionsFromCategoryOnce(categoryName) {
+async function readQuestionsFromCategoryOnce(firebase_db, categoryName) {
     try {
         const collectionRef = collection(firebase_db, 'categories', categoryName, 'questions');
         const querySnap = await getDocs(collectionRef);
@@ -83,6 +94,7 @@ async function readQuestionsFromCategoryOnce(categoryName) {
         return { success: false, error: error.message };
     }
 }
+
 
 /**
  * Retrieves the download URL for a media file from Firebase Storage.
@@ -104,14 +116,27 @@ async function getMediaUrl(filePath) {
 /**
  * Fetches the media content using Axios after retrieving the download URL.
  * @param {string} filePath - The path to the file in Firebase Storage.
- * @returns {Promise<Blob>} A promise that resolves with the media content as a Blob.
+ * @returns {Promise<{ data: Buffer, contentType: string, contentLength: string }>} A promise that resolves with the media content as a Buffer, content type, and content length.
  */
 async function fetchMediaContent(filePath) {
     try {
         const url = await getMediaUrl(filePath);
-        const response = await axios.get(url, { responseType: 'blob' });
+        const response = await axios.get(url, { responseType: 'arraybuffer' });
         console.log(`Fetched media content from ${url}`);
-        return response.data;
+        
+        // Debug logging
+        console.log('Response headers:', response.headers);
+        console.log('Response data length:', response.data.length);
+        console.log('Response data type:', typeof response.data);
+        
+        const contentType = response.headers['content-type'] || 'application/octet-stream';
+        console.log('Content-Type:', contentType); // Additional debug log
+        
+        return {
+            data: response.data,
+            contentType: contentType,
+            contentLength: response.headers['content-length']
+        };
     } catch (error) {
         console.error(`Error fetching media content from ${filePath}:`, error);
         throw new Error(`Failed to fetch media content: ${error.message}`);
@@ -119,4 +144,5 @@ async function fetchMediaContent(filePath) {
 }
 
 
-export { readQuestionsFromCategory, readQuestionsFromCategoryOnce, readAllCategories, readAllQuestions,getMediaUrl,fetchMediaContent}
+
+export { readQuestionsFromCategory, readQuestionsFromCategoryOnce, readAllCategories, readAllQuestions, getMediaUrl, fetchMediaContent }

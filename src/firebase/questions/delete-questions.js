@@ -1,11 +1,11 @@
-import { firebase_db, firebase_storage } from '../../../app.js'
+// import { firebase_db, firebase_storage } from '../../../app.js'
 import { doc, deleteDoc } from "firebase/firestore";
 
 ///////////////////
 // Delete Functions 
 ///////////////////
 
-async function deleteQuestion(categoryName, questionID) {
+async function deleteQuestion(firebase_db, categoryName, questionID) {
     try {
         await deleteDoc(doc(firebase_db, "categories", categoryName, "questions", questionID))
         return { success: true, message: `Deleted Category: ${categoryName}` };
@@ -14,7 +14,7 @@ async function deleteQuestion(categoryName, questionID) {
     }
 }
 
-async function deleteCategory(categoryName) {
+async function deleteCategory(firebase_db, categoryName) {
     try {
         await deleteDoc(doc(firebase_db, "categories", categoryName))
         return { success: true, message: `Deleted Category: ${categoryName}` };

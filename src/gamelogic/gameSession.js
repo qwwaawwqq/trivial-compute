@@ -154,65 +154,8 @@ export class GameSession {
 
     /**
      * This is part of use cases 3 and 4.
-     * This should be called by the API route handling the buttons indicating player's choice of answer when presented with a question.
-     * Evaluates if the given answer is correct.
-     * @param {string} answer - The player's answer.
-     * @return {Object} An object with the correct answer and whether the player's answer is correct.
-     */
-    evaluateAnswer(answer) {
-        const correctAnswer = this.currentQuestion.answer;
-        const isCorrect = correctAnswer === answer;
-        this.recentlyAnsweredCorrectly = isCorrect;
-        return {
-            "correctAnswer": correctAnswer,
-            "isCorrect": isCorrect
-        };
-    }
-
-    /**
-     * This is part of use cases 3 and 4, towards the end.
-     * This should be called by the API route handling the button that should display when the game is displaying the correct answer feedback.
-     * Triggers actions that should happen after the player has viewed the correct answer.
-     * @return {Object} An object containing the following:
-     *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
-     *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
-     */
-    acknowledgeAnswer() {
-        const isCorrect = this.recentlyAnsweredCorrectly;
-        let scoreboardToUpdate = null;
-        let score = null;
-        if (isCorrect) {
-            if (this.getCurrentSquare().isHQ) {
-                this.awardPoint();
-                scoreboardToUpdate = this.currentPlayerIndex;
-                score = this.currentPlayer.score;
-            }
-            if (this.getCurrentSquare().isCenter && this.checkForWinner()) {
-                return {
-                    endGameData: this.endGame(), // End use case 4 if player has won
-                    nextPlayerName: null,
-                    scoreboardToUpdate: null,
-                    score: null
-                }
-            }
-            // This player's turn continues.
-        } else {
-            this.endTurn();
-        }
-        return {
-            endGameData: null, 
-            nextPlayerName: this.currentPlayer.name,
-            scoreboardToUpdate: scoreboardToUpdate,
-            score: score
-        }  // End use cases 3 or 4
-    }
-
-    /**
-     * This is part of use cases 3 and 4.
-     * This should be called by the API route handling the buttons indicating player's choice of answer when presented with a question.
-     * Evaluates if the given answer is correct.
+     * This should be called by the API route handling the button where a player requests to show the correct answer
+     * Provides the correct answer
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     showAnswer() {
@@ -224,7 +167,7 @@ export class GameSession {
 
     /**
      * This is part of use cases 3 and 4, towards the end.
-     * This should be called by the API route handling the button that should display when the game is displaying the correct answer feedback.
+     * This should be called by the API route handling the buttons where players judge if the orally supplied answer is correct.
      * Triggers actions that should happen after the player has viewed the correct answer.
      * @param {boolean} isCorrect - Whether or not the player answered correctly.
      * @return {Object} An object containing the following:

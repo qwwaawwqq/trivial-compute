@@ -173,45 +173,6 @@ app.put('/api/game/pickDirection', (req, res) => {
 });
 
 /**
- * Check if the player's choice is correct, and send back what the correct answer is.
- * Responds to the buttons indicating player's choice of answer when presented with a question.
- * This is part of use cases 3 and 4.
- * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
- * @param {string} answer - The player's answer.
- * @return {Object} An object with the correct answer and whether the player's answer is correct.
- *      @property {string} correctAnswer - The correct answer to the question.
- *      @property {boolean} isCorrect - Whether or not the player answered correctly.
- */
-app.put('/api/game/evaluateAnswer', (req, res) => {
-    const { gameSessionID, answer } = req.body;
-    const gameSession = app.locals.activeGameSession[gameSessionID];
-    const correctAnswerData = gameSession.evaluateAnswer(answer);
-    res.status(200).send(correctAnswerData);
-});
-
-/**
- * Triggers actions that should happen after the player has viewed the correct answer.
- * This is part of use cases 3 and 4, towards the end.
- * Responds to the acknowledgement button that should display when the game is displaying the correct answer feedback.
- * This output format depends on whether or not the player has now won the game:
- *      If endGameData is not null, then the current player won, so display the endgame screen with the provided information in endGameData.
- *      Otherwise, if score is not null, then the current player scored a point, so update the scoreboard identified by scoreboardToUpdate with the score, and then prompt the player named nextPlayerName to roll a die.
- *      Otherwise, the current player did not score a point, so just prompt the player named nextPlayerName to roll a die.
- * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
- * @return {Object} An object containing the following:
- *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
- *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
- *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
- *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
- */
-app.put('/api/game/acknowledgeAnswer', (req, res) => {
-    const { gameSessionID } = req.body;
-    const gameSession = app.locals.activeGameSession[gameSessionID];
-    const scoreOrEndData = gameSession.acknowledgeAnswer();
-    res.status(200).send(scoreOrEndData);
-});
-
-/**
  * Respond to the buttons indicating player's choice of category at the center square.
  * This is part of use case 4.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.
@@ -227,7 +188,7 @@ app.put('/api/game/selectCategory', (req, res) => {
 
 
 /**
- * Check if the player's choice is correct, and send back what the correct answer is.
+ * Send back what the correct answer is.
  * Responds to the buttons indicating player's choice of answer when presented with a question.
  * This is part of use cases 3 and 4.
  * @param {string} gameSessionID - A unique ID corresponding to the ongoing GameSession, as generated when the game started.

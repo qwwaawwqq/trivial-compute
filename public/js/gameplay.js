@@ -336,12 +336,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
     
                     // Function to fetch media URL from the new API
-                    function fetchMediaUrl(fileLocation, stream = false) {
-                        const url = stream ? '/api/fetchMediaContent' : '/api/getMediaUrl';
+                    function fetchMediaUrl(fileLocation) {
                         return $.ajax({
-                            url: url,
+                            url: '/api/fetchMediaContent',
                             method: 'GET',
-                            dataType: stream ? 'blob' : 'json',
+                            xhrFields: {
+                                responseType: 'blob'
+                            },
                             data: { filePath: fileLocation },
                         });
                     }
@@ -352,8 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             $('.questionDisplay').text(response.question.questionTitle);
                             break;
                         case "AUDIO":
-                          
-                            fetchMediaUrl(fileLocation, true).then(blob => {
+                            $('.questionDisplay').text(response.question.questionTitle);
+                            fetchMediaUrl(fileLocation).then(blob => {
                                 const audioElement = document.createElement('audio');
                                 audioElement.src = URL.createObjectURL(blob);
                                 audioElement.controls = true;
@@ -364,10 +365,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             break;
                         case "IMAGE":
-                        
-                            fetchMediaUrl(fileLocation, false).then(result => {
+                            $('.questionDisplay').text(response.question.questionTitle);
+                            fetchMediaUrl(fileLocation).then(blob => {
                                 const imageElement = document.createElement('img');
-                                imageElement.src = result.url;
+                                imageElement.src = URL.createObjectURL(blob);
                                 imageElement.alt = "Question Image";
                                 imageElement.onload = () => showMedia(imageElement);
                                 imageElement.onerror = () => console.error("Error loading image:", fileLocation);
@@ -377,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             break;
                         case "VIDEO":
                         
-                            fetchMediaUrl(fileLocation, true).then(blob =>  {
+                            fetchMediaUrl(fileLocation).then(blob =>  {
                                 const videoElement = document.createElement('video');
                                 videoElement.src = URL.createObjectURL(blob);
                                 videoElement.controls = true;
@@ -410,7 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
 
 
     function movePlayerToken(playerIndex, destination) {
@@ -472,6 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const typeOfQuestion = response.typeOfQuestion;
                 const fileLocation = response.fileLocation;
                 // Clear any existing media elements
+                // Clear any existing media elements
                 $('.questionDisplay').nextAll('audio, img, video').remove();
     
                 function showMedia(element) {
@@ -482,24 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // Function to fetch media URL from the new API
-                function fetchMediaUrl(fileLocation, stream = false) {
-                    const url = stream ? '/api/fetchMediaContent' : '/api/getMediaUrl';
+                function fetchMediaUrl(fileLocation) {
                     return $.ajax({
-                        url: url,
+                        url: '/api/fetchMediaContent',
                         method: 'GET',
-                        dataType: stream ? 'blob' : 'json',
+                        xhrFields: {
+                            responseType: 'blob'
+                        },
                         data: { filePath: fileLocation },
                     });
                 }
                
-
                 switch (typeOfQuestion) {
                     case "FREE_TEXT":
                         // No additional media to display for free text questions
                         $('.questionDisplay').text(response.question.questionTitle);
                         break;
                     case "AUDIO":
-                        fetchMediaUrl(fileLocation, true).then(blob => {
+                        $('.questionDisplay').text(response.question.questionTitle);
+                        fetchMediaUrl(fileLocation).then(blob => {
                             const audioElement = document.createElement('audio');
                             audioElement.src = URL.createObjectURL(blob);
                             audioElement.controls = true;
@@ -510,9 +512,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "IMAGE":
-                        fetchMediaUrl(fileLocation, false).then(result => {
+                        $('.questionDisplay').text(response.question.questionTitle);
+                        fetchMediaUrl(fileLocation).then(blob => {
                             const imageElement = document.createElement('img');
-                            imageElement.src = result.url;
+                            imageElement.src = URL.createObjectURL(blob);
                             imageElement.alt = "Question Image";
                             imageElement.onload = () => showMedia(imageElement);
                             imageElement.onerror = () => console.error("Error loading image:", fileLocation);
@@ -521,7 +524,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "VIDEO":
-                        fetchMediaUrl(fileLocation, true).then(blob => {
+                    
+                        fetchMediaUrl(fileLocation).then(blob =>  {
                             const videoElement = document.createElement('video');
                             videoElement.src = URL.createObjectURL(blob);
                             videoElement.controls = true;

@@ -6,7 +6,7 @@ import { readFile } from "fs"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import { firebase_db, firebase_storage } from '../../../app.js'
+// import { firebase_db, firebase_storage } from '../../../app.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,7 +22,7 @@ const __dirname = dirname(__filename);
  * @param {string} creatorName - The name of the creator of the category.
  * @param {function} callback - The callback function to execute after creating the category.
  */
-async function createNewCategory(categoryName, creatorName, callback) {
+async function createNewCategory(firebase_db, categoryName, creatorName, callback) {
     try {
         const categoryRef = doc(collection(firebase_db, 'categories'), categoryName);
         await setDoc(categoryRef, { creatorName: creatorName });
@@ -42,7 +42,7 @@ async function createNewCategory(categoryName, creatorName, callback) {
  * @param {string} question - The question text.
  * @param {function} callback - The callback function to execute after adding the question.
  */
-async function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question) {
+async function addTextOpenEndedQuestionToCategory(firebase_db, categoryName, difficultyLevel, creator, answer, question) {
     try {
         const questionId = v4()
         await setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
@@ -73,7 +73,7 @@ async function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel,
  * @param {Array<string>} choices - The choices for the multiple choice question.
  * @param {function} callback - The callback function to execute after adding the question.
  */
-async function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices) {
+async function addTextMultipleChoiceQuestionToCategory(firebase_db, categoryName, difficultyLevel, creator, question, answer, choices) {
     try {
         const questionId = v4()
         await setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
@@ -109,7 +109,7 @@ async function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyL
  * @param {string} question - The question text.
  * @param {function} callback - The callback function to execute after attempting to add the question.
  */
-function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
+function addMediaQuestionToCategory(firebase_db, firebase_storage, categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
     try {
 
         const storageRef = ref(firebase_storage, `${type.toLowerCase()}/${file.originalname + "_" + v4()}`);

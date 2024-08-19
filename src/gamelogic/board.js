@@ -28,11 +28,12 @@ export class Board {
 
     /**
      * Factory method to create a new Board instance.
+     * @param {Firestore} firestore - a Firestore instance to read the board data from
      * @return {Promise<Board>} A promise that resolves to a Board instance.
      */
-    static create() {
+    static create(firestore) {
         let board = new Board();
-        return readBoard()
+        return readBoard(firestore)
             .then(boardData => {
                 // Translate stored JSON in database to local objects.
                 board.squares = {};

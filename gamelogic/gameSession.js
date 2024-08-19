@@ -7,9 +7,6 @@ import { Question } from './question.js';
 import { Color } from './color.js';
 import { SquareType } from './squareType.js';
 
-import { firebase_db, firebase_storage } from '../../app.js'
-import { doc, setDoc, onSnapshot, getDoc, collection } from 'firebase/firestore'
-
 import { v4 } from "uuid";
 
 class InvalidPlayerCountError extends Error {
@@ -79,11 +76,11 @@ export class GameSession {
      *   @property {Array<Direction>} availableDirections - The list of directions available for the player from their current position.
      */
     rollDie() {
-        this.currentPlayer.movesLeft = this.die.roll();
+        this.currentPlayerMovesLeft = this.die.roll();
         // You should always have the opportunity to pick a direction at this point.
         // We assume that's the case even if this die roll is done based on a Roll Again space.
         return { 
-            roll: this.currentPlayer.movesLeft, 
+            roll: this.currentPlayerMovesLeft, 
             availableDirections: this.getAvailableDirections(false) 
         };
     }
@@ -98,52 +95,38 @@ export class GameSession {
      * Updates their position.
      * @param {Direction} direction - The direction in which the player wants to move.
      * @returns {Object} An object containing the path and relevant decision information:
-     *      @property {Array<int>} path - An array of positions the player has moved through.
-     *      @property {string} currentPlayerName - The name of the current player. Can be used to determine which player's token to move.
-     *      @property {string} currentPlayerColor - The color of the current player's token. Can be used to determine which player's token to move.
-     *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
-     *      @property {Object<Color, string>|null} categoryOptions - An object mapping colors to category names if the square type is CENTER, otherwise null.
-     *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
-     *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
-     */
+    *      @property {Array<int>} path - An array of positions the player has moved through.
+    *      @property {SquareType|null} squareType - The type of the current square if the player has run out of moves, otherwise null.
+    *      @property {Object<Color, string>|null} categoryOptions - An object mapping colors to category names if the square type is CENTER, otherwise null.
+    *      @property {Object|null} question - A question object if the square type is NORMAL, otherwise null.
+    *      @property {Array<Direction>} availableDirections - An array of available directions if the player is at an intersection, otherwise an empty array.
+    */
     pickDirection(direction) {
         let path = [];
-        let nextDirection = direction;
         path.push(this.currentPlayer.position);
-        this.tempDebug("DEBUG A");
-        console.log(nextDirection);
         do {
-            this.tempDebug("DEBUG B");
-            console.log(nextDirection);
-            this.currentPlayer.moveOnce(nextDirection);
+            this.currentPlayer.moveOnce(direction);
             path.push(this.currentPlayer.position);
-            this.tempDebug("DEBUG C");
-            console.log(nextDirection);
-            nextDirection = this.getAvailableDirections(true)[0];
-        } while ((!(this.currentPlayer.movesLeft <= 0)) && (!(this.getCurrentSquare().isIntersection)));
-        this.tempDebug("DEBUG D");
+        } while ((this.currentPlayer.movesLeft <= 0) && !(this.getCurrentSquare().isIntersection));
+
         // If we are out of moves, there's no decision left to make. 
         // Otherwise, we must be at an intersection, so we need to ask the player to make a decision.
         if (this.currentPlayer.movesLeft <= 0) {
             // Return the decision information needed by the square.
-            this.tempDebug("DEBUG E");
 
             const { squareType, categoryOptions, question } = this.activateSquare();
             return {
                 path: path,
-                currentPlayerIndex: this.currentPlayerIndex,
                 squareType: squareType,
                 categoryOptions: categoryOptions,
                 question: question,
                 availableDirections: []
             };
         } else { 
-            this.tempDebug("DEBUG F");
             // Assume this is an intersection.
             // Since we are in the middle of a turn, do not allow the player to turn back.
             return {
                 path: path,
-                currentPlayerIndex: this.currentPlayerIndex,
                 squareType: null,
                 categoryOptions: null,
                 question: null,
@@ -160,7 +143,7 @@ export class GameSession {
      * @return {Object} An object with the correct answer and whether the player's answer is correct.
      */
     evaluateAnswer(answer) {
-        const correctAnswer = this.currentQuestion.answer;
+        const correctAnswer = this.currentQuestion.getAnswer();
         const isCorrect = correctAnswer === answer;
         this.recentlyAnsweredCorrectly = isCorrect;
         return {
@@ -173,93 +156,22 @@ export class GameSession {
      * This is part of use cases 3 and 4, towards the end.
      * This should be called by the API route handling the button that should display when the game is displaying the correct answer feedback.
      * Triggers actions that should happen after the player has viewed the correct answer.
-     * @return {Object} An object containing the following:
-     *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
-     *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
+     * @return {Object | null} An object if the game was won, otherwise null.
      */
     acknowledgeAnswer() {
         const isCorrect = this.recentlyAnsweredCorrectly;
-        let scoreboardToUpdate = null;
-        let score = null;
         if (isCorrect) {
             if (this.getCurrentSquare().isHQ) {
                 this.awardPoint();
-                scoreboardToUpdate = this.currentPlayerIndex;
-                score = this.currentPlayer.score;
             }
             if (this.getCurrentSquare().isCenter && this.checkForWinner()) {
-                return {
-                    endGameData: this.endGame(), // End use case 4 if player has won
-                    nextPlayerName: null,
-                    scoreboardToUpdate: null,
-                    score: null
-                }
+                return this.endGame(); // End use case 4 if player has won
             }
             // This player's turn continues.
         } else {
             this.endTurn();
         }
-        return {
-            endGameData: null, 
-            nextPlayerName: this.currentPlayer.name,
-            scoreboardToUpdate: scoreboardToUpdate,
-            score: score
-        }  // End use cases 3 or 4
-    }
-
-    /**
-     * This is part of use cases 3 and 4.
-     * This should be called by the API route handling the buttons indicating player's choice of answer when presented with a question.
-     * Evaluates if the given answer is correct.
-     * @return {Object} An object with the correct answer and whether the player's answer is correct.
-     */
-    showAnswer() {
-        const correctAnswer = this.currentQuestion.answer;
-        return {
-            "correctAnswer": correctAnswer
-        };
-    }
-
-    /**
-     * This is part of use cases 3 and 4, towards the end.
-     * This should be called by the API route handling the button that should display when the game is displaying the correct answer feedback.
-     * Triggers actions that should happen after the player has viewed the correct answer.
-     * @param {boolean} isCorrect - Whether or not the player answered correctly.
-     * @return {Object} An object containing the following:
-     *      @property {Object | null} endGameData - If the game is over, this will contain data about the game. Otherwise, it will be null. Decide whether to continue the game or not based on this.
-     *      @property {string | null} nextPlayerName - the player whose turn is up next. Used to populate the turn display. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {int | null} scoreboardToUpdate - Identifies which scoreboard to update. Between 0-3. If the game is over, or if the player didn't score a point, this isn't populated.
-     *      @property {Object<Color, boolean> | null} score - New score to put into the scoreboard identified by scoreboardToUpdate.
-     */
-    judgeAnswer(isCorrect) {
-        let scoreboardToUpdate = null;
-        let score = null;
-        if (isCorrect) {
-            if (this.getCurrentSquare().isHQ) {
-                this.awardPoint();
-                scoreboardToUpdate = this.currentPlayerIndex;
-                score = this.currentPlayer.score;
-            }
-            if (this.getCurrentSquare().isCenter && this.checkForWinner()) {
-                return {
-                    endGameData: this.endGame(), // End use case 4 if player has won
-                    nextPlayerName: null,
-                    scoreboardToUpdate: null,
-                    score: null
-                }
-            }
-            // This player's turn continues.
-        } else {
-            this.endTurn();
-        }
-        return {
-            endGameData: null, 
-            nextPlayerName: this.currentPlayer.name,
-            scoreboardToUpdate: scoreboardToUpdate,
-            score: score
-        }  // End use cases 3 or 4
+        return this.currentPlayer.name; // End use cases 3 or 4
     }
 
     /**
@@ -271,48 +183,7 @@ export class GameSession {
      */
     selectCategory(color) {
         const category = this.categories[color];
-        this.currentQuestion = category.pickRandomQuestion();
-        console.log(this.currentQuestion);
-        return this.currentQuestion;
-    }
-
-    /**
-     * Retrieve the names of the categories and players, in the same format that would be provided the create() method.
-     * @returns {Object}
-     *      @property {Object<Color, string>} categoryNames
-     *      @property {Array<string>} playerNames
-     */
-    get names() {
-        const categoryNames = {};
-        for (const color in this.categories) {
-            categoryNames[color] = this.categories[color].name;
-        }
-
-        const playerNames = [];
-        for (let i = 0; i < this.players.length; i++) {
-            const playerName = this.players[i].name;
-            playerNames.push(playerName);
-        }
-
-        return {
-            categoryNames: categoryNames,
-            playerNames: playerNames
-        };
-    }
-
-    /**
-     * Saves this game session as a JSON to Firestore.
-     */
-    saveJSON() {
-        const json = this.toJSON();
-        const docRef = doc(firebase_db, 'gameSessions', this.GameSessionID);
-        console.log(json);
-        setDoc(docRef, json).then(() => {
-            console.log('Game session successfully saved!');
-        }).catch((error) => {
-            console.error('Error saving game session:', error);
-        });
-
+        return category.pickRandomQuestion();
     }
 
     // Private methods
@@ -392,7 +263,7 @@ export class GameSession {
      */
     getAvailableDirections(excludePreviousDirection) {
         const currentPlayerNeighbors = this.gameboard.getNeighbors(this.currentPlayer.position);
-        let availableDirections = Object.keys(currentPlayerNeighbors);
+        const availableDirections = Object.keys(currentPlayerNeighbors);
         if (excludePreviousDirection) {
             // Filter out the direction that the player just came from.
             availableDirections = availableDirections.filter(k => k !== this.currentPlayer.previousSquareDirection);
@@ -418,14 +289,10 @@ export class GameSession {
         } else if (this.getCurrentSquare().isCenter) {
             // This should prompt the player to choose a category.
             squareType = SquareType.CENTER;
-            categoryOptions = {}; 
-            for (const key in this.categories) {
-                categoryOptions[key] = this.categories[key].toJSON();
+            categoryOptions = []; 
+            for (key in this.categories) {
+                categoryOptions[key] = categories[key].toJSON();
             }
-        } else if (this.getCurrentSquare().isHQ) {
-            // This should prompt the player to answer a question.
-            squareType = SquareType.HQ;
-            question = this.getQuestion().toJSON(); 
         } else {
             // This should prompt the player to answer a question.
             squareType = SquareType.NORMAL;
@@ -448,7 +315,6 @@ export class GameSession {
         const color = this.getCurrentSquare().color;
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
-        console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -477,44 +343,8 @@ export class GameSession {
      */
     endGame() {
         return {
-            "winner": this.currentPlayer.name
+            "players": this.players,
+            "winner": this.currentPlayer
         };
-    }
-
-    toJSON() {
-        const playerJSONs = [];
-        for (const player of this.players) {
-            playerJSONs.push(player.toJSON());
-        }
-
-        const categoryJSONs = {};
-        for (const color in this.categories) {
-            categoryJSONs[color] = this.categories[color].toJSON();
-        }
-
-        let currentQuestion = null;
-        if (!(this.currentQuestion === null)) {
-            currentQuestion = this.currentQuestion.toJSON();
-        }
-
-        return {
-            gameboard: this.gameboard.toJSON(),
-            categories: categoryJSONs,
-            players: playerJSONs,
-            currentPlayerIndex: this.currentPlayerIndex,
-            recentlyAnsweredCorrectly: this.recentlyAnsweredCorrectly,
-            currentQuestion: currentQuestion,
-            GameSessionID: this.GameSessionID
-        }
-    }
-
-    tempDebug(id) {
-        console.log(id);
-        console.log(this.currentPlayer.name);
-        console.log(this.currentPlayer.position);
-        console.log(this.currentPlayer.movesLeft);
-        console.log(this.currentPlayer.score);
-        console.log(this.currentQuestion);
-        console.log(this.getCurrentSquare().toJSON());
     }
 }

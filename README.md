@@ -3,6 +3,7 @@
 # How to Start
 `npm i`: install all the dependencies <br>
 `npm start`: Starts the server
+npm install axios: added package
 
 # Testing Webpage
 [localhost:8080](localhost:8080)
@@ -25,4 +26,5 @@ Then, run the container from within the command line:
 Wait for the message "Server running on port 8080..." to appear.
 Then access the GUI at this link using your web browser:
 `http://localhost:8080`
+
 

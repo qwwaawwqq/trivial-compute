@@ -1,5 +1,5 @@
 import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore'
-// import { firebase_db } from '../../../app.js'
+import { firebase_db } from '../../../app.js'
 ///////////////////
 // Update Functions 
 ///////////////////
@@ -8,7 +8,7 @@ function updateQuestion(categoryName, questionId, updateDetails, callback) {
 
 }
 
-async function updateCategory(firebase_db, oldCategoryName, nameCategoryName) {
+async function updateCategory(oldCategoryName, nameCategoryName) {
     const oldDocRef = doc(firebase_db, "categories", oldCategoryName);
     const newDocRef = doc(firebase_db, "categories", nameCategoryName);
 

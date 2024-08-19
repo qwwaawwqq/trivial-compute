@@ -38,7 +38,7 @@ export class Category {
                 let category = new Category(name);
                 
                 const questions = []
-                for (const questionData of questionsData.data) {
+                for (const questionData of questionsData) {
                     const question = this.instantiateQuestionSubclass(questionData);
                     questions.push(question);
                 }
@@ -72,12 +72,10 @@ export class Category {
         const difficultyLevel = questionObject["difficultyLevel"];
         const creator = questionObject["creator"];
         const answer = questionObject["answer"];
-        const questionType = questionObject["questionType"];
-
-        
+        const questionType = questionObject["typeType"];
         
         switch (questionType) {
-            case "Text":
+            case "openEnded":
                 return new OpenEndedTextQuestion(
                     questionTitle, 
                     questionStats, 
@@ -86,7 +84,7 @@ export class Category {
                     creator, 
                     answer
                 );
-            case "text":
+            case QuestionType.FREE_TEXT:
                 return new OpenEndedTextQuestion(
                     questionTitle, 
                     questionStats, 
@@ -95,7 +93,7 @@ export class Category {
                     creator, 
                     answer
                 );
-            case "Multiple Choice":
+            case QuestionType.MULTIPLE_CHOICE:
                 return new MultipleChoiceTextQuestion(
                     questionObject["options"],
                     questionTitle, 
@@ -105,9 +103,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case "Audio":
+            case QuestionType.AUDIO:
                 return new AudioQuestion(
-                    questionObject["fileLocation"],
+                    questionObject["audioURL"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 
@@ -115,9 +113,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case "Image":
+            case QuestionType.IMAGE:
                 return new ImageQuestion(
-                    questionObject["fileLocation"],
+                    questionObject["imageURL"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 
@@ -125,9 +123,9 @@ export class Category {
                     creator, 
                     answer
                 );
-            case "Video":
+            case QuestionType.VIDEO:
                 return new VideoQuestion(
-                    questionObject["fileLocation"],
+                    questionObject["videoURL"],
                     questionTitle, 
                     questionStats, 
                     dateCreated, 

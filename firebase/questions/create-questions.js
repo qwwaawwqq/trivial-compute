@@ -22,14 +22,12 @@ const __dirname = dirname(__filename);
  * @param {string} creatorName - The name of the creator of the category.
  * @param {function} callback - The callback function to execute after creating the category.
  */
-async function createNewCategory(categoryName, creatorName, callback) {
-    try {
-        const categoryRef = doc(collection(firebase_db, 'categories'), categoryName);
-        await setDoc(categoryRef, { creatorName: creatorName });
-        return { success: true, message: "Added New Category" };
-    } catch (error) {
-        return { success: false, message: error.message };
-    }
+function createNewCategory(categoryName, creatorName, callback) {
+    const categoryRef = doc(collection(firebase_db, 'categories'), categoryName)
+    setDoc(categoryRef, {
+        creatorName: creatorName
+    })
+    callback({ success: true, message: "Added New Category" })
 }
 
 /** 
@@ -42,23 +40,23 @@ async function createNewCategory(categoryName, creatorName, callback) {
  * @param {string} question - The question text.
  * @param {function} callback - The callback function to execute after adding the question.
  */
-async function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question) {
+function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel, creator, answer, question, callback) {
     try {
         const questionId = v4()
-        await setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
-            dateCreatd: Date.now(),
+        setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
+            dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
             correctlyAnswerCount: 0,
             creator: creator,
             answer: answer,
             questionType: "text",
-            textType: 'openEnded',
+            typeType: 'openEnded',
             question: question
         })
-        return { success: true, data: "Created New Text Open Ended Questions" }
+        callback({ success: true, message: "Created New Text Open Ended Questions" })
     } catch (error) {
-        return { success: false, error: "Cannot Create New Question" }
+        callback({ success: false, message: "Cannot Create New Question" })
     }
 }
 
@@ -73,24 +71,24 @@ async function addTextOpenEndedQuestionToCategory(categoryName, difficultyLevel,
  * @param {Array<string>} choices - The choices for the multiple choice question.
  * @param {function} callback - The callback function to execute after adding the question.
  */
-async function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices) {
+function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyLevel, creator, question, answer, choices, callback) {
     try {
         const questionId = v4()
-        await setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
-            dateCreatd: Date.now(),
+        setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
+            dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
             correctlyAnswerCount: 0,
             creator: creator,
             answer: answer,
             questionType: "text",
-            textType: 'multipleChoice',
+            typeType: 'multipleChoice',
             question: question,
             choice: choices
         })
-        return { success: true, data: "Created New Text Multiple Choice Questions" }
+        callback({ success: true, message: "Created New Text Multiple Choice Questions" })
     } catch (error) {
-        return { success: false, error: "Cannot Create New Text Multiple Choice Questions" }
+        callback({ success: false, message: "Cannot Create New Text Multiple Choice Questions" })
     }
 
 }
@@ -111,10 +109,10 @@ async function addTextMultipleChoiceQuestionToCategory(categoryName, difficultyL
  */
 function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answer, file, question, type, callback) {
     try {
-
-        const storageRef = ref(firebase_storage, `${type.toLowerCase()}/${file.originalname + "_" + v4()}`);
-        const storagePath = storageRef._location.path_
         const questionId = v4()
+        const storageRef = ref(firebase_storage, `${type}/${file.originalname + "_" + questionId}`);
+        const storagePath = storageRef._location.path_
+        const db = getFirestore();
         const metadata = {
             contentType: file.mimetype
         }
@@ -124,7 +122,7 @@ function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answ
         });
 
         setDoc(doc(firebase_db, 'categories', categoryName, "questions", questionId), {
-            dateCreated: Date.now(),
+            dataCreate: Date.now(),
             difficultyLevel: difficultyLevel,
             timeAsked: 0,
             correctlyAnswerCount: 0,
@@ -136,7 +134,6 @@ function addMediaQuestionToCategory(categoryName, difficultyLevel, creator, answ
         })
         callback({ success: true, message: "Created New Image Question" })
     } catch (error) {
-        console.log(error)
         callback({ success: false, message: "Cannot Create New Text Multiple Choice Questions" })
     }
 }

@@ -304,62 +304,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function sendMovement(directionClick) {
         let gameID = localStorage.getItem('gameSessionID');
-        console.log(gameID);
-        console.log(directionClick);
+        console.log("Game ID:", gameID);
+        console.log("Direction Clicked:", directionClick);
+    
         $.ajax({
             url: '/api/game/pickDirection',
             method: 'PUT',
             dataType: 'json',
             contentType: 'application/json',
-            data: JSON.stringify({ gameSessionID : gameID, direction: directionClick}),
+            data: JSON.stringify({ gameSessionID: gameID, direction: directionClick }),
             success: function (response) {
-                if (response.squareType == "ROLL_AGAIN"){
+                if (response.squareType === "ROLL_AGAIN") {
                     console.log("Rolling again.");
                     $('#current-player').text(`Let's Go Gambling! Roll Again`);
                     $('#roll-dice').prop('disabled', false);
                     clearDie();
-                }
-
-                else if(response.squareType =="NORMAL" || response.squareType =="HQ"){
+                } else if (response.squareType === "NORMAL" || response.squareType === "HQ") {
                     console.log(response.question.questionTitle);
-
-                    // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
+    
                     const typeOfQuestion = response.question.typeOfQuestion;
                     const fileLocation = response.question.fileLocation;
+                    
+                    // Clear any existing media elements
+                    $('.questionDisplay').nextAll('audio, img, video').remove();
+    
+                    function showMedia(element) {
+                        $('.questionDisplay').after(element);
+                        element.style.display = 'block';
+                        element.style.maxWidth = '100%';
+                        element.style.margin = '10px 0';
+                    }
+    
+                    // Function to fetch media URL from the new API
+                    function fetchMediaUrl(fileLocation, stream = false) {
+                        const url = stream ? '/api/fetchMediaContent' : '/api/getMediaUrl';
+                        return $.ajax({
+                            url: url,
+                            method: 'GET',
+                            dataType: stream ? 'blob' : 'json',
+                            data: { filePath: fileLocation },
+                        });
+                    }
+                   
                     switch (typeOfQuestion) {
                         case "FREE_TEXT":
-                            {}
+                            // No additional media to display for free text questions
+                            $('.questionDisplay').text(response.question.questionTitle);
+                            break;
                         case "AUDIO":
-                            {}
+                          
+                            fetchMediaUrl(fileLocation, true).then(blob => {
+                                const audioElement = document.createElement('audio');
+                                audioElement.src = URL.createObjectURL(blob);
+                                audioElement.controls = true;
+                                audioElement.oncanplaythrough = () => showMedia(audioElement);
+                                audioElement.onerror = () => console.error("Error loading audio:", fileLocation);
+                            }).catch(error => {
+                                console.error("Error fetching audio:", error);
+                            });
+                            break;
                         case "IMAGE":
-                            {}
+                        
+                            fetchMediaUrl(fileLocation, false).then(result => {
+                                const imageElement = document.createElement('img');
+                                imageElement.src = result.url;
+                                imageElement.alt = "Question Image";
+                                imageElement.onload = () => showMedia(imageElement);
+                                imageElement.onerror = () => console.error("Error loading image:", fileLocation);
+                            }).catch(error => {
+                                console.error("Error fetching image:", error);
+                            });
+                            break;
                         case "VIDEO":
-                            {}
+                        
+                            fetchMediaUrl(fileLocation, true).then(blob =>  {
+                                const videoElement = document.createElement('video');
+                                videoElement.src = URL.createObjectURL(blob);
+                                videoElement.controls = true;
+                                videoElement.oncanplaythrough = () => showMedia(videoElement);
+                                videoElement.onerror = () => console.error("Error loading video:", fileLocation);
+                            }).catch(error => {
+                                console.error("Error fetching video:", error);
+                            });
+                            break;
                         default:
-                            {}
+                            console.warn(`Unknown question type: ${typeOfQuestion}`);
+                            break;
                     }
-
-                    $('.questionDisplay').text(response.question.questionTitle);
+    
                     $('.pop').fadeToggle(300);
                     $('.realAnswer').toggle();
                     $('.compareAnswer').toggle();
                     $('.correctButton').toggle();
                     $('.incorrectButton').toggle();
-
-                }
-                else if(response.squareType =="CENTER") {
+    
+                } else if (response.squareType === "CENTER") {
                     $('.pop2').fadeToggle(300);
-
                 }
+    
                 updateDirectionButtonsGui(response.availableDirections);
                 movePlayerToken(response.currentPlayerIndex, response.path.at(-1));
-
             },
             error: function (xhr, status, error) {
-                alert("Error Roll Die: " + error);
+                alert("Error: " + error);
             }
         });
     }
+    
 
 
     function movePlayerToken(playerIndex, destination) {
@@ -420,18 +471,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
                 const typeOfQuestion = response.typeOfQuestion;
                 const fileLocation = response.fileLocation;
+                // Clear any existing media elements
+                $('.questionDisplay').nextAll('audio, img, video').remove();
+    
+                function showMedia(element) {
+                    $('.questionDisplay').after(element);
+                    element.style.display = 'block';
+                    element.style.maxWidth = '100%';
+                    element.style.margin = '10px 0';
+                }
+
+                // Function to fetch media URL from the new API
+                function fetchMediaUrl(fileLocation, stream = false) {
+                    const url = stream ? '/api/fetchMediaContent' : '/api/getMediaUrl';
+                    return $.ajax({
+                        url: url,
+                        method: 'GET',
+                        dataType: stream ? 'blob' : 'json',
+                        data: { filePath: fileLocation },
+                    });
+                }
+               
+
                 switch (typeOfQuestion) {
                     case "FREE_TEXT":
-                        {}
+                        // No additional media to display for free text questions
+                        $('.questionDisplay').text(response.question.questionTitle);
+                        break;
                     case "AUDIO":
-                        {}
+                        fetchMediaUrl(fileLocation, true).then(blob => {
+                            const audioElement = document.createElement('audio');
+                            audioElement.src = URL.createObjectURL(blob);
+                            audioElement.controls = true;
+                            audioElement.oncanplaythrough = () => showMedia(audioElement);
+                            audioElement.onerror = () => console.error("Error loading audio:", fileLocation);
+                        }).catch(error => {
+                            console.error("Error fetching audio:", error);
+                        });
+                        break;
                     case "IMAGE":
-                        {}
+                        fetchMediaUrl(fileLocation, false).then(result => {
+                            const imageElement = document.createElement('img');
+                            imageElement.src = result.url;
+                            imageElement.alt = "Question Image";
+                            imageElement.onload = () => showMedia(imageElement);
+                            imageElement.onerror = () => console.error("Error loading image:", fileLocation);
+                        }).catch(error => {
+                            console.error("Error fetching image:", error);
+                        });
+                        break;
                     case "VIDEO":
-                        {}
+                        fetchMediaUrl(fileLocation, true).then(blob => {
+                            const videoElement = document.createElement('video');
+                            videoElement.src = URL.createObjectURL(blob);
+                            videoElement.controls = true;
+                            videoElement.oncanplaythrough = () => showMedia(videoElement);
+                            videoElement.onerror = () => console.error("Error loading video:", fileLocation);
+                        }).catch(error => {
+                            console.error("Error fetching video:", error);
+                        });
+                        break;
                     default:
-                        {}
+                        console.warn(`Unknown question type: ${typeOfQuestion}`);
+                        break;
                 }
+
 
                 $('.questionDisplay').text(response.questionTitle);
                 $('.pop').fadeToggle();

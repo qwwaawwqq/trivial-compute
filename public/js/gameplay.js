@@ -455,9 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     $('.textq').click(function() {
-        let direction = $(this).attr("id");
+        let colorDirection = $(this).attr("id");
         $('.pop2').toggle();
-        getCategoryQuestion(direction);
+        getCategoryQuestion(colorDirection);
 
     })
 
@@ -474,6 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
                 const typeOfQuestion = response.typeOfQuestion;
                 const fileLocation = response.fileLocation;
+                console.log(response);
                 // Clear any existing media elements
                 // Clear any existing media elements
                 // $('.questionDisplay').nextAll('audio, img, video').remove();
@@ -503,10 +504,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 switch (typeOfQuestion) {
                     case "FREE_TEXT":
                         // No additional media to display for free text questions
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         break;
                     case "AUDIO":
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob => {
                             const audioElement = document.createElement('audio');
                             audioElement.src = URL.createObjectURL(blob);
@@ -518,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "IMAGE":
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob => {
                             const imageElement = document.createElement('img');
                             imageElement.src = URL.createObjectURL(blob);
@@ -530,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "VIDEO":
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob =>  {
                             const videoElement = document.createElement('video');
                             videoElement.src = URL.createObjectURL(blob);

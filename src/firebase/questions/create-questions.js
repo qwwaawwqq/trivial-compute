@@ -6,8 +6,6 @@ import { readFile } from "fs"
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-// import { firebase_db, firebase_storage } from '../../../app.js'
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 ///////////////////

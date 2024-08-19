@@ -1,6 +1,6 @@
 import { firebase_db, firebase_storage } from '../../../app.js'
 import { getFirestore, doc, setDoc, onSnapshot, collection, getDocs,query, limit } from 'firebase/firestore'
-
+import { ref, getDownloadURL } from 'firebase/storage';
 
 /////////////////
 // Read Functions 
@@ -91,4 +91,6 @@ function readAllCategories(callback) {
 }
 
 
-export { readAllQuestionsFromAllCategories , readQuestionsFromCategoryOnce, readAllCategories }
+
+
+export { readAllQuestionsFromAllCategories , readQuestionsFromCategoryOnce, readAllCategories}

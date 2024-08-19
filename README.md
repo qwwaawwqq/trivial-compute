@@ -3,7 +3,7 @@
 # How to Start
 `npm i`: install all the dependencies <br>
 `npm start`: Starts the server
-
+npm install axios: added package
 # Testing Webpage
 [localhost:8080](localhost:8080)
 

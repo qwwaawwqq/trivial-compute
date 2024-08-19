@@ -326,13 +326,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fileLocation = response.question.fileLocation;
                     
                     // Clear any existing media elements
-                    $('.questionDisplay').nextAll('audio, img, video').remove();
+                    // $('.questionDisplay').nextAll('audio, img, video').remove();
+                    $('.questionDisplay').siblings('audio, img, video').remove()
     
                     function showMedia(element) {
                         $('.questionDisplay').after(element);
                         element.style.display = 'block';
                         element.style.maxWidth = '100%';
-                        element.style.margin = '10px 0';
+                        element.style.margin = '10px auto';
+                        element.style.gridColumn = '1/3'; // Match the grid-column of `.questionDisplay`
+                        element.style.gridRow = '3/4'; // Place it in the next grid row
                     }
     
                     // Function to fetch media URL from the new API
@@ -377,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             break;
                         case "VIDEO":
-                        
+                            $('.questionDisplay').text(response.question.questionTitle);
                             fetchMediaUrl(fileLocation).then(blob =>  {
                                 const videoElement = document.createElement('video');
                                 videoElement.src = URL.createObjectURL(blob);
@@ -473,13 +476,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileLocation = response.fileLocation;
                 // Clear any existing media elements
                 // Clear any existing media elements
-                $('.questionDisplay').nextAll('audio, img, video').remove();
+                // $('.questionDisplay').nextAll('audio, img, video').remove();
+                $('.questionDisplay').siblings('audio, img, video').remove()
     
                 function showMedia(element) {
                     $('.questionDisplay').after(element);
                     element.style.display = 'block';
                     element.style.maxWidth = '100%';
-                    element.style.margin = '10px 0';
+                    element.style.margin = '10px auto';
+                    element.style.gridColumn = '1/3'; // Match the grid-column of `.questionDisplay`
+                    element.style.gridRow = '3/4'; // Place it in the next grid row
                 }
 
                 // Function to fetch media URL from the new API
@@ -524,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "VIDEO":
-                    
+                        $('.questionDisplay').text(response.question.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob =>  {
                             const videoElement = document.createElement('video');
                             videoElement.src = URL.createObjectURL(blob);
@@ -542,7 +548,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 $('.questionDisplay').text(response.questionTitle);
-                $('.pop').fadeToggle();
+                $('.pop').toggle();
                 $('.realAnswer').toggle();
                 $('.compareAnswer').toggle();
                 $('.correctButton').toggle();

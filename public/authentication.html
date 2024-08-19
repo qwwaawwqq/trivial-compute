@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,8 @@
     <!-- External CSS libraries -->
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/authentication.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
+
 <body>
     <!-- Main container -->
     <div class="container border border-dark border-3">
@@ -18,7 +17,7 @@
             <h1>Trivial Compute</h1>
         </header>
         <main class="manage-account-section row justify-content-center">
-            <h2>Manage Accounts</h2>
+            <h2>Teacher Login</h2>
             <!-- Authentication form -->
             <section id="auth-section" class="col-md-6">
                 <form id="login-form">
@@ -45,7 +44,8 @@
         </main>
         <footer>
             <!-- Return button -->
-            <button id="homeBtn" class="btn btn-lg btn-success btn-secondary" aria-label="Return to Home">Return</button>
+            <button id="homeBtn" class="btn btn-lg btn-success btn-secondary"
+                aria-label="Return to Home">Return</button>
         </footer>
     </div>
     <!-- Firebase initialization -->
@@ -53,4 +53,5 @@
     <!-- Custom JavaScript -->
     <script src="js/client.js" defer></script>
 </body>
+
 </html>

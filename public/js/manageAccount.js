@@ -1,5 +1,6 @@
 // Wait for the DOM to be fully loaded before executing the script
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+
     // Initialize the page
     initializeAccountManager();
 });
@@ -13,7 +14,7 @@ function initializeAccountManager() {
     bindAddAccountButton();
     bindChangePasswordButton();
     bindChangeAccessLevelButton();
-    
+
     // Add row selection functionality
     addRowSelectionHandler();
 }
@@ -117,7 +118,7 @@ function changeSelectedAccountAccessLevel() {
  */
 function addRowSelectionHandler() {
     const tableBody = document.querySelector('tbody');
-    tableBody.addEventListener('click', function(e) {
+    tableBody.addEventListener('click', function (e) {
         if (e.target.tagName === 'TD') {
             const clickedRow = e.target.parentElement;
             document.querySelectorAll('tr').forEach(row => row.classList.remove('table-warning'));

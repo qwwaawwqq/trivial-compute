@@ -8,7 +8,7 @@ import { initializeApp } from 'firebase/app';
 // From Source
 import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
 import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
-import { readQuestionsFromCategory, readAllCategories, readAllQuestions,getMediaUrl,fetchMediaContent} from './src/firebase/questions/read-questions.js'
+import { readQuestionsFromCategory, readAllCategories, readAllQuestions, getMediaUrl, fetchMediaContent } from './src/firebase/questions/read-questions.js'
 import { updateQuestion, updateCategory } from './src/firebase/questions/update-questions.js'
 import { deleteQuestion, deleteCategory } from './src/firebase/questions/delete-questions.js'
 import { getStorage } from "firebase/storage"

@@ -1,5 +1,3 @@
-// import { firebase_db, firebase_storage } from '../../../app.js'
-import { firebase_db, firebase_storage } from '../../../app.js';
 import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs } from 'firebase/firestore';
 import { ref, getDownloadURL } from 'firebase/storage';
 import axios from 'axios';
@@ -101,7 +99,7 @@ async function readQuestionsFromCategoryOnce(firebase_db, categoryName) {
  * @param {string} filePath - The path to the file in Firebase Storage.
  * @returns {Promise<string>} A promise that resolves with the download URL.
  */
-async function getMediaUrl(filePath) {
+async function getMediaUrl(firebase_storage, filePath) {
     try {
         const fileRef = ref(firebase_storage, filePath);
         const downloadURL = await getDownloadURL(fileRef);
@@ -118,9 +116,9 @@ async function getMediaUrl(filePath) {
  * @param {string} filePath - The path to the file in Firebase Storage.
  * @returns {Promise<{ data: Buffer, contentType: string, contentLength: string }>} A promise that resolves with the media content as a Buffer, content type, and content length.
  */
-async function fetchMediaContent(filePath) {
+async function fetchMediaContent(firebase_storage, filePath) {
     try {
-        const url = await getMediaUrl(filePath);
+        const url = await getMediaUrl(firebase_storage, filePath);
         const response = await axios.get(url, { responseType: 'arraybuffer' });
         console.log(`Fetched media content from ${url}`);
         

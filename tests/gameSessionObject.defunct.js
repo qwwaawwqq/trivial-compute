@@ -66,6 +66,7 @@ test('Create gameSession with 4 players and 4 categories without database integr
     })
     expect(game.GameSessionID).toBeDefined(); 
 
+    game = null;
 
     // console.log(game.toJSON());
 
@@ -123,7 +124,7 @@ test('Create gameSession with 1 player and 1 category without database integrati
         expect(game.categories[color].name).toBe(categoryNames[index]); // Test if category names were properly initialized according to categoryNames array.
     })
 
-
+    game = null;
 
     // console.log(game.toJSON());
 

@@ -11,6 +11,14 @@ body {
     animation: gradient 15s ease infinite;
 }
 
+/* Header styles */
+h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin-bottom: 2rem;
+    font-weight: bold;
+    font-family: 'Bangers', cursive, Arial, sans-serif;
+    color: var(--text-color);
+}
 @keyframes gradient {
     0% {
         background-position: 0% 50%;
@@ -125,9 +133,9 @@ body {
     padding-left: 40px;
     padding-right: 40px;
     position: absolute;
-    padding-top: 30px;
-    width: 700px;
-    height: 700px;
+    padding-top: 70px;
+    width: 650px;
+    height: 650px;
     background-color: white;
     border-radius: 5px;
     border: 5px solid black;

@@ -1,17 +1,16 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs, getFirestore } from 'firebase/firestore';
 
-
-function createNewUser(email, password, name, callback) {
+function createNewUser(email, password, callback) {
     const auth = getAuth();
-    // const db = getFirestore();
+    const db = getFirestore();
+
     createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             const userId = userCredential.user.uid
-            // setDoc(doc(db, "users", userId), {
-            //     email: email,
-            //     name: name,
-            //     beats: []
-            // });
+            setDoc(doc(db, "users", userId), {
+                email: email,
+            });
             callback({ "success": true, "userId": userId })
 
         })
@@ -21,6 +20,22 @@ function createNewUser(email, password, name, callback) {
             callback({ "success": false, "error": "Could Not Create Account" })
         });
 }
+
+async function listTeachers() {
+    try {
+        const db = getFirestore();
+        const q = query(collection(db, "users"));
+        const querySnapshot = await getDocs(q);
+        let email = []
+        querySnapshot.forEach((doc) => {
+            email.push(doc.get("email"))
+        });
+        return { success: true, data: email };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+}
+
 
 function signInUser(email, password, callback) {
     const auth = getAuth();
@@ -61,4 +76,4 @@ function signOutUser(callback) {
     });
 }
 
-export { createNewUser, signInUser, sessionAuth, signOutUser }
+export { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers }

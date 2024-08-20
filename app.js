@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
 
 // From Source
-import { createNewUser, signInUser, sessionAuth, signOutUser } from './src/firebase/fire-auth.js';
+import { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers } from './src/firebase/fire-auth.js';
 import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
 import { readQuestionsFromCategory, readAllCategories, readAllQuestions, getMediaUrl, fetchMediaContent } from './src/firebase/questions/read-questions.js'
 import { updateQuestion, updateCategory } from './src/firebase/questions/update-questions.js'
@@ -278,7 +278,7 @@ app.get('/api/activeGameSessions', (req, res) => {
 
 
 
-app.post('/api/checkAuth', (req, res) => {
+app.post('/api/checkAuth', async (req, res) => {
     const { uid } = req.body;
     sessionAuth(uid, (result) => {
         res.status(200).send(result.isLogedIn)
@@ -289,8 +289,8 @@ app.post('/api/checkAuth', (req, res) => {
 // Route to create a new user account
 app.post('/api/createNewAccount', (req, res) => {
     try {
-        const { email, password, name } = req.body;
-        createNewUser(email, password, name, (result) => {
+        const { email, password } = req.body;
+        createNewUser(email, password, (result) => {
             if (result.success) {
                 res.status(200).send(result.userId);
             } else {
@@ -301,8 +301,16 @@ app.post('/api/createNewAccount', (req, res) => {
         console.log(error)
         res.status(400).send(error.message)
     }
-
 });
+
+app.get("/api/listTeachers", async (req, res) => {
+    try {
+        const results = await listTeachers();
+        res.status(203).send(results.data);
+    } catch (error) {
+        res.status(400).send(error.message)
+    }
+})
 
 
 // Route to sign in an existing user

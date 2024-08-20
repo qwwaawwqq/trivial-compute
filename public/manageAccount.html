@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <!-- Header -->
-        <h1 class="text-center">Manage Accounts</h1>
+        <h1 class="text-center">Manage Teacher Accounts</h1>
 
         <!-- Return button -->
         <div class="d-flex justify-content-end mb-3">
@@ -74,46 +74,13 @@
                                 <label for="new-password">Password:</label>
                                 <input type="password" class="form-control" id="new-password">
                             </div>
-                            <div class="form-group">
-                                <label>Access Level:</label><br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="accessLevel" id="teacher"
-                                        value="Teacher">
-                                    <label class="form-check-label" for="teacher">Teacher</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="accessLevel" id="student"
-                                        value="Student" checked>
-                                    <label class="form-check-label" for="student">Student</label>
-                                </div>
-                            </div>
                             <button class="btn btn-success">Add Account</button>
-                        </div>
-                        <!-- Change password form -->
-                        <div class="form-group">
-                            <label for="change-password">Change Selected Account Password to:</label>
-                            <input type="password" class="form-control" id="change-password">
-                            <button class="btn btn-info mt-2">Change Password</button>
-                        </div>
-                        <!-- Change access level form -->
-                        <div class="form-group">
-                            <label>Change Selected Account Access Level to:</label><br>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="changeAccessLevel" id="changeTeacher"
-                                    value="Teacher">
-                                <label class="form-check-label" for="changeTeacher">Teacher</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="changeAccessLevel" id="changeStudent"
-                                    value="Student" checked>
-                                <label class="form-check-label" for="changeStudent">Student</label>
-                            </div>
-                            <button class="btn btn-info mt-2">Change Access Level</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Custom JavaScript -->

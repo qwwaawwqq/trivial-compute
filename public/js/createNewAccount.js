@@ -1,10 +1,10 @@
-const loginForm = document.getElementById('login-form');
-loginForm.addEventListener('submit', (e) => {
+const newAccountForm = document.getElementById('new-account-form');
+newAccountForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
 
-    fetch('/api/login', {
+    fetch('/api/createNewAccount', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -32,14 +32,9 @@ loginForm.addEventListener('submit', (e) => {
 
 });
 
-const createNewAccount = document.getElementById('createNewAccountBtn');
-// Logout button click
-createNewAccount.addEventListener('click', () => {
-    window.location.href = '/createNewAccount.html';
-})
 
 const homePage = document.getElementById('homeBtn');
 // Logout button click
 homePage.addEventListener('click', () => {
-    window.location.href = '/index.html';
+    window.location.href = '/authentication.html';
 })

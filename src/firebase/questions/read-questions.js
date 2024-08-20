@@ -16,8 +16,6 @@ async function readAllCategories(firebase_db) {
         const q = query(collection(firebase_db, "categories"));
         const querySnapshot = await getDocs(q);
         let categories = []
-        console.log("HELLO");
-        console.log(categories);
         querySnapshot.forEach((doc) => {
             categories.push(doc.id)
         });
@@ -121,15 +119,15 @@ async function fetchMediaContent(firebase_storage, filePath) {
         const url = await getMediaUrl(firebase_storage, filePath);
         const response = await axios.get(url, { responseType: 'arraybuffer' });
         console.log(`Fetched media content from ${url}`);
-        
+
         // Debug logging
         console.log('Response headers:', response.headers);
         console.log('Response data length:', response.data.length);
         console.log('Response data type:', typeof response.data);
-        
+
         const contentType = response.headers['content-type'] || 'application/octet-stream';
         console.log('Content-Type:', contentType); // Additional debug log
-        
+
         return {
             data: response.data,
             contentType: contentType,

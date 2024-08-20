@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Accounts | Trivial Compute</title>
+    <title>Create New Account | Trivial Compute</title>
     <!-- External CSS libraries -->
     <link rel="stylesheet" href="./lib/bootstrap-5.3.3-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/authentication.css">
@@ -18,10 +18,10 @@
             <h1>Trivial Compute</h1>
         </header>
         <main class="manage-account-section row justify-content-center">
-            <h2>Teacher Login</h2>
+            <h2>Create New Account</h2>
             <!-- Authentication form -->
             <section id="auth-section" class="col-md-6">
-                <form id="login-form">
+                <form id="new-account-form">
                     <!-- Email input -->
                     <div class="form-group">
                         <label for="login-email" class="form-label">Email:</label>
@@ -32,21 +32,20 @@
                         <label for="login-password" class="form-label">Password:</label>
                         <input type="password" id="login-password" class="form-control" required>
                     </div>
-                    <button type="submit" class="btn btn-lg btn-success" aria-label="Login">Login</button>
+                    <button id="createNewAccountBtn" class="btn btn-lg btn-success"
+                        aria-label="Create New Account">Create New
+                        Account</button>
                 </form>
             </section>
             <!-- User information section (hidden by default) -->
         </main>
         <footer>
-            <!-- Return button -->
-            <button id="createNewAccountBtn" class="btn btn-lg btn-success btn-primary"
-                aria-label="Return to Home">Create New Account</button><br>
             <button id="homeBtn" class="btn btn-lg btn-success btn-secondary"
                 aria-label="Return to Home">Return</button>
         </footer>
     </div>
     <!-- Custom JavaScript -->
-    <script src="js/authentication.js" type="module"></script>
+    <script src="js/createNewAccount.js" type="module"></script>
 </body>
 
 </html>

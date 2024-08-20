@@ -33,6 +33,18 @@ $(document).ready(function() {
         }
     });
 
+    $("#game-rule").click(function() {
+        let consent = confirm("Read game rules?");
+        if (consent) {
+            window.location.href = 'gamerules.html'
+        }
+        else {
+            console.log("Game rules not read");
+        }
+        // Add functionality to return to the previous page
+    })
+
+
      // Handle starting the game
     $('#start-game-btn').click(function() {
         let players = [];

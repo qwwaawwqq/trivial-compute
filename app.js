@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 import { initializeApp } from 'firebase/app';
 
 // From Source
-import { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers } from './src/firebase/fire-auth.js';
+import { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers, deleteAccount } from './src/firebase/fire-auth.js';
 import { createNewCategory, addTextOpenEndedQuestionToCategory, addTextMultipleChoiceQuestionToCategory, addMediaQuestionToCategory } from './src/firebase/questions/create-questions.js'
 import { readQuestionsFromCategory, readAllCategories, readAllQuestions, getMediaUrl, fetchMediaContent } from './src/firebase/questions/read-questions.js'
 import { updateQuestion, updateCategory } from './src/firebase/questions/update-questions.js'
@@ -292,9 +292,9 @@ app.post('/api/createNewAccount', (req, res) => {
         const { email, password } = req.body;
         createNewUser(email, password, (result) => {
             if (result.success) {
-                res.status(200).send(result.userId);
+                res.status(200).send({ success: true, data: result.userId });
             } else {
-                res.status(203).send(result.error);
+                res.status(203).send({ success: false, data: result.error });
             }
         });
     } catch (error) {
@@ -348,6 +348,17 @@ app.post('/api/signOut', (req, res) => {
         res.status(400).send(error.message)
     }
 });
+
+app.post('/api/deleteUser', async (req, res) => {
+    try {
+        const { uid } = req.body;
+        const result = await deleteAccount(uid)
+        res.status(200).send({ success: true, data: result.message });
+    } catch (error) {
+        res.status(500).send({ success: true, data: result.error });
+    }
+
+})
 
 
 

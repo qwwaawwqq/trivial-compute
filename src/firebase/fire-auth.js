@@ -1,5 +1,7 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs, getFirestore } from 'firebase/firestore';
+import { query, doc, setDoc, onSnapshot, getDoc, collection, getDocs, getFirestore, deleteDoc } from 'firebase/firestore';
+
+
 
 function createNewUser(email, password, callback) {
     const auth = getAuth();
@@ -10,6 +12,7 @@ function createNewUser(email, password, callback) {
             const userId = userCredential.user.uid
             setDoc(doc(db, "users", userId), {
                 email: email,
+                uid: userId
             });
             callback({ "success": true, "userId": userId })
 
@@ -21,6 +24,16 @@ function createNewUser(email, password, callback) {
         });
 }
 
+async function deleteAccount(uid) {
+    try {
+        const db = getFirestore();
+        await deleteDoc(doc(db, "users", uid))
+        return { success: true, message: `Deleted User` };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
 async function listTeachers() {
     try {
         const db = getFirestore();
@@ -28,13 +41,18 @@ async function listTeachers() {
         const querySnapshot = await getDocs(q);
         let email = []
         querySnapshot.forEach((doc) => {
-            email.push(doc.get("email"))
+            const teacher = {
+                email: doc.get("email"),
+                uid: doc.get("uid")
+            }
+            email.push(teacher)
         });
         return { success: true, data: email };
     } catch (error) {
         return { success: false, error: error.message };
     }
 }
+
 
 
 function signInUser(email, password, callback) {
@@ -76,4 +94,4 @@ function signOutUser(callback) {
     });
 }
 
-export { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers }
+export { createNewUser, signInUser, sessionAuth, signOutUser, listTeachers, deleteAccount }

@@ -31,35 +31,13 @@
                         <table class="table table-bordered">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Access Level</th>
+                                    <th scope="col">Teachers</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Sample account data, replace with dynamic content -->
-                                <tr>
-                                    <td>dr_doofenshmirtz</td>
-                                    <td>Teacher</td>
-                                </tr>
-                                <tr>
-                                    <td>jroppenheimer</td>
-                                    <td>Teacher</td>
-                                </tr>
-                                <tr>
-                                    <td>qwawaawqq</td>
-                                    <td>Student</td>
-                                </tr>
-                                <tr class="table-warning">
-                                    <td>cscalvin</td>
-                                    <td>Student</td>
-                                </tr>
-                                <tr>
-                                    <td>rockc15</td>
-                                    <td>Student</td>
-                                </tr>
                             </tbody>
                         </table>
-                        <button class="btn btn-danger mt-3">Delete Selected Account</button>
+                        <button id="deleteUser" class="btn btn-danger mt-3">Delete Selected Account</button>
                     </div>
                     <!-- Account management forms -->
                     <div class="col-6">
@@ -67,14 +45,14 @@
                         <div class="border p-3 mb-3">
                             <h4>Add New Account With Credentials:</h4>
                             <div class="form-group">
-                                <label for="new-username">Username:</label>
-                                <input type="text" class="form-control" id="new-username">
+                                <label for="new-email">email:</label>
+                                <input type="text" class="form-control" id="new-email">
                             </div>
                             <div class="form-group">
                                 <label for="new-password">Password:</label>
                                 <input type="password" class="form-control" id="new-password">
                             </div>
-                            <button class="btn btn-success">Add Account</button>
+                            <button id="createNewAccount" class="btn btn-success">Add Account</button>
                         </div>
                     </div>
                 </div>

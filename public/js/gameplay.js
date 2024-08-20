@@ -326,13 +326,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fileLocation = response.question.fileLocation;
                     
                     // Clear any existing media elements
-                    $('.questionDisplay').nextAll('audio, img, video').remove();
+                    // $('.questionDisplay').nextAll('audio, img, video').remove();
+                    $('.questionDisplay').siblings('audio, img, video').remove()
     
                     function showMedia(element) {
                         $('.questionDisplay').after(element);
                         element.style.display = 'block';
                         element.style.maxWidth = '100%';
-                        element.style.margin = '10px 0';
+                        element.style.margin = '10px auto';
+                        element.style.gridColumn = '1/3'; // Match the grid-column of `.questionDisplay`
+                        element.style.gridRow = '3/4'; // Place it in the next grid row
                     }
     
                     // Function to fetch media URL from the new API
@@ -377,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             break;
                         case "VIDEO":
-                        
+                            $('.questionDisplay').text(response.question.questionTitle);
                             fetchMediaUrl(fileLocation).then(blob =>  {
                                 const videoElement = document.createElement('video');
                                 videoElement.src = URL.createObjectURL(blob);
@@ -452,9 +455,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     $('.textq').click(function() {
-        let direction = $(this).attr("id");
+        let colorDirection = $(this).attr("id");
         $('.pop2').toggle();
-        getCategoryQuestion(direction);
+        getCategoryQuestion(colorDirection);
 
     })
 
@@ -471,15 +474,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
                 const typeOfQuestion = response.typeOfQuestion;
                 const fileLocation = response.fileLocation;
+                console.log(response);
                 // Clear any existing media elements
                 // Clear any existing media elements
-                $('.questionDisplay').nextAll('audio, img, video').remove();
+                // $('.questionDisplay').nextAll('audio, img, video').remove();
+                $('.questionDisplay').siblings('audio, img, video').remove()
     
                 function showMedia(element) {
                     $('.questionDisplay').after(element);
                     element.style.display = 'block';
                     element.style.maxWidth = '100%';
-                    element.style.margin = '10px 0';
+                    element.style.margin = '10px auto';
+                    element.style.gridColumn = '1/3'; // Match the grid-column of `.questionDisplay`
+                    element.style.gridRow = '3/4'; // Place it in the next grid row
                 }
 
                 // Function to fetch media URL from the new API
@@ -497,10 +504,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 switch (typeOfQuestion) {
                     case "FREE_TEXT":
                         // No additional media to display for free text questions
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         break;
                     case "AUDIO":
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob => {
                             const audioElement = document.createElement('audio');
                             audioElement.src = URL.createObjectURL(blob);
@@ -512,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "IMAGE":
-                        $('.questionDisplay').text(response.question.questionTitle);
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob => {
                             const imageElement = document.createElement('img');
                             imageElement.src = URL.createObjectURL(blob);
@@ -524,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         break;
                     case "VIDEO":
-                    
+                        $('.questionDisplay').text(response.questionTitle);
                         fetchMediaUrl(fileLocation).then(blob =>  {
                             const videoElement = document.createElement('video');
                             videoElement.src = URL.createObjectURL(blob);
@@ -542,7 +549,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 $('.questionDisplay').text(response.questionTitle);
-                $('.pop').fadeToggle();
+                $('.pop').toggle();
                 $('.realAnswer').toggle();
                 $('.compareAnswer').toggle();
                 $('.correctButton').toggle();

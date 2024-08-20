@@ -1,8 +1,22 @@
 $(document).ready(function () {
+    $.ajax({
+        url: '/api/checkAuth',
+        method: 'POST',
+        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+        contentType: 'application/json',
+        success: function (result) {
+            if (!result) {
+                window.location.href = "./index.html";
+            } else {
+                loadCategories();
+                bindToControlButtons();
+            }
+        }
+    })
     // Load categories from the server and populate the table
-    loadCategories();
+
     // Bind event listeners to control buttons
-    bindToControlButtons();
+
 });
 
 /**

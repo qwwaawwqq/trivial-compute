@@ -1,7 +1,19 @@
 // Wait for the DOM to be fully loaded before executing the script
 document.addEventListener('DOMContentLoaded', function () {
-    loadQuestions();
-    bindControlButtons();
+    $.ajax({
+        url: '/api/checkAuth',
+        method: 'POST',
+        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+        contentType: 'application/json',
+        success: function (result) {
+            if (!result) {
+                window.location.href = "./index.html";
+            } else {
+                loadQuestions();
+                bindControlButtons();
+            }
+        }
+    })
 });
 
 /**
@@ -53,7 +65,7 @@ async function loadQuestions() {
  */
 function bindRowClickEvent() {
     const tableBody = document.getElementById('question-table-body');
-    tableBody.addEventListener('click', function(e) {
+    tableBody.addEventListener('click', function (e) {
         if (e.target.tagName === 'TD') {
             const selectedRow = e.target.parentElement;
             // Remove 'table-warning' class from all rows
@@ -133,9 +145,9 @@ function addQuestion() {
  */
 function escapeHtml(unsafe) {
     return unsafe
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }

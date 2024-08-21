@@ -43,7 +43,7 @@ export class Player {
         this.email = email;
         this.position = position;
         this._score = {...Player.DEFAULT_SCORE};
-        this.stats = new QuestionStats();
+        this.stats = {}; // object<string for category name, QuestionStats>
         /**
          * Compared to my current position, which direction was this player's previous square in?
          * @type {string|null}

@@ -250,8 +250,7 @@ app.get('/api/game/names', (req, res) => {
 app.post('/api/game/save', (req, res) => {
     const { gameSessionID } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
-    console.log("HEY");
-    console.log(gameSessionID);
+    console.log("Saving" + gameSessionID);
     gameSession.saveJSON();
     res.status(200).send();
 });

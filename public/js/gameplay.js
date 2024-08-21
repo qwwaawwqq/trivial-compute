@@ -13,12 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 let players = [];
                 players = response.playerNames;
                 gameCategories = response.categoryNames;
-                console.log(gameCategories);
                 let i = 1;
                 Object.keys(gameCategories).forEach((key)=> {
                     let cName = `.cat${i}`;
-                    console.log(gameCategories[key]);
-                    console.log(key);
                     $(cName).text(gameCategories[key]);
                     $(cName).addClass(key);
             
@@ -36,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 for (let o=1; o<5; o++){
                     let catKey = $(`.catq${o}`).attr('id');
-                    // console.log(catKey);
-                    // console.log(gameCategories[catKey]);
                     $(`.catq${o}`).text(`${gameCategories[catKey]}`)
                 }
 
@@ -59,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         $('.pop2').toggle();
         $('.pop3').toggle();
         const currentBoard = JSON.parse(localStorage.getItem('gameBoard'));
-        console.log(currentBoard);
         $('.moveDir').prop('disabled', true); //turn move buttons off;
         const gameBoard = $('.game-board'); //Grabs HTML element to append the squares.
         
@@ -158,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     square.appendChild(divs[k]);
             }
             }
-            console.log(square.outerHTML);
+            // console.log(square.outerHTML);
 
             gameBoard.append(square);
         })
@@ -168,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     rollButton.addEventListener('click', () => {
         let gameID = localStorage.getItem('gameSessionID');
-        console.log(gameID);
+        // console.log(gameID);
         $.ajax({
             url: '/api/game/rollDie',
             method: 'PUT',
@@ -204,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     $('.moveDir').click(function() {
         let direction = $(this).attr("id");
-        console.log(direction);
+        // console.log(direction);
         sendMovement(direction);
 
     })
@@ -237,6 +231,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
 
+    /**
+     * format an object for readability. created by ChatGPT
+     * @param {*} obj 
+     * @param {*} indent 
+     * @returns 
+     */
+    function formatObject(obj, indent = 0) {
+        const indentation = ' '.repeat(indent);
+        return Object.entries(obj).map(([key, value]) => {
+            if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+                return `${indentation}${key}:\n${formatObject(value, indent + 2)}`;
+            } else {
+                return `${indentation}${key}: ${Array.isArray(value) ? value.join(', ') : value}`;
+            }
+        }).join('\n');
+    }
 
     $('.judge').click(function() {
         // $('.realAnswer').toggle();
@@ -258,8 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: JSON.stringify({ gameSessionID : gameID, isCorrect: isCorrect}),
             success: function (response) {
                 $('#current-player').text(`It's currently ${response.nextPlayerName}'s turn!`);
-                console.log(response.nextPlayerName);
-                console.log(response);
+                // console.log(response.nextPlayerName);
+                // console.log(response);
                 if (response.scoreboardToUpdate != null) {
                     let playerScoreIndex = response.scoreboardToUpdate + 1;
                     updateScore(playerScoreIndex, response.score);
@@ -268,6 +278,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     let winnerName = response.endGameData.winner;
                     $('#gameWinner').text(winnerName + " is the winner!");
+
+                    let stats = response.endGameData.stats;
+
+                    $('#gameStats').text(
+                        `Statistics:\n${formatObject(stats)}`
+                        // `Questions Correctly Answered:  ${stats.timesAsked}/${stats.timesCorrectlyAnswered} (${(stats.timesAsked/stats.timesCorrectlyAnswered).toFixed(2)}) \n`
+                    )
+
                     $(".pop3").fadeToggle(200);
                 }
             },
@@ -304,8 +322,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function sendMovement(directionClick) {
         let gameID = localStorage.getItem('gameSessionID');
-        console.log("Game ID:", gameID);
-        console.log("Direction Clicked:", directionClick);
+        // console.log("Game ID:", gameID);
+        // console.log("Direction Clicked:", directionClick);
     
         $.ajax({
             url: '/api/game/pickDirection',
@@ -315,12 +333,12 @@ document.addEventListener('DOMContentLoaded', () => {
             data: JSON.stringify({ gameSessionID: gameID, direction: directionClick }),
             success: function (response) {
                 if (response.squareType === "ROLL_AGAIN") {
-                    console.log("Rolling again.");
+                    // console.log("Rolling again.");
                     $('#current-player').text(`Let's Go Gambling! Roll Again`);
                     $('#roll-dice').prop('disabled', false);
                     clearDie();
                 } else if (response.squareType === "NORMAL" || response.squareType === "HQ") {
-                    console.log(response.question.questionTitle);
+                    // console.log(response.question.questionTitle);
     
                     const typeOfQuestion = response.question.typeOfQuestion;
                     const fileLocation = response.question.fileLocation;
@@ -418,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function movePlayerToken(playerIndex, destination) {
         let token = $(`#player${playerIndex+1}_token`);
-        console.log(token);
+        // console.log(token);
         $(`#player${playerIndex+1}_token`).remove();
         $(`#${destination}`).append(token);
     }
@@ -474,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // TODO: Add displays for audio, image, and video (fill out the switch statement cases)
                 const typeOfQuestion = response.typeOfQuestion;
                 const fileLocation = response.fileLocation;
-                console.log(response);
+                // console.log(response);
                 // Clear any existing media elements
                 // Clear any existing media elements
                 // $('.questionDisplay').nextAll('audio, img, video').remove();

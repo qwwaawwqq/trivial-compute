@@ -67,7 +67,7 @@ function bindToControlButtons() {
 
 // Function to handle button click animation and navigation
 function playGame() {
-    console.log("yooo")
+    // console.log("yooo")
     // button.style.opacity = '0.5';
     setTimeout(() => {
         // button.style.opacity = '1';

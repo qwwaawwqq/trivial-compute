@@ -31,14 +31,14 @@ export class QuestionStats {
         if (this.timesAsked === 0) {
             return 0;
         } 
-        return (this.timesCorrectlyAnswered / this.timesAsked) * 100;
+        return ((this.timesCorrectlyAnswered / this.timesAsked) * 100).toFixed(2);
     }
 
     toJSON() {
         return {
-            timesAsked: this.timesAsked,
-            timesCorrectlyAnswered: this.timesCorrectlyAnswered,
-            percentCorrect: this.percentCorrect
+            "Times Asked": this.timesAsked,
+            "Times Correctly Answered": this.timesCorrectlyAnswered,
+            "Percent Correct": this.percentCorrect
         }
     }
 }

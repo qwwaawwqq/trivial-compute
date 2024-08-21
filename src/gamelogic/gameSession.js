@@ -4,6 +4,7 @@ import { Die } from './die.js';
 import { Direction } from './direction.js';
 import { Player } from './player.js';
 import { Question } from './question.js';
+import { QuestionStats } from './questionStats.js';
 import { Color } from './color.js';
 import { SquareType } from './squareType.js';
 
@@ -110,23 +111,23 @@ export class GameSession {
         let path = [];
         let nextDirection = direction;
         path.push(this.currentPlayer.position);
-        this.tempDebug("DEBUG A");
-        console.log(nextDirection);
+        // this.tempDebug("DEBUG A");
+        // console.log(nextDirection);
         do {
-            this.tempDebug("DEBUG B");
-            console.log(nextDirection);
+            // this.tempDebug("DEBUG B");
+            // console.log(nextDirection);
             this.currentPlayer.moveOnce(nextDirection);
             path.push(this.currentPlayer.position);
-            this.tempDebug("DEBUG C");
-            console.log(nextDirection);
+            // this.tempDebug("DEBUG C");
+            // console.log(nextDirection);
             nextDirection = this.getAvailableDirections(true)[0];
         } while ((!(this.currentPlayer.movesLeft <= 0)) && (!(this.getCurrentSquare().isIntersection)));
-        this.tempDebug("DEBUG D");
+        // this.tempDebug("DEBUG D");
         // If we are out of moves, there's no decision left to make. 
         // Otherwise, we must be at an intersection, so we need to ask the player to make a decision.
         if (this.currentPlayer.movesLeft <= 0) {
             // Return the decision information needed by the square.
-            this.tempDebug("DEBUG E");
+            // this.tempDebug("DEBUG E");
 
             const { squareType, categoryOptions, question } = this.activateSquare();
             return {
@@ -138,7 +139,7 @@ export class GameSession {
                 availableDirections: []
             };
         } else { 
-            this.tempDebug("DEBUG F");
+            // this.tempDebug("DEBUG F");
             // Assume this is an intersection.
             // Since we are in the middle of a turn, do not allow the player to turn back.
             return {
@@ -179,7 +180,10 @@ export class GameSession {
     judgeAnswer(isCorrect) {
         let scoreboardToUpdate = null;
         let score = null;
-        this.currentPlayer.stats.updateStats(isCorrect);
+        console.log("HEYO")
+        console.log(this.currentPlayer.stats);
+        console.log(this.currentCategory);
+        this.currentPlayer.stats[this.currentCategory.name].updateStats(isCorrect);
         if (isCorrect) {
             if (this.getCurrentSquare().isHQ) {
                 this.awardPoint();
@@ -218,7 +222,8 @@ export class GameSession {
     selectCategory(color) {
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
-        console.log(this.currentQuestion);
+        this.currentCategory = category;
+        // console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -276,10 +281,19 @@ export class GameSession {
         this.gameboard = board;
         this.categories = categories;
         this.players = players;
+
+        for (let i = 0; i < this.players.length; i++) {
+            for (const color in this.categories) {
+                const category = this.categories[color];
+                this.players[i].stats[category.name] = new QuestionStats();
+            }
+        }
+
         this.currentPlayerIndex = 0;
         this.currentPlayer = this.players[this.currentPlayerIndex];
         this.recentlyAnsweredCorrectly = false;
         this.currentQuestion = null;
+        this.currentCategory = null;
         /**
          * Unique identifier for this game session.
          * @type {string}
@@ -394,7 +408,8 @@ export class GameSession {
         const color = this.getCurrentSquare().color;
         const category = this.categories[color];
         this.currentQuestion = category.pickRandomQuestion();
-        console.log(this.currentQuestion);
+        this.currentCategory = category;
+        // console.log(this.currentQuestion);
         return this.currentQuestion;
     }
 
@@ -413,7 +428,7 @@ export class GameSession {
      * @private
      */
     checkForWinner() {
-        return this.currentPlayer.isWinner();
+        return this.currentPlayer.isWinner(1);
     }
 
     /**
@@ -423,9 +438,17 @@ export class GameSession {
      */
     endGame() {
 
-        const stats = [];
+        const stats = {};
         for (const player of this.players) {
-            stats.push(player.stats.toJSON());
+            const playerStats = {};
+            for (const category of Object.values(this.categories)) {
+                console.log("HIYA");
+                console.log(player.stats);
+                console.log(category.name);
+                console.log(player.stats[category.name]);
+                playerStats[category.name] = player.stats[category.name].toJSON();
+            }
+            stats[player.name] = playerStats
         }
 
         return {

@@ -31,7 +31,7 @@ export class QuestionStats {
         if (this.timesAsked === 0) {
             return 0;
         } 
-        return (this.timesCorrectlyAnswered / this.timesAsked) * 100;
+        return ((this.timesCorrectlyAnswered / this.timesAsked) * 100).toFixed(2);
     }
 
     toJSON() {

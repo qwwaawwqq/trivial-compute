@@ -72,10 +72,8 @@ body {
 #gameStats {
     grid-column: 1/4;
     grid-row: 3/4;
-    font-size: 60px;
-    font-weight: bold;
-    animation: rainbow 8s linear infinite;
-
+    font-size: 5px;
+    white-space: pre;
 }
 
 .pop2{

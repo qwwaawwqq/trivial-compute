@@ -110,23 +110,23 @@ export class GameSession {
         let path = [];
         let nextDirection = direction;
         path.push(this.currentPlayer.position);
-        this.tempDebug("DEBUG A");
-        console.log(nextDirection);
+        // this.tempDebug("DEBUG A");
+        // console.log(nextDirection);
         do {
-            this.tempDebug("DEBUG B");
-            console.log(nextDirection);
+            // this.tempDebug("DEBUG B");
+            // console.log(nextDirection);
             this.currentPlayer.moveOnce(nextDirection);
             path.push(this.currentPlayer.position);
-            this.tempDebug("DEBUG C");
-            console.log(nextDirection);
+            // this.tempDebug("DEBUG C");
+            // console.log(nextDirection);
             nextDirection = this.getAvailableDirections(true)[0];
         } while ((!(this.currentPlayer.movesLeft <= 0)) && (!(this.getCurrentSquare().isIntersection)));
-        this.tempDebug("DEBUG D");
+        // this.tempDebug("DEBUG D");
         // If we are out of moves, there's no decision left to make. 
         // Otherwise, we must be at an intersection, so we need to ask the player to make a decision.
         if (this.currentPlayer.movesLeft <= 0) {
             // Return the decision information needed by the square.
-            this.tempDebug("DEBUG E");
+            // this.tempDebug("DEBUG E");
 
             const { squareType, categoryOptions, question } = this.activateSquare();
             return {
@@ -138,7 +138,7 @@ export class GameSession {
                 availableDirections: []
             };
         } else { 
-            this.tempDebug("DEBUG F");
+            // this.tempDebug("DEBUG F");
             // Assume this is an intersection.
             // Since we are in the middle of a turn, do not allow the player to turn back.
             return {

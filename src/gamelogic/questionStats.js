@@ -36,9 +36,9 @@ export class QuestionStats {
 
     toJSON() {
         return {
-            timesAsked: this.timesAsked,
-            timesCorrectlyAnswered: this.timesCorrectlyAnswered,
-            percentCorrect: this.percentCorrect
+            "Times Asked": this.timesAsked,
+            "Times Correctly Answered": this.timesCorrectlyAnswered,
+            "Percent Correct": this.percentCorrect
         }
     }
 }

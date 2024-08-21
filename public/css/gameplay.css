@@ -62,7 +62,7 @@ body {
 
 #gameWinner {
     grid-column: 1/4;
-    grid-row: 2/3;
+    grid-row: 1/2;
     font-size: 60px;
     font-weight: bold;
     animation: rainbow 8s linear infinite;
@@ -71,10 +71,16 @@ body {
 
 #gameStats {
     grid-column: 1/4;
-    grid-row: 3/4;
+    grid-row: 2/4;
     font-size: 5px;
     white-space: pre;
+    font-size: 26px;
+    text-align: left;
+    overflow-y: scroll;
+    max-height: 200px;
 }
+
+
 
 .pop2{
     z-index: 15;

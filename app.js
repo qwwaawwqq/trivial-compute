@@ -250,7 +250,8 @@ app.get('/api/game/names', (req, res) => {
 app.post('/api/game/save', (req, res) => {
     const { gameSessionID } = req.body;
     const gameSession = app.locals.activeGameSession[gameSessionID];
-    console.log("Saving" + gameSessionID);
+    console.log("HEY");
+    console.log(gameSessionID);
     gameSession.saveJSON();
     res.status(200).send();
 });
@@ -416,6 +417,7 @@ app.get("/api/fetchMediaContent", async (req, res) => {
 app.get("/api/readAllQuestions", async (req, res) => {
     try {
         const result = await readAllQuestions(firebase_db)
+        console.log(result)
         if (result.success) {
             res.status(200).send(result.data);
         } else {
@@ -566,8 +568,11 @@ app.put('/api/updateCategory', async (req, res) => {
 // Delete Enpoints
 app.delete('/api/deleteQuestions', async (req, res) => {
     try {
+
         const { categoryName, questionID } = req.body;
+        console.log(req.body)
         const result = await deleteQuestion(firebase_db, categoryName, questionID)
+        console.log(result)
         if (result.success) {
             res.status(200).json(result);
         } else {

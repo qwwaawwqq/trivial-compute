@@ -1,28 +1,30 @@
 // Wait for the DOM to be fully loaded before executing the script
 document.addEventListener('DOMContentLoaded', function () {
-    $.ajax({
-        url: '/api/checkAuth',
-        method: 'POST',
-        data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
-        contentType: 'application/json',
-        success: function (result) {
-            if (!result) {
-                window.location.href = "./index.html";
-            } else {
-                loadQuestions();
-                bindControlButtons();
-            }
-        }
-    })
+    // $.ajax({
+    //     url: '/api/checkAuth',
+    //     method: 'POST',
+    //     data: JSON.stringify({ uid: sessionStorage.getItem('uid') }),
+    //     contentType: 'application/json',
+    //     success: function (result) {
+    //         if (!result) {
+    //             window.location.href = "./index.html";
+    //         } else {
+    //             loadQuestions();
+    //             bindControlButtons();
+    //         }
+    //     }
+    // })
+    loadQuestions();
+    bindControlButtons();
 });
 
 /**
  * Bind click event listeners to control buttons
  */
 function bindControlButtons() {
-    document.getElementById('deleteQuestionButton').addEventListener('click', deleteQuestion);
-    document.getElementById('previewQuestionButton').addEventListener('click', previewQuestion);
-    document.getElementById('addQuestionButton').addEventListener('click', addQuestion);
+    $('#deleteQuestionButton').on('click', deleteQuestion);
+    $('#previewQuestionButton').on('click', previewQuestion);
+    $('#addQuestionButton').on('click', addQuestion);
 }
 
 /**
@@ -44,7 +46,7 @@ async function loadQuestions() {
         // Populate the table with questions
         questions.forEach(question => {
             const row = tableBody.insertRow();
-            row.id = question.uuid;
+            row.id = question.id;
             row.innerHTML = `
                 <td>${escapeHtml(question.category)}</td>
                 <td>${escapeHtml(question.questionType)}</td>
@@ -85,10 +87,9 @@ async function deleteQuestion() {
         alert('Please select a question to delete.');
         return;
     }
-
     const category = selectedRow.cells[0].textContent;
     const questionId = selectedRow.id;
-
+    console.log(questionId)
     try {
         // Send delete request to the server
         const response = await fetch('/api/deleteQuestion', {
@@ -104,7 +105,9 @@ async function deleteQuestion() {
         }
 
         const result = await response.json();
+        console.log(result)
         if (result.success) {
+
             // Reload questions after successful deletion
             loadQuestions();
         } else {

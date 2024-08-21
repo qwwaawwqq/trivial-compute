@@ -417,7 +417,6 @@ app.get("/api/fetchMediaContent", async (req, res) => {
 app.get("/api/readAllQuestions", async (req, res) => {
     try {
         const result = await readAllQuestions(firebase_db)
-        console.log(result)
         if (result.success) {
             res.status(200).send(result.data);
         } else {
